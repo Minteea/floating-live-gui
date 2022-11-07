@@ -1,0 +1,16 @@
+{
+  "living": {
+    "rooms": [
+      
+    ]
+  },
+  "server": {
+    "sendMessage": true,
+    "port": 8130
+  },
+  "saving": {
+    "path": "../save",
+    "saveMessage": true,
+    "saveOrigin": false
+  }
+}
