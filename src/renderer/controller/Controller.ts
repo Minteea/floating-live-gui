@@ -6,6 +6,7 @@ import api from './api';
 import ControllerLink from './Link';
 import version from './version';
 import { CommandSet, FLCommandSet } from 'program/CommandTypes';
+import commandParser from '../../utils/commandParser';
 
 function objectForEach(
   obj: { [k: string]: any },
@@ -61,4 +62,14 @@ export default class Controller {
   cmd<S extends CommandSet = FLCommandSet, K extends string = keyof S & string>(cmd: K, ...args: S[K]) {
     api.send('cmd', { cmd, value: [...args] });
   }
+
+  exec(str: string) {
+    try {
+      let [cmd, ...args] = commandParser(str)
+      this.cmd(cmd, ...args)
+    } catch(err) {
+      console.log(`指令错误: ${str}`)
+    }
+  }
+
 }

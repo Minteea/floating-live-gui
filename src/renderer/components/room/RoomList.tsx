@@ -38,10 +38,10 @@ const RoomList: React.FC<{
                   onClick={
                     r.room.opening
                       ? () => {
-                          controller.living.closeRoom(r.key);
+                          controller.cmd("closeRoom", r.key);
                         }
                       : () => {
-                          controller.living.openRoom(r.key);
+                          controller.cmd("openRoom", r.key);
                         }
                   }
                 />
@@ -66,7 +66,7 @@ const RoomList: React.FC<{
                   icon={<DeleteOutlined />}
                   style={{ marginLeft: 5 }}
                   onClick={() => {
-                    controller.living.removeRoom(r.key);
+                    controller.cmd("removeRoom", r.key);
                   }}
                 />
               </Tooltip>,

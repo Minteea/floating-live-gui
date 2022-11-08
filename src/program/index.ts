@@ -76,6 +76,10 @@ export default class Program {
     this.command.execute(cmd, ...args);
   }
 
+  exec(str: string) {
+    this.command.executeString(str)
+  }
+
   addCommand<S extends CommandSet = FLCommandSet, K extends string = keyof S & string>(cmd: K, func: (...args: S[K]) => void) {
     this.command.add(cmd, func);
   }

@@ -1,3 +1,4 @@
+import commandParser from "../utils/commandParser";
 import { CommandSet, FLCommandSet } from "./CommandTypes";
 
 export default class Command {
@@ -19,5 +20,14 @@ export default class Command {
   execute<S extends CommandSet = FLCommandSet, K extends string = keyof S & string>(cmd: K, ...args: S[K]) {
     const func = this.commandMap.get(cmd);
     if (func) func(...args);
+  }
+
+  executeString(str: string) {
+    try {
+      let [cmd, ...args] = commandParser(str)
+      this.execute(cmd, ...args)
+    } catch(err) {
+      console.log(`指令错误: ${str}`)
+    }
   }
 }

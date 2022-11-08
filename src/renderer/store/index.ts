@@ -5,6 +5,7 @@ import StoreServer from './modules/Server';
 import StoreFavor from './modules/Favor';
 import StoreMessage from './modules/Message';
 import StoreLink from './modules/Link';
+import StoreCommon from './modules/Common';
 
 class Store {
   living = new StoreLiving();
@@ -20,6 +21,8 @@ class Store {
   saving = new StoreSaving();
 
   message = new StoreMessage();
+
+  common = new StoreCommon();
 }
 
 export default new Store();
