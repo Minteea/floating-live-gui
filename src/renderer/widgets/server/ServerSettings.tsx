@@ -15,7 +15,7 @@ const ServerSettings: React.FC = function () {
         <Switch
           checked={store.server.send_message}
           onClick={() => {
-            controller.server.sendMessage(!store.server.send_message);
+            controller.cmd("server", !store.server.send_message);
           }}
         />
       </div>
@@ -31,7 +31,7 @@ const ServerSettings: React.FC = function () {
           disabled={store.server.send_message}
           onBlur={(e) => {
             runInAction(() => {
-              controller.server.port(Number(e.target.value));
+              controller.cmd("port", Number(e.target.value));
             });
           }}
         />

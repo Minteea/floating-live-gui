@@ -19,10 +19,10 @@ const PageStart: React.FC = function () {
         onClick={
           store.living.started
             ? () => {
-                controller.living.end();
+                controller.cmd("end");
               }
             : () => {
-                controller.living.openAll();
+                controller.cmd("openAll");
               }
         }
       >

@@ -29,7 +29,7 @@ const LinkSettings: React.FC = function () {
               runInAction(() => {
                 store.link.link = inputLink;
               });
-              controller.link.link(store.link.link);
+              controller.cmd("link", store.link.link);
             }}
           />
         </Tooltip>

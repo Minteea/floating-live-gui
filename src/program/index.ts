@@ -3,6 +3,7 @@ import Living from './living';
 import Saving from './saving';
 import Server from './server';
 import Command from './command';
+import { CommandSet, FLCommandSet } from './CommandTypes';
 
 const configPath = './config/config.json';
 const config = require(configPath);
@@ -71,15 +72,15 @@ export default class Program {
     };
   }
 
-  cmd(cmd: string, ...args: any[]) {
+  cmd<S extends CommandSet = FLCommandSet, K extends string = keyof S & string>(cmd: K, ...args: S[K]) {
     this.command.execute(cmd, ...args);
   }
 
-  addCommand(cmd: string, func: (...args: any[]) => void) {
+  addCommand<S extends CommandSet = FLCommandSet, K extends string = keyof S & string>(cmd: K, func: (...args: S[K]) => void) {
     this.command.add(cmd, func);
   }
 
-  addCommandFrom(obj: { [cmd: string]: (...args: any[]) => void }) {
+  addCommandFrom<S extends CommandSet = FLCommandSet>(obj: { [K in keyof S]?: (...args: S[K]) => void }) {
     this.command.addFromObj(obj);
   }
 }

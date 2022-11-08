@@ -14,35 +14,7 @@ export default class ControllerLiving {
     });
     console.log(api);
   }
-
-  addRoom(r: string, open?: boolean) {
-    api.send('cmd', { cmd: 'addRoom', value: [r, open || false] });
-  }
-
-  removeRoom(r: string) {
-    api.send('cmd', { cmd: 'removeRoom', value: [r] });
-  }
-
-  openRoom(r: string) {
-    api.send('cmd', { cmd: 'openRoom', value: [r] });
-  }
-
-  closeRoom(r: string) {
-    api.send('cmd', { cmd: 'closeRoom', value: [r] });
-  }
-
-  openAll() {
-    api.send('cmd', { cmd: 'openAll' });
-  }
-
-  start() {
-    api.send('cmd', { cmd: 'start' });
-  }
-
-  end() {
-    api.send('cmd', { cmd: 'end' });
-  }
-
+  
   updateStore({ key, value }: { key: string; value: any }) {
     switch (key) {
       case 'addRoom':

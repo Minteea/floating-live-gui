@@ -14,6 +14,7 @@ import { useState } from 'react';
 import RoomCard from '../../components/room/RoomCard';
 import store from '../../store';
 import controller from '../../controller';
+import { FLCommandSet } from 'program/CommandTypes';
 
 const { Option } = Select;
 const handleChange = (value: string) => {
@@ -72,7 +73,7 @@ const RoomGenerator: React.FC = function () {
             shape="circle"
             icon={<SearchOutlined />}
             onClick={() => {
-              controller.search.searchRoom(
+              controller.cmd("searchRoom",
                 `${store.search.search_platform}:${store.search.search_id}`
               );
             }}
@@ -109,7 +110,7 @@ const RoomGenerator: React.FC = function () {
                   disabled={store.living.roomMap.has(searchRoomKey)}
                   onClick={() => {
                     if (searchRoomInfo?.platform && searchRoomInfo?.id) {
-                      controller.living.addRoom(searchRoomKey);
+                      controller.cmd("addRoom", searchRoomKey);
                     }
                   }}
                 />
@@ -124,7 +125,7 @@ const RoomGenerator: React.FC = function () {
                   disabled={store.living.roomMap.get(searchRoomKey)?.opening}
                   onClick={() => {
                     if (searchRoomInfo?.platform && searchRoomInfo?.id) {
-                      controller.living.addRoom(searchRoomKey, true);
+                      controller.cmd("addRoom", searchRoomKey, true);
                     }
                   }}
                 />

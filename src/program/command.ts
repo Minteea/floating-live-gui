@@ -1,19 +1,22 @@
+import { CommandSet, FLCommandSet } from "./CommandTypes";
+
 export default class Command {
-  commandMap: Map<string, (...args: any[]) => void> = new Map();
+  commandMap: Map<string, (...args: any) => void> = new Map();
 
   /** 添加指令 */
-  add(cmd: string, func: (...args: any[]) => void) {
+  add<S extends CommandSet = FLCommandSet, K extends string = keyof S & string>(cmd: K, func: (...args: S[K]) => void) {
     this.commandMap.set(cmd, func);
   }
 
-  addFromObj(obj: { [cmd: string]: (...args: any[]) => void }) {
+  addFromObj<S extends CommandSet = FLCommandSet>(obj: { [K in keyof S]?: (...args: S[K]) => void }) {
     for (const cmd in obj) {
-      this.commandMap.set(cmd, obj[cmd]);
+      let func = obj[cmd]
+      func ? this.commandMap.set(cmd, func) : null;
     }
   }
 
   /** 执行指令 */
-  execute(cmd: string, ...args: any[]) {
+  execute<S extends CommandSet = FLCommandSet, K extends string = keyof S & string>(cmd: K, ...args: S[K]) {
     const func = this.commandMap.get(cmd);
     if (func) func(...args);
   }
