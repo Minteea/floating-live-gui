@@ -1,0 +1,15 @@
+{
+  "name": "floating-living-gui",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "./dist/main/main.js",
+  "scripts": {
+    "rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
+    "postinstall": "npm run rebuild && npm run link-modules",
+    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
+  },
+  "dependencies": {
+    "floating-living": "^0.6.6",
+    "ws": "^8.11.0"
+  }
+}
