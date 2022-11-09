@@ -4,7 +4,7 @@ import MessageLine from './MessageLine';
 
 /** 消息板 */
 const MessageBoard: React.FC<{
-  list: Array<MessageType>;
+  list: Array<MessageType & {key: string}>;
   style?: React.CSSProperties;
 }> = function (props) {
   return (
@@ -14,7 +14,7 @@ const MessageBoard: React.FC<{
     >
       <div>
         {props.list.map((msg) => (
-          <MessageLine msg={msg} />
+          <MessageLine msg={msg} key={msg.key} />
         ))}
       </div>
     </div>

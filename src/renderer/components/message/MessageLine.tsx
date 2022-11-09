@@ -1,6 +1,8 @@
 import { MessageType } from 'floating-living/src/Message/MessageInterface';
+import store from 'renderer/store';
 import { getRenewType } from '../../utils/nameUtils';
 import User from './User';
+import { Image } from 'antd'
 
 /** 消息 */
 const MessageLine: React.FC<{
@@ -22,7 +24,7 @@ const MessageLine: React.FC<{
         <div>
           <User msg={msg} />
           :&nbsp;
-          <span>[img]{msg.info.image.name}</span>
+          <Image src={`http://${store.link.link}/static/image/emotion/${msg.platform}/${msg.info.image.id}.png`} width={Number(msg.info.image.size?.[0]) / 2 || undefined} height={Number(msg.info.image.size?.[1]) / 2 || undefined} />
         </div>
       );
     }

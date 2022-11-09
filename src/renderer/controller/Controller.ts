@@ -5,7 +5,7 @@ import ControllerServer from './Server';
 import api from './api';
 import ControllerLink from './Link';
 import version from './version';
-import { CommandSet, FLCommandSet } from 'program/CommandTypes';
+import { CommandSet, FLCommandSet } from '../../program/command/CommandTypes';
 import commandParser from '../../utils/commandParser';
 
 function objectForEach(
@@ -60,7 +60,7 @@ export default class Controller {
   }
 
   cmd<S extends CommandSet = FLCommandSet, K extends string = keyof S & string>(cmd: K, ...args: S[K]) {
-    api.send('cmd', { cmd, value: [...args] });
+    api.send('cmd', { cmd, args });
   }
 
   exec(str: string) {

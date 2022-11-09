@@ -1,9 +1,11 @@
-import { ipcMain, webContents } from 'electron';
 import Living from './living';
 import Saving from './saving';
-import Server from './server';
-import Command from './command';
-import { CommandSet, FLCommandSet } from './CommandTypes';
+import Server from './server/server';
+import Command from './command/command';
+import { CommandSet, FLCommandSet } from './command/CommandTypes';
+import IpcLink from './link/ipcLink';
+import { UniLink, UniSender } from './link/UniLink';
+import commandParser from '../utils/commandParser';
 
 const configPath = './config/config.json';
 const config = require(configPath);
@@ -17,38 +19,31 @@ export default class Program {
 
   server = new Server(this, config);
 
+  ipcLink = new IpcLink()
+
   constructor() {
-    this.initIpc();
+    this.initLink();
     this.initServer();
   }
 
-  /** 初始化ipc通信 */
-  initIpc() {
-    ipcMain.on('cmd', (e, { cmd, value }) => {
-      if (value) {
-        this.cmd(cmd, ...value);
-      } else {
-        this.cmd(cmd);
-      }
-    });
-    ipcMain.on('connect', (e) => {
-      e.sender.send('init', this.getInitData());
-    });
+  /** 初始化连接 */
+  initLink() {
+    let links: UniLink[] = [this.ipcLink, this.server]
+    links.forEach((link) => {
+      link.on('cmd', (e, {cmd, args}) => {
+        this.command.execute({cmd, args});
+      })
+      link.on('connect', (e) => {
+        e.send('init', this.getInitData());
+      })
+    })
   }
 
-  /** 初始化ws通信 */
+  /** 初始化服务 */
   initServer() {
-    this.server.on('cmd', ({ cmd, value }) => {
-      if (value) {
-        this.cmd(cmd, ...value);
-      } else {
-        this.cmd(cmd);
-      }
-    });
-    this.server.on('connect', (ws) => {
-      this.server.sendTo(ws, 'init', this.getInitData());
-      this.server.sendTo(ws, 'version', process.env.npm_package_version);
-    });
+    this.server.on('connect', (e) => {
+      e.send('version', process.env.npm_package_version);
+    })
     if (config.server.sendMessage) {
       this.server.open();
     }
@@ -57,9 +52,7 @@ export default class Program {
   /** 广播发送 */
   send(channel: string, ...args: any[]) {
     /** ipc通道 */
-    webContents.getAllWebContents().forEach((e) => {
-      e.send(channel, ...args);
-    });
+    this.ipcLink.send(channel, ...args)
     /** ws通道 */
     this.server.send(channel, ...args);
   }
@@ -73,11 +66,16 @@ export default class Program {
   }
 
   cmd<S extends CommandSet = FLCommandSet, K extends string = keyof S & string>(cmd: K, ...args: S[K]) {
-    this.command.execute(cmd, ...args);
+    this.command.execute({cmd, args});
   }
 
   exec(str: string) {
-    this.command.executeString(str)
+    try {
+      let [cmd, ...args] = commandParser(str)
+      this.cmd(cmd, ...args)
+    } catch(err) {
+      console.log(`指令错误: ${str}`)
+    }
   }
 
   addCommand<S extends CommandSet = FLCommandSet, K extends string = keyof S & string>(cmd: K, func: (...args: S[K]) => void) {

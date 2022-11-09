@@ -1,4 +1,5 @@
 import FloatingLiving from 'floating-living';
+import { MessageType, MessageImage } from 'floating-living/src/Message/MessageInterface';
 import Program from '.';
 
 export default class Living extends FloatingLiving {
@@ -12,13 +13,20 @@ export default class Living extends FloatingLiving {
     const { rooms } = config.living;
     super({ rooms });
     this.program = program;
-    this._initEvent();
-    this._initCommamd();
-    this.on('msg', (data) => {
+    this.initEvent();
+    this.initCommamd();
+    this.on('msg', (data: MessageType) => {
       this.program.send('msg', data);
+      if (data.type == "image") {
+        this.storeImage(data)
+      }
     });
   }
-
+  storeImage(data: MessageImage) {
+    if (data.info.image.url) {
+      this.program.server.imageStorage.emotion.store(data.platform, data.info.image.id || "noname", data.info.image.url || "", "png")
+    }
+  }
   openAll() {
     this.start();
     this.liveRoomController.openAll();
@@ -79,7 +87,7 @@ export default class Living extends FloatingLiving {
     });
   }
 
-  private _initEvent() {
+  private initEvent() {
     this.on('room', ({ status, roomKey, roomInfo }) => {
       switch (status) {
         case 'added':
@@ -120,7 +128,7 @@ export default class Living extends FloatingLiving {
     });
   }
 
-  private _initCommamd() {
+  private initCommamd() {
     this.program.addCommandFrom({
       addRoom: (
         r: string | { platform: string; id: string | number },

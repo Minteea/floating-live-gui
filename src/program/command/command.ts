@@ -1,5 +1,5 @@
-import commandParser from "../utils/commandParser";
 import { CommandSet, FLCommandSet } from "./CommandTypes";
+import { UniSender } from "../link/UniLink";
 
 export default class Command {
   commandMap: Map<string, (...args: any) => void> = new Map();
@@ -17,17 +17,8 @@ export default class Command {
   }
 
   /** 执行指令 */
-  execute<S extends CommandSet = FLCommandSet, K extends string = keyof S & string>(cmd: K, ...args: S[K]) {
+  execute<S extends CommandSet = FLCommandSet, K extends string = keyof S & string>({cmd, args, from}: {cmd: K, args: S[K], from?: UniSender | null}) {
     const func = this.commandMap.get(cmd);
     if (func) func(...args);
-  }
-
-  executeString(str: string) {
-    try {
-      let [cmd, ...args] = commandParser(str)
-      this.execute(cmd, ...args)
-    } catch(err) {
-      console.log(`指令错误: ${str}`)
-    }
   }
 }
