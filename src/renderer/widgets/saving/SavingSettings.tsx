@@ -20,7 +20,7 @@ const SavingSettings: React.FC = function () {
         <Switch
           checked={store.saving.save_message}
           onClick={() => {
-            controller.saving.saveMessage(!store.saving.save_message);
+            controller.cmd("saveMessage", !store.saving.save_message);
           }}
         />
       </div>
@@ -29,7 +29,7 @@ const SavingSettings: React.FC = function () {
         <Switch
           checked={store.saving.save_origin}
           onClick={() => {
-            controller.saving.saveOrigin(!store.saving.save_origin);
+            controller.cmd("saveOrigin", !store.saving.save_message);
           }}
         />
       </div>
@@ -50,7 +50,7 @@ const SavingSettings: React.FC = function () {
                 !store.living.started &&
                 !(store.saving.save_path == inputSavePath)
               ) {
-                controller.saving.savePath(e.target.value);
+                controller.cmd("savePath", e.target.value);
               }
             }}
             status={
@@ -68,7 +68,7 @@ const SavingSettings: React.FC = function () {
                   disabled={store.saving.save_path == inputSavePath}
                   icon={<CheckOutlined />}
                   onClick={() => {
-                    controller.saving.savePath(inputSavePath);
+                    controller.cmd("savePath", inputSavePath);
                   }}
                 />
               </Tooltip>

@@ -1,6 +1,9 @@
 import { MessageType } from 'floating-living/src/Message/MessageInterface';
+import store from 'renderer/store';
 import { getRenewType } from '../../utils/nameUtils';
 import User from './User';
+import { Image } from 'antd'
+import controller from '../../controller';
 
 /** 消息 */
 const MessageLine: React.FC<{
@@ -11,6 +14,7 @@ const MessageLine: React.FC<{
     case 'text': {
       return (
         <div>
+          <Image src={msg.info.user.avatar} referrerPolicy="no-referrer" width={20} height={20} />
           <User msg={msg} />
           :&nbsp;
           <span>{msg.info.text}</span>
@@ -20,15 +24,17 @@ const MessageLine: React.FC<{
     case 'image': {
       return (
         <div>
+          <img src={msg.info.user.avatar} referrerPolicy="no-referrer" width={20} height={20} />
           <User msg={msg} />
           :&nbsp;
-          <span>[img]{msg.info.image.name}</span>
+          <img src={msg.info.image.url/**`http://${store.link.link}/static/image/emotion/${msg.platform}/${msg.info.image.id}.png` */} referrerPolicy="no-referrer" width={Number(msg.info.image.size?.[0]) / 2 || undefined} height={Number(msg.info.image.size?.[1]) / 2 || undefined} />
         </div>
       );
     }
     case 'gift': {
       return (
         <div>
+          <img src={msg.info.user.avatar} referrerPolicy="no-referrer" width={20} height={20} />
           <User msg={msg} />
           &nbsp;
           <span>{msg.info.gift.action || '送出'}</span>&nbsp;
@@ -40,6 +46,7 @@ const MessageLine: React.FC<{
     case 'superchat': {
       return (
         <div>
+          <img src={msg.info.user.avatar} referrerPolicy="no-referrer" width={20} height={20} />
           <User msg={msg} />
           &nbsp;
           <span>[SC {msg.info.duration / 1000}s]</span>:&nbsp;
@@ -50,6 +57,7 @@ const MessageLine: React.FC<{
     case 'privilege': {
       return (
         <div>
+          <img src={msg.info.user.avatar} referrerPolicy="no-referrer" width={20} height={20} />
           <User msg={msg} />
           &nbsp;
           <span>{getRenewType(msg.info.renew)}了</span>&nbsp;

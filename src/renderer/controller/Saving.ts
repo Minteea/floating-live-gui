@@ -4,23 +4,13 @@ import Controller from './Controller';
 import api from './api';
 
 export default class ControllerSaving {
+  controller: Controller
   constructor(controller: Controller) {
+    this.controller = controller
     api.on('saving', (e: any, { key, value }: { key: string; value: any }) => {
       console.log({ key, value });
       this.updateStore({ key, value });
     });
-  }
-
-  saveMessage(b: boolean) {
-    api.send('cmd', { cmd: 'saveMessage', value: [b] });
-  }
-
-  saveOrigin(b: boolean) {
-    api.send('cmd', { cmd: 'saveOrigin', value: [b] });
-  }
-
-  savePath(path: string) {
-    api.send('cmd', { cmd: 'savePath', value: [path] });
   }
 
   updateStore({ key, value }: { key: string; value: any }) {

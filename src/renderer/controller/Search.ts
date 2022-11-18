@@ -9,11 +9,7 @@ export default class ControllerSearch {
       this.updateStore({ key, value });
     });
   }
-
-  searchRoom(r: string) {
-    api.send('cmd', { cmd: 'searchRoom', value: [r] });
-  }
-
+  
   updateStore({ key, value }: { key: string; value: any }) {
     switch (key) {
       case 'updateRoomInfo':

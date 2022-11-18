@@ -4,45 +4,19 @@ import Controller from './Controller';
 import api from './api';
 
 export default class ControllerLiving {
+  count = 0
   constructor(controller: Controller) {
     api.on('living', (e: any, { key, value }: { key: string; value: any }) => {
       console.log({ key, value });
       this.updateStore({ key, value });
     });
     api.on('msg', (e: any, msg: any) => {
-      store.message.pushMessage(msg);
+      store.message.pushMessage(msg, "chat", this.count);
+      this.count ++
     });
     console.log(api);
   }
-
-  addRoom(r: string, open?: boolean) {
-    api.send('cmd', { cmd: 'addRoom', value: [r, open || false] });
-  }
-
-  removeRoom(r: string) {
-    api.send('cmd', { cmd: 'removeRoom', value: [r] });
-  }
-
-  openRoom(r: string) {
-    api.send('cmd', { cmd: 'openRoom', value: [r] });
-  }
-
-  closeRoom(r: string) {
-    api.send('cmd', { cmd: 'closeRoom', value: [r] });
-  }
-
-  openAll() {
-    api.send('cmd', { cmd: 'openAll' });
-  }
-
-  start() {
-    api.send('cmd', { cmd: 'start' });
-  }
-
-  end() {
-    api.send('cmd', { cmd: 'end' });
-  }
-
+  
   updateStore({ key, value }: { key: string; value: any }) {
     switch (key) {
       case 'addRoom':

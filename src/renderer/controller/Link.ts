@@ -9,7 +9,7 @@ export default class ControllerLink {
 
   ws: WebSocket | null = null;
 
-  url: string = 'ws://localhost:8130';
+  url: string = 'localhost:8130';
 
   timeout: number = 5000;
 
@@ -26,7 +26,8 @@ export default class ControllerLink {
 
   connect() {
     if (this.ws) this.ws.close();
-    this.ws = new WebSocket(this.url);
+    this.ws = new WebSocket(`ws://${this.url}/ws`);
+    console.log(`ws://${this.url}/ws`)
     this.ws.onopen = (e) => {
       console.log('已连接上');
       this.connected = true;

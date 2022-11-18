@@ -9,7 +9,9 @@
     "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
   },
   "dependencies": {
-    "floating-living": "^0.6.6",
-    "ws": "^8.11.0"
+    "axios": "^1.1.3",
+    "express": "^4.18.2",
+    "express-ws": "^5.0.2",
+    "floating-living": "^0.7.1"
   }
 }

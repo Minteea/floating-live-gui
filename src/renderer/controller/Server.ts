@@ -10,15 +10,7 @@ export default class ControllerServer {
       this.updateStore({ key, value });
     });
   }
-
-  port(port: number) {
-    api.send('cmd', { cmd: 'port', value: [port] });
-  }
-
-  sendMessage(b: boolean) {
-    api.send('cmd', { cmd: 'server', value: [b] });
-  }
-
+  
   updateStore({ key, value }: { key: string; value: any }) {
     switch (key) {
       case 'port':

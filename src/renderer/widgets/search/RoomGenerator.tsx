@@ -42,7 +42,7 @@ const RoomGenerator: React.FC = function () {
             });
           }}
         >
-          <Option value="acfun" disabled>
+          <Option value="acfun">
             AcFun
           </Option>
           <Option value="bilibili">bilibili</Option>
@@ -65,6 +65,14 @@ const RoomGenerator: React.FC = function () {
               store.search.search_id = e.target.value;
             });
           }}
+          onPressEnter={() => {
+            runInAction(() => {
+              store.search.search_id = searchId;
+            });
+            controller.cmd("searchRoom",
+              `${store.search.search_platform}:${store.search.search_id}`
+            );
+          }}
         />
         <Tooltip title="查找房间">
           <Button
@@ -72,7 +80,7 @@ const RoomGenerator: React.FC = function () {
             shape="circle"
             icon={<SearchOutlined />}
             onClick={() => {
-              controller.search.searchRoom(
+              controller.cmd("searchRoom",
                 `${store.search.search_platform}:${store.search.search_id}`
               );
             }}
@@ -109,22 +117,22 @@ const RoomGenerator: React.FC = function () {
                   disabled={store.living.roomMap.has(searchRoomKey)}
                   onClick={() => {
                     if (searchRoomInfo?.platform && searchRoomInfo?.id) {
-                      controller.living.addRoom(searchRoomKey);
+                      controller.cmd("addRoom", searchRoomKey);
                     }
                   }}
                 />
               </Tooltip>,
-              <Tooltip title="添加房间并打开">
+              <Tooltip title={store.living.roomMap.get(searchRoomKey)?.opening ? '房间已打开' : searchRoomInfo?.available ? '添加房间并打开' : "房间不可用"}>
                 <Button
                   type="primary"
                   shape="circle"
                   size="small"
                   icon={<CaretRightOutlined />}
                   style={{ marginLeft: 5 }}
-                  disabled={store.living.roomMap.get(searchRoomKey)?.opening}
+                  disabled={store.living.roomMap.get(searchRoomKey)?.opening || !searchRoomInfo?.available}
                   onClick={() => {
                     if (searchRoomInfo?.platform && searchRoomInfo?.id) {
-                      controller.living.addRoom(searchRoomKey, true);
+                      controller.cmd("addRoom", searchRoomKey, true);
                     }
                   }}
                 />

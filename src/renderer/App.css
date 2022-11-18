@@ -8,11 +8,12 @@
 }
 
 .side-drag {
-  position: absolute;
+  position: fixed;
   height: 30px;
   width: 100%;
   -webkit-app-region: drag;
   user-select: none;
+  z-index: 100000;
 }
 
 @media (prefers-reduced-motion: no-preference) {
