@@ -1,6 +1,5 @@
 import { makeAutoObservable } from 'mobx';
 import RoomInfo from 'floating-living/src/LiveRoom/RoomInfo';
-import RoomInfoPiece from '../../controller/room/RoomInfoPiece';
 
 export default class StoreLiving {
   /** 已开始 */

@@ -1,6 +1,7 @@
 import { Avatar, Button, Card } from 'antd';
 import PropTypes from 'prop-types';
 import RoomInfo from 'floating-living/src/LiveRoom/RoomInfo';
+import controller from '../../controller';
 
 function getLiveStatus(status: string) {
   switch (status) {
@@ -26,7 +27,7 @@ const RoomCard: React.FC<{
     <div className="ant-card ant-card-bordered" style={{}}>
       <div style={{ display: 'flex', position: 'relative' }}>
         <div style={{ flexShrink: 0, padding: 10 }}>
-          <Avatar size={50} src={info?.anchor.avatar || undefined} />
+          <img width={50} height={50} style={{borderRadius:"50%"}} src={info?.anchor.avatar} referrerPolicy="no-referrer" />
         </div>
         <div style={{ flexGrow: 1, padding: '10px 0' }}>
           <div style={{ lineHeight: '25px' }}>

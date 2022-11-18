@@ -7,7 +7,7 @@ export default class StoreMessage {
   messageList: Array<MessageWithKey> = [];
 
   /** 消息显示最大限制 */
-  message_max_limit: number = 50;
+  message_max_limit: number = 200;
 
   pushMessage(msg: MessageType, type: string, count: number) {
     (msg as MessageWithKey)["key"] = `${type}-${count}`

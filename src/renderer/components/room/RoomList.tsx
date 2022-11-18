@@ -24,13 +24,14 @@ const RoomList: React.FC<{
           button={{
             top: [
               <Tooltip
-                title={r.room.opening ? '关闭房间' : '打开房间'}
+                title={r.room.opening ? '关闭房间' : r.room.available ? '打开房间' : "房间不可用"}
                 arrowPointAtCenter
               >
                 <Button
                   type={r.room.opening ? 'primary' : 'ghost'}
                   shape="circle"
                   size="small"
+                  disabled={!r.room.available}
                   style={{ marginLeft: 5 }}
                   icon={
                     r.room.opening ? <CheckOutlined /> : <CaretRightOutlined />

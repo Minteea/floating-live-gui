@@ -1,6 +1,6 @@
-# Floating Living GUI
+# Floating Live GUI
 
-Floating Living 弹幕接收工具的可视化界面版本，在 ```floating-living``` 模块的基础上添加了一些操作功能。
+Floating Live 弹幕接收工具的可视化界面版本，在 ```floating-living``` 模块的基础上添加了一些操作功能。
 
 后端使用NodeJS开发，可视化程序界面使用Electron实现，前端界面使用React + Typescript开发，UI框架为Ant Design。
 
@@ -35,7 +35,7 @@ npm run start
 
 可以在【开始】选项卡中对房间进行操作。
 
-目前仅支持bilibili直播间，后续会添加对更多平台的支持。
+目前支持bilibili直播间及AcFun直播间，后续会添加对更多平台的支持。
 
 ### 弹幕保存
 进入【弹幕保存】选项卡，打开【记录弹幕到本地】即可记录弹幕。
@@ -43,7 +43,7 @@ npm run start
 可以更改弹幕文件保存位置。目前仅支持计算机上已存在的文件夹，若文件夹路径不存在则会报错。
 
 ### 网页版本操作
-程序也可以使用网页版对程序进行操作。确保主程序窗口中【本地服务 > 启用websocket服务】处于打开状态。
+程序也可以使用网页版进行操作。确保主程序窗口中【本地服务 > 启用websocket服务】处于打开状态。
 
 打开浏览器，在地址栏中输入```localhost:1212```即可进入网页界面。
 
@@ -57,12 +57,12 @@ npm run start
 * ✅ Typescript 后端
 * ✅ 指令工具
 * ✅ 聊天图片保存及显示
+* ✅ AcFun 弹幕支持
 * 🟨 房间收藏及配置保存
-* 🟨 AcFun 弹幕支持
 * ⬜ 插件系统
 
 ## Q&A
-### 现在已经有很多弹幕姬了，为什么还要自己再开发一个
+### 现在已经有很多直播弹幕工具了，为什么还要自己再开发一个
 虽然现在有不少直播弹幕接收程序，但是这些程序大部分都只支持一种平台。一些支持多平台的直播弹幕工具也并不开源，甚至要收费，难以实现高度自由的程序拓展。
 
 这个弹幕接收程序的目标是接收来自不同平台的弹幕，将接收到的弹幕处理转化为统一的、易读的弹幕数据，并尽可能多地保存有效信息，提高程序及相关插件的易开发性和可拓展性。
@@ -70,10 +70,13 @@ npm run start
 ### 为什么要用NodeJS而不是其他语言作为后端
 很简单，为了保证前后端代码语言及数据结构的统一。前后端语言统一可以省去很多麻烦，比如可以使用同一套类型声明而无需在前后端同时修改。例如在这个项目的前端代码中就使用了在 floating-living 模块中定义的类型及接口。而且前后端使用一种语言可以降低项目开发者的语言门槛——只要你会写js前端，就一定会看懂nodejs代码。
 
-还有一个原因，我个人基本只会用javascript，对于其他语言不是很熟悉QwQ
+还有一个原因，我个人基本只会用javascript，对其他语言不是很熟悉QwQ
 
 
 ## 相关链接
 * 项目仓库：[github:Minteea/floating-living-gui](https://github.com/Minteea/floating-living-gui) 
 * 核心模块：[github:Minteea/floating-living](https://github.com/Minteea/floating-living)
 * 开发模板：[github:electron-react-boilerplate/electron-react-boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate)
+### 弹幕获取
+* bilibili弹幕库[MIT]: [github:simon300000/bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws)
+* AcFun弹幕库[GPLv3]: [github:ACFUN-FOSS/ac-danmu.js](https://github.com/ACFUN-FOSS/ac-danmu.js)

@@ -1,6 +1,6 @@
 import FloatingLiving from 'floating-living';
 import { MessageType, MessageImage } from 'floating-living/src/Message/MessageInterface';
-import Program from '.';
+import Program from '.'
 
 export default class Living extends FloatingLiving {
   started = false; // 表示是否已开始记录
@@ -9,6 +9,8 @@ export default class Living extends FloatingLiving {
 
   program: Program;
 
+  processPipe: Array<(data: MessageType) => void> = []
+
   constructor(program: Program, config: any) {
     const { rooms } = config.living;
     super({ rooms });
@@ -16,15 +18,20 @@ export default class Living extends FloatingLiving {
     this.initEvent();
     this.initCommamd();
     this.on('msg', (data: MessageType) => {
+      // 加工
+      this.process(data)
       this.program.send('msg', data);
-      if (data.type == "image") {
-        this.storeImage(data)
-      }
     });
+  }
+
+  private process(data: MessageType) {
+    this.processPipe.forEach((func) => {
+      func(data)
+    })
   }
   storeImage(data: MessageImage) {
     if (data.info.image.url) {
-      this.program.server.imageStorage.emotion.store(data.platform, data.info.image.id || "noname", data.info.image.url || "", "png")
+      // this.program.server.imageStorage.emotion.store(data.platform, data.info.image.id || "noname", data.info.image.url || "", "png")
     }
   }
   openAll() {

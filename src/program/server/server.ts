@@ -24,7 +24,7 @@ export default class Server extends EventEmitter implements UniLink {
   port = 8130;
   service: any = null
 
-  imageStorage: ImageStorage = new ImageStorage()
+  // imageStorage: ImageStorage = new ImageStorage()
 
   program: Program;
 
@@ -51,6 +51,7 @@ export default class Server extends EventEmitter implements UniLink {
       });
     })
   }
+
   open() {
     if (this.service) return;
     this.service = this.app.listen(this.port, "localhost")

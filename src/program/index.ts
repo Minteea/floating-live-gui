@@ -6,6 +6,7 @@ import { CommandSet, FLCommandSet } from './command/CommandTypes';
 import IpcLink from './link/ipcLink';
 import { UniLink, UniSender } from './link/UniLink';
 import commandParser from '../utils/commandParser';
+import bilibiliGetAvatar from './plugin/bilibiliGetAvatar';
 
 const configPath = './config/config.json';
 const config = require(configPath);
@@ -20,6 +21,8 @@ export default class Program {
   server = new Server(this, config);
 
   ipcLink = new IpcLink()
+
+  plugin: {[key: string]: any} = {}
 
   constructor() {
     this.initLink();
@@ -37,6 +40,7 @@ export default class Program {
         e.send('init', this.getInitData());
       })
     })
+    this.plugin.bilibiliGetAvatar = new bilibiliGetAvatar(this)
   }
 
   /** 初始化服务 */
