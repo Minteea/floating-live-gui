@@ -1,6 +1,6 @@
 # Floating Live GUI
 
-Floating Live 弹幕接收工具的可视化界面版本，在 ```floating-living``` 模块的基础上添加了一些操作功能。
+Floating Live 弹幕接收工具的可视化界面版本，在 ```floating-live``` 模块的基础上添加了一些操作功能。
 
 后端使用NodeJS开发，可视化程序界面使用Electron实现，前端界面使用React + Typescript开发，UI框架为Ant Design。
 
@@ -50,7 +50,7 @@ npm run start
 此时需要与后端连接才能对程序进行操作。在浏览器页面中进入【连接服务】，点击连接按钮即可连接主程序，设置项将实时同步。
 
 ## TODO
-当前版本 DEV **0.3.0**
+当前版本 DEV **0.4.0**
 
 ⬜计划中 · 🟨开发中 · ✅已实现
 * ✅ 网页端操作
@@ -59,7 +59,7 @@ npm run start
 * ✅ 聊天图片保存及显示
 * ✅ AcFun 弹幕支持
 * 🟨 房间收藏及配置保存
-* ⬜ 插件系统
+* 🟨 插件系统
 
 ## Q&A
 ### 现在已经有很多直播弹幕工具了，为什么还要自己再开发一个
@@ -68,14 +68,14 @@ npm run start
 这个弹幕接收程序的目标是接收来自不同平台的弹幕，将接收到的弹幕处理转化为统一的、易读的弹幕数据，并尽可能多地保存有效信息，提高程序及相关插件的易开发性和可拓展性。
 
 ### 为什么要用NodeJS而不是其他语言作为后端
-很简单，为了保证前后端代码语言及数据结构的统一。前后端语言统一可以省去很多麻烦，比如可以使用同一套类型声明而无需在前后端同时修改。例如在这个项目的前端代码中就使用了在 floating-living 模块中定义的类型及接口。而且前后端使用一种语言可以降低项目开发者的语言门槛——只要你会写js前端，就一定会看懂nodejs代码。
+很简单，为了保证前后端代码语言及数据结构的统一。前后端语言统一可以省去很多麻烦，比如可以使用同一套类型声明而无需在前后端同时修改。例如在这个项目的前端代码中就使用了在 floating-live 模块中定义的类型及接口。而且前后端使用一种语言可以降低项目开发者的语言门槛——只要你会写js前端，就一定会看懂nodejs代码。
 
 还有一个原因，我个人基本只会用javascript，对其他语言不是很熟悉QwQ
 
 
 ## 相关链接
-* 项目仓库：[github:Minteea/floating-living-gui](https://github.com/Minteea/floating-living-gui) 
-* 核心模块：[github:Minteea/floating-living](https://github.com/Minteea/floating-living)
+* 项目仓库：[github:Minteea/floating-live-gui](https://github.com/Minteea/floating-live-gui) 
+* 核心模块：[github:Minteea/floating-live](https://github.com/Minteea/floating-live)
 * 开发模板：[github:electron-react-boilerplate/electron-react-boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate)
 ### 弹幕获取
 * bilibili弹幕库[MIT]: [github:simon300000/bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws)

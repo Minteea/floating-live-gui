@@ -1,4 +1,4 @@
-import MessageData from 'floating-living/src/Message/MessageData';
+import { MessageData } from 'floating-live/src/types/message/MessageData';
 import { getAdminType } from '../../utils/nameUtils';
 import platform from '../../utils/platform';
 

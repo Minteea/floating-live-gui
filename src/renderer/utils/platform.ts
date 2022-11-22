@@ -1,4 +1,4 @@
-import GiftInfo from 'floating-living/src/Message/Info/GiftInfo';
+import GiftInfo from 'floating-live/src/Message/Info/GiftInfo';
 import { acfun, bilibili, PlatformInfo } from './platformInfo';
 
 class Platform {

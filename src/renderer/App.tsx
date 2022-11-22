@@ -6,7 +6,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import SideBar from './layout/SideBar';
 import PageStart from './pages/PageStart';
 import PageRoom from './pages/PageRoom';
-import PageSaving from './pages/PageSaving';
+import PageSave from './pages/PageSave';
 import PageServer from './pages/PageServer';
 import PageSettings from './pages/PageSettings';
 import PageAbout from './pages/PageAbout';
@@ -23,7 +23,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<PageStart />} />
             <Route path="/room" element={<PageRoom />} />
-            <Route path="/saving" element={<PageSaving />} />
+            <Route path="/save" element={<PageSave />} />
             <Route path="/server" element={<PageServer />} />
             <Route path="/settings" element={<PageSettings />} />
             <Route path="/about" element={<PageAbout />} />

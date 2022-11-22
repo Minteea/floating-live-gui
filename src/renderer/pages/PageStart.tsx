@@ -8,7 +8,7 @@ import controller from '../controller';
 import { useState } from 'react';
 
 const PageStart: React.FC = function () {
-  const list = [...store.living.roomMap].map((item) => ({
+  const list = [...store.live.roomMap].map((item) => ({
     key: item[0],
     room: item[1],
   }));
@@ -16,9 +16,9 @@ const PageStart: React.FC = function () {
     <div>
       <Button
         type="primary"
-        danger={store.living.started}
+        danger={store.live.started}
         onClick={
-          store.living.started
+          store.live.started
             ? () => {
                 controller.cmd("end");
               }
@@ -27,9 +27,9 @@ const PageStart: React.FC = function () {
               }
         }
       >
-        {store.living.started ? '停止记录' : '开始记录'}
+        {store.live.started ? '停止记录' : '开始记录'}
       </Button>
-      {store.living.started ? (
+      {store.live.started ? (
         <>
           <MessageBoard
             list={store.message.messageList}

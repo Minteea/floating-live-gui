@@ -31,5 +31,5 @@ npm-debug.log.*
 # temp
 commands.md
 events.md
-save/
 storage/
+/save

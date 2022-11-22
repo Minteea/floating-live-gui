@@ -69,9 +69,10 @@ const RoomGenerator: React.FC = function () {
             runInAction(() => {
               store.search.search_id = searchId;
             });
-            controller.cmd("searchRoom",
-              `${store.search.search_platform}:${store.search.search_id}`
-            );
+            controller.cmd("searchRoom", {
+              platform: store.search.search_platform,
+              id: store.search.search_id
+            });
           }}
         />
         <Tooltip title="查找房间">
@@ -80,9 +81,10 @@ const RoomGenerator: React.FC = function () {
             shape="circle"
             icon={<SearchOutlined />}
             onClick={() => {
-              controller.cmd("searchRoom",
-                `${store.search.search_platform}:${store.search.search_id}`
-              );
+              controller.cmd("searchRoom",{
+                platform: store.search.search_platform,
+                id: store.search.search_id
+              });
             }}
           />
         </Tooltip>
@@ -107,14 +109,14 @@ const RoomGenerator: React.FC = function () {
           roomInfo={store.search.search_room_info}
           button={{
             top: [
-              <Tooltip title="添加房间到列表">
+              <Tooltip title={store.live.roomMap.has(searchRoomKey) ? "房间已添加" : "添加房间到列表"}>
                 <Button
                   type="ghost"
                   shape="circle"
                   size="small"
                   icon={<PlusOutlined />}
                   style={{ marginLeft: 5 }}
-                  disabled={store.living.roomMap.has(searchRoomKey)}
+                  disabled={store.live.roomMap.has(searchRoomKey)}
                   onClick={() => {
                     if (searchRoomInfo?.platform && searchRoomInfo?.id) {
                       controller.cmd("addRoom", searchRoomKey);
@@ -122,16 +124,18 @@ const RoomGenerator: React.FC = function () {
                   }}
                 />
               </Tooltip>,
-              <Tooltip title={store.living.roomMap.get(searchRoomKey)?.opening ? '房间已打开' : searchRoomInfo?.available ? '添加房间并打开' : "房间不可用"}>
+              <Tooltip title={store.live.roomMap.get(searchRoomKey)?.opening ? '房间已打开' : !searchRoomInfo?.available ? "房间不可用" : store.live.roomMap.has(searchRoomKey) ? "打开房间" : '添加房间并打开'}>
                 <Button
                   type="primary"
                   shape="circle"
                   size="small"
                   icon={<CaretRightOutlined />}
                   style={{ marginLeft: 5 }}
-                  disabled={store.living.roomMap.get(searchRoomKey)?.opening || !searchRoomInfo?.available}
+                  disabled={store.live.roomMap.get(searchRoomKey)?.opening || !searchRoomInfo?.available}
                   onClick={() => {
                     if (searchRoomInfo?.platform && searchRoomInfo?.id) {
+                      store.live.roomMap.has(searchRoomKey) ? 
+                      controller.cmd("openRoom", searchRoomKey) :
                       controller.cmd("addRoom", searchRoomKey, true);
                     }
                   }}
@@ -144,9 +148,11 @@ const RoomGenerator: React.FC = function () {
                   type="text"
                   shape="circle"
                   size="small"
-                  disabled
                   icon={<SyncOutlined />}
                   style={{ marginLeft: 5 }}
+                  onClick={() => {
+                    controller.cmd("searchUpdate")
+                  }}
                 />
               </Tooltip>,
               <Tooltip title="清除" placement="bottom">

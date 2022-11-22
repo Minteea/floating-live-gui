@@ -142,7 +142,7 @@ app
 
 // 你可以在这个脚本中续写或者使用require引入独立的js文件.
 
-program.addCommand('openDevTools', () => {
+program.command.register('openDevTools', () => {
   mainWindow?.webContents.openDevTools();
 });
 /*

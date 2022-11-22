@@ -1,7 +1,7 @@
 import path from "path"
 import fs from "fs"
 import axios from "axios"
-import { createFolder } from "../utils/file"
+import { createFolder } from "../../utils/file"
 
 export default class Storager {
   /** 资源存储表，若已存在id及url相同的资源，则无需再次请求 */

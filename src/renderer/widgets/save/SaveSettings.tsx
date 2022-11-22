@@ -12,24 +12,24 @@ import controller from '../../controller';
 
 /** 搜索及添加直播间的组件 */
 const SavingSettings: React.FC = function () {
-  const [inputSavePath, changeInputSavePath] = useState(store.saving.save_path);
+  const [inputSavePath, changeInputSavePath] = useState(store.save.save_path);
   return (
     <div>
       <div>
         记录弹幕到本地
         <Switch
-          checked={store.saving.save_message}
+          checked={store.save.save_message}
           onClick={() => {
-            controller.cmd("saveMessage", !store.saving.save_message);
+            controller.cmd("saveMessage", !store.save.save_message);
           }}
         />
       </div>
       <div>
         记录服务器弹幕源数据
         <Switch
-          checked={store.saving.save_origin}
+          checked={store.save.save_origin}
           onClick={() => {
-            controller.cmd("saveOrigin", !store.saving.save_message);
+            controller.cmd("saveOrigin", !store.save.save_origin);
           }}
         />
       </div>
@@ -47,25 +47,25 @@ const SavingSettings: React.FC = function () {
             }}
             onBlur={(e) => {
               if (
-                !store.living.started &&
-                !(store.saving.save_path == inputSavePath)
+                !store.live.started &&
+                !(store.save.save_path == inputSavePath)
               ) {
                 controller.cmd("savePath", e.target.value);
               }
             }}
             status={
-              store.saving.save_path == inputSavePath || !store.living.started
+              store.save.save_path == inputSavePath || !store.live.started
                 ? ''
                 : 'warning'
             }
           />
           <div style={{ flexShrink: 0 }}>
-            <div style={{ display: store.living.started ? '' : 'none' }}>
+            <div style={{ display: store.live.started ? '' : 'none' }}>
               <Tooltip title="应用更改">
                 <Button
                   type="primary"
                   shape="circle"
-                  disabled={store.saving.save_path == inputSavePath}
+                  disabled={store.save.save_path == inputSavePath}
                   icon={<CheckOutlined />}
                   onClick={() => {
                     controller.cmd("savePath", inputSavePath);
@@ -76,10 +76,10 @@ const SavingSettings: React.FC = function () {
                 <Button
                   type="ghost"
                   shape="circle"
-                  disabled={store.saving.save_path == inputSavePath}
+                  disabled={store.save.save_path == inputSavePath}
                   icon={<CloseOutlined />}
                   onClick={() => {
-                    changeInputSavePath(store.saving.save_path);
+                    changeInputSavePath(store.save.save_path);
                   }}
                 />
               </Tooltip>

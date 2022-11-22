@@ -1,5 +1,5 @@
 import { CommandSet, FLCommandSet } from "./CommandTypes";
-import { UniSender } from "../link/UniLink";
+import { UniSender } from "../types/UniLink";
 
 export default class Command {
   commandMap: Map<string, (...args: any) => void> = new Map();

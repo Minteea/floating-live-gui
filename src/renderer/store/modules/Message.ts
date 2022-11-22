@@ -1,4 +1,4 @@
-import { MessageType } from 'floating-living/src/Message/MessageInterface';
+import { MessageType } from 'floating-live/src/types/message/MessageData';
 import { makeAutoObservable } from 'mobx';
 
 type MessageWithKey = MessageType & {key: string}
@@ -18,6 +18,9 @@ export default class StoreMessage {
         this.messageList.length - this.message_max_limit
       );
     }
+  }
+  clear() {
+    this.messageList = []
   }
 
   constructor() {

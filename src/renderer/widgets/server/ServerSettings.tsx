@@ -13,9 +13,9 @@ const ServerSettings: React.FC = function () {
       <div>
         启用websocket服务
         <Switch
-          checked={store.server.send_message}
+          checked={store.server.serving}
           onClick={() => {
-            controller.cmd("server", !store.server.send_message);
+            controller.cmd("server", !store.server.serving);
           }}
         />
       </div>
@@ -28,7 +28,7 @@ const ServerSettings: React.FC = function () {
           max={65535}
           precision={0}
           style={{ width: 160 }}
-          disabled={store.server.send_message}
+          disabled={store.server.serving}
           onBlur={(e) => {
             runInAction(() => {
               controller.cmd("port", Number(e.target.value));

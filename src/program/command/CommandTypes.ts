@@ -2,7 +2,7 @@ export type CommandSet = {
   [cmd: string]: any[];
 };
 
-export type CmdLiving = {
+export type CmdLive = {
   /** 添加房间 */
   addRoom: [string, boolean?];
   /** 移除房间 */
@@ -19,7 +19,7 @@ export type CmdLiving = {
   end: [];
 };
 
-export type CmdSaving = {
+export type CmdSave = {
   /** 保存消息 */
   saveMessage: [boolean];
   /** 保存源消息 */
@@ -30,7 +30,7 @@ export type CmdSaving = {
 
 export type CmdSearch = {
   /** 搜索房间 */
-  searchRoom: [string];
+  searchRoom: [string | {platform: string, id: string | number}];
 };
 
 export type CmdServer = {
@@ -40,7 +40,7 @@ export type CmdServer = {
   port: [number];
 };
 
-export type FLCommandSet = CmdLiving & CmdSaving & CmdSearch & CmdServer;
+export type FLCommandSet = CmdLive & CmdSave & CmdSearch & CmdServer;
 
 function t<S extends CommandSet = FLCommandSet, K extends string = keyof S & string>(cmd: K, ...args: S[K]) {
   return

@@ -1,9 +1,7 @@
-import { MessageType } from 'floating-living/src/Message/MessageInterface';
-import store from 'renderer/store';
+import { MessageType } from 'floating-live/src/types/message/MessageData';
 import { getRenewType } from '../../utils/nameUtils';
 import User from './User';
 import { Image } from 'antd'
-import controller from '../../controller';
 
 /** 消息 */
 const MessageLine: React.FC<{

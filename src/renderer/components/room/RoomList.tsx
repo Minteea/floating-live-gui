@@ -1,4 +1,4 @@
-import RoomInfo from 'floating-living/src/LiveRoom/RoomInfo';
+import RoomInfo from 'floating-live/src/types/room/RoomInfo';
 import { Button, Tooltip } from 'antd';
 import {
   // 图标导入
@@ -54,9 +54,11 @@ const RoomList: React.FC<{
                   type="text"
                   shape="circle"
                   size="small"
-                  disabled
                   icon={<SyncOutlined />}
                   style={{ marginLeft: 5 }}
+                  onClick={() => {
+                    controller.cmd("updateRoom", r.key);
+                  }}
                 />
               </Tooltip>,
               <Tooltip title="删除房间" arrowPointAtCenter placement="bottom">

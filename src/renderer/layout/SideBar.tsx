@@ -34,7 +34,7 @@ function getMenuLinkItem(
 const items: MenuItem[] = [
   getMenuLinkItem('开始', '/', <HomeOutlined />),
   getMenuLinkItem('添加房间', '/room', <PlusSquareOutlined />),
-  getMenuLinkItem('弹幕保存', '/saving', <SaveOutlined />),
+  getMenuLinkItem('弹幕保存', '/save', <SaveOutlined />),
   version.client == 'electron'
     ? getMenuLinkItem('本地服务', '/server', <DesktopOutlined />)
     : getMenuLinkItem('连接服务', '/server', <LinkOutlined />),
@@ -70,7 +70,7 @@ const SideBar: React.FC = function () {
             whiteSpace: 'nowrap',
           }}
         >
-          Floating Living
+          Floating Live
         </span>
         <span style={{ display: collapsed ? 'block' : 'none' }}>FL</span>
       </div>

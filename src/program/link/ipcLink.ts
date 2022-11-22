@@ -1,6 +1,6 @@
 import { ipcMain, webContents } from "electron";
 import { EventEmitter } from "stream";
-import { UniSender } from "./UniLink";
+import { UniSender } from "../types/UniLink";
 
 class IpcUniSender implements UniSender {
   origin: Electron.IpcMainEvent;

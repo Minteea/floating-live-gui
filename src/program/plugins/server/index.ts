@@ -3,8 +3,8 @@ import WebSocket from 'ws';
 import express from 'express'
 import expressWs from 'express-ws';
 
-import Program from '..';
-import { UniLink, UniSender } from '../link/UniLink';
+import Program from '../..';
+import { UniLink, UniSender } from '../../types/UniLink';
 import ImageStorage from './ImageStorage';
 
 class WsUniSender implements UniSender {
@@ -18,7 +18,7 @@ class WsUniSender implements UniSender {
   }
 }
 
-export default class Server extends EventEmitter implements UniLink {
+class Server extends EventEmitter implements UniLink {
   private app: express.Application = express();
   private ws: expressWs.Instance = expressWs(this.app)
   port = 8130;
@@ -34,10 +34,9 @@ export default class Server extends EventEmitter implements UniLink {
 
   constructor(program: Program, config: any) {
     super();
-    this.port = config.server.port || this.port;
+    this.port = config?.server?.port || this.port;
     this.program = program;
     this.initService();
-    this.initCommamd();
   }
 
   private initService() {
@@ -55,7 +54,7 @@ export default class Server extends EventEmitter implements UniLink {
   open() {
     if (this.service) return;
     this.service = this.app.listen(this.port, "localhost")
-    this.program.send('server', { key: 'sendMessage', value: this.serving });
+    this.program.send('server', this.serving);
   }
 
   send(channel: string, ...args: any[]) {
@@ -72,7 +71,7 @@ export default class Server extends EventEmitter implements UniLink {
     if (!this.service) return;
     this.service.close()
     this.service = null;
-    this.program.send('server', { key: 'sendMessage', value: this.serving });
+    this.program.send('server', this.serving);
   }
 
   changePort(num: number) {
@@ -82,28 +81,37 @@ export default class Server extends EventEmitter implements UniLink {
       this.close();
       this.open();
     }
-    this.program.send('server', { key: 'port', value: this.port });
+    this.program.send('port', this.port);
   }
 
   getInitData() {
     return {
-      sendMessage: this.serving,
+      serving: this.serving,
       port: this.port,
     };
   }
+}
 
-  private initCommamd() {
-    this.program.addCommandFrom({
-      server: (b = true) => {
-        if (b) {
-          this.open();
-        } else {
-          this.close();
-        }
-      },
-      port: (num) => {
-        this.changePort(Number(num));
-      },
-    });
-  }
+export default (ctx: Program) => {
+  const server = new Server(ctx, {})
+  ctx.links.push(server)
+  ctx.command.register("server", (b = true) => {
+    if (b) {
+      server.open();
+    } else {
+      server.close();
+    }
+  })
+  ctx.command.register("port", (num) => {
+    server.changePort(Number(num));
+  })
+  
+  ctx.initFunction.register('server', () => {
+    return {
+      server: {
+        serving: server.serving,
+        port: server.port
+      }
+    }
+  })
 }

@@ -6,8 +6,8 @@ export default class StoreServer {
   /** 本地服务端口 */
   port: number = 8130;
 
-  /** 打开弹幕数据发送服务 */
-  send_message: boolean = true;
+  /** 打开服务 */
+  serving: boolean = true;
 
   constructor() {
     makeAutoObservable(this);

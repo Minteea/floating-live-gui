@@ -1,7 +1,4 @@
-import { Avatar, Button, Card } from 'antd';
-import PropTypes from 'prop-types';
-import RoomInfo from 'floating-living/src/LiveRoom/RoomInfo';
-import controller from '../../controller';
+import RoomInfo from 'floating-live/src/types/room/RoomInfo';
 
 function getLiveStatus(status: string) {
   switch (status) {
@@ -44,14 +41,14 @@ const RoomCard: React.FC<{
             <div
               style={{ display: 'inline-block', fontSize: 13, paddingLeft: 10 }}
             >
-              {info?.area?.join(' > ') || ''}
+              {info?.live.area?.join(' > ') || ''}
             </div>
           </div>
           <div style={{ display: 'flex', lineHeight: '22px' }}>
             <div style={{ fontSize: 13, paddingRight: 10 }}>
-              ● {getLiveStatus(info?.status || '')}
+              ● {getLiveStatus(info?.live.status || '')}
             </div>
-            <div style={{ fontSize: 13 }}>{info?.title || ''}</div>
+            <div style={{ fontSize: 13 }}>{info?.live.title || ''}</div>
           </div>
         </div>
         <div style={{ flexShrink: 0, padding: 5 }}>

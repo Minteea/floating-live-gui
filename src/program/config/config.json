@@ -5,7 +5,7 @@
     ]
   },
   "server": {
-    "sendMessage": true,
+    "open": true,
     "port": 8130
   },
   "saving": {
