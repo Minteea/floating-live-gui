@@ -4,7 +4,7 @@ export default class StoreLink {
   /** observable */
 
   /** 服务连接(仅web端连接有效) */
-  link: string = 'localhost:8130';
+  link: string = window.location.hostname + ":8130";
 
   /** 是否连接 */
   link_connected: boolean = false;

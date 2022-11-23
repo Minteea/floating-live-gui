@@ -53,7 +53,7 @@ class Server extends EventEmitter implements UniLink {
 
   open() {
     if (this.service) return;
-    this.service = this.app.listen(this.port, "localhost")
+    this.service = this.app.listen(this.port)
     this.program.send('server', this.serving);
   }
 
