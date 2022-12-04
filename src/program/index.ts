@@ -1,10 +1,5 @@
-import Living from '../../storage/bin/living';
-import Saving from './plugins/save';
-import Command from './command/command';
-import { CommandSet, FLCommandSet } from './command/CommandTypes';
 import IpcLink from './link/ipcLink';
 import { UniLink, UniSender } from './types/UniLink';
-import commandParser from '../utils/commandParser';
 import FloatingLive from 'floating-live'
 import { Registerable } from 'floating-live/src/lib/Registerable';
 
@@ -15,10 +10,6 @@ import server from './plugins/server';
 import save from './plugins/save';
 import search from './plugins/search';
 import consoleEvent from 'floating-live/plugin/consoleEvent';
-
-
-const configPath = './config/config.json';
-const config = require(configPath);
 
 export default class Program extends FloatingLive {
   /** 命令集 */

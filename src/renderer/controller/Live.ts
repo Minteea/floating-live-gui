@@ -4,11 +4,12 @@ import Controller from './Controller';
 import api from './api';
 import RoomInfo from 'floating-live/src/types/room/RoomInfo';
 import { LiveInfo } from 'floating-live/src/types/room/LiveInfo'
+import { MessageType } from 'floating-live/src/types/message/MessageData'
 
 export default class ControllerLive {
   count: number = 0
   constructor(controller: Controller) {
-    api.on('live_message', (e: any, msg: any) => {
+    api.on('live_message', (e: any, msg: MessageType) => {
       store.message.pushMessage(msg, "chat", this.count);
       this.count ++
     });

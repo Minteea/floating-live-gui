@@ -1,6 +1,6 @@
 import { MessageType } from 'floating-live/src/types/message/MessageData';
 import { MessageInfo } from 'floating-live/src/types/message/MessageInfo';
-import Program from "program";
+import Program from "../..";
 import axios from "axios"
 import RequestQueue from './requestQueue';
 

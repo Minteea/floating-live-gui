@@ -6,7 +6,7 @@ import ControllerLink from './Link';
 import version from './version';
 import { CommandSet, FLCommandSet } from '../../program/command/CommandTypes';
 import commandParser from '../../utils/commandParser';
-import store from 'renderer/store';
+import store from '../store';
 import { runInAction } from 'mobx';
 import ControllerSave from './Saving';
 

@@ -1,4 +1,4 @@
-import Program from "program";
+import Program from "../..";
 import LiveRoom from "floating-live/src/types/room/LiveRoom"
 import getRoomInfo from "floating-live/src/utils/getRoomInfo"
 

@@ -1,4 +1,5 @@
 import RoomInfo from 'floating-live/src/types/room/RoomInfo';
+import { observer } from 'mobx-react';
 
 function getLiveStatus(status: string) {
   switch (status) {
@@ -64,4 +65,4 @@ const RoomCard: React.FC<{
   );
 };
 
-export default RoomCard;
+export default observer(RoomCard);
