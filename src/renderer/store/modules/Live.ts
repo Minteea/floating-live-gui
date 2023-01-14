@@ -1,6 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import RoomInfo from 'floating-live/src/types/room/RoomInfo';
-import { LiveInfo } from 'floating-live/src/types/room/LiveInfo';
+import { RoomInfo, RoomBaseInfo } from 'floating-live';
 
 export default class StoreLive {
   /** 已开始 */
@@ -28,8 +27,8 @@ export default class StoreLive {
   }
 
   /** 更改直播信息 */
-  changeLiveInfo(key: string, data: Partial<LiveInfo>) {
-    let liveInfo = this.roomMap.get(key)?.live
+  changeLiveInfo(key: string, data: Partial<RoomBaseInfo>) {
+    let liveInfo = this.roomMap.get(key)?.base
     if (!liveInfo) return;
     liveInfo = Object.assign(liveInfo, data)
   }

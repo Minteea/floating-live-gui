@@ -6,6 +6,8 @@ Floating Live 弹幕接收工具的可视化界面版本，在 ```floating-live`
 
 目前正处于开发阶段，请谨慎用于正式的使用场景。若使用时出现报错等情况，可在github页面上提issue。
 
+工具库版本：[Minteea/floating-live](https://github.com/Minteea/floating-live)
+
 ## 使用方法
 
 ### 安装
@@ -50,7 +52,7 @@ npm run start
 此时页面需要与后端连接才能对程序进行操作。在浏览器页面中进入【连接服务】，点击连接按钮即可连接主程序，设置项将实时同步。
 
 ## TODO
-当前版本 DEV **0.5.0**
+当前版本 DEV **0.6.0**
 
 ⬜计划中 · 🟨开发中 · ✅已实现
 * ✅ 网页端操作

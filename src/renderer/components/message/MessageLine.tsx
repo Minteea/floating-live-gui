@@ -1,31 +1,27 @@
-import { MessageType } from 'floating-live/src/types/message/MessageData';
-import { getRenewType } from '../../utils/nameUtils';
+import { MessageData } from 'floating-live/src/types/message/MessageData';
 import User from './User';
 import { Image } from 'antd'
 
 /** 消息 */
 const MessageLine: React.FC<{
-  msg: MessageType;
+  msg: MessageData;
 }> = function (props) {
   const { msg } = props;
   switch (msg.type) {
-    case 'text': {
+    case 'chat': {
       return (
         <div>
           <Image src={msg.info.user.avatar} referrerPolicy="no-referrer" width={20} height={20} />
           <User msg={msg} />
           :&nbsp;
-          <span>{msg.info.text}</span>
-        </div>
-      );
-    }
-    case 'image': {
-      return (
-        <div>
-          <img src={msg.info.user.avatar} referrerPolicy="no-referrer" width={20} height={20} />
-          <User msg={msg} />
-          :&nbsp;
-          <img src={msg.info.image.url/**`http://${store.link.link}/static/image/emotion/${msg.platform}/${msg.info.image.id}.png` */} referrerPolicy="no-referrer" width={Number(msg.info.image.size?.[0]) / 2 || undefined} height={Number(msg.info.image.size?.[1]) / 2 || undefined} />
+          {
+            msg.info.image
+            ?
+            <img src={msg.info.image.url/**`http://${store.link.link}/static/image/emotion/${msg.platform}/${msg.info.image.id}.png` */} referrerPolicy="no-referrer" width={Number(msg.info.image.size?.[0]) / 2 || undefined} height={Number(msg.info.image.size?.[1]) / 2 || undefined} />
+            :
+            <span>{msg.info.content}</span>
+          }
+          
         </div>
       );
     }
@@ -48,17 +44,17 @@ const MessageLine: React.FC<{
           <User msg={msg} />
           &nbsp;
           <span>[SC {msg.info.duration / 1000}s]</span>:&nbsp;
-          <span>{msg.info.text}</span>
+          <span>{msg.info.content}</span>
         </div>
       );
     }
-    case 'privilege': {
+    case 'membership': {
       return (
         <div>
           <img src={msg.info.user.avatar} referrerPolicy="no-referrer" width={20} height={20} />
           <User msg={msg} />
           &nbsp;
-          <span>{getRenewType(msg.info.renew)}了</span>&nbsp;
+          <span>开通了</span>&nbsp;
           <span>{msg.info.duration}天的</span>&nbsp;
           <span>{msg.info.name}</span>
         </div>
@@ -105,7 +101,7 @@ const MessageLine: React.FC<{
           <User msg={msg} />
           &nbsp; 已被
           <span>
-            {['管理员', '主播', '房管'][Number(msg.info.operator.admin)]}
+            {{admin: "房管", anchor: "主播"}[Number(msg.info.operator.identity)]}
           </span>
           禁言
         </div>

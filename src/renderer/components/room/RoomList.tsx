@@ -1,4 +1,4 @@
-import RoomInfo from 'floating-live/src/types/room/RoomInfo';
+import { RoomInfo } from 'floating-live';
 import { Button, Tooltip } from 'antd';
 import {
   // 图标导入

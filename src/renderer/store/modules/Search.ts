@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import RoomInfo from 'floating-live/src/types/room/RoomInfo';
+import { RoomInfo } from 'floating-live';
 
 export default class StoreSearch {
   /** 搜索平台 */

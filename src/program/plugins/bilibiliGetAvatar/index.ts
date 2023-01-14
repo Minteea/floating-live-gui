@@ -1,4 +1,4 @@
-import { MessageType } from 'floating-live/src/types/message/MessageData';
+import { MessageData } from 'floating-live/src/types/message/MessageData';
 import { MessageInfo } from 'floating-live/src/types/message/MessageInfo';
 import Program from "../..";
 import axios from "axios"
@@ -9,7 +9,7 @@ export default (ctx: Program) => {
   const avatarMap: Map<number, string> = new Map()
   // api请求队列
   const queue = new RequestQueue({interval: 1000, timeout: 10000})
-  ctx.helper.messageHandler.register("bilibili.getavatar", (msg: MessageType) => {
+  ctx.helper.messageHandler.register("bilibili.getavatar", (msg: MessageData) => {
     let info = msg.info as MessageInfo
     // 检测弹幕来源是否为B站, 并检测消息中是否有用户数据
     if (msg.platform == "bilibili" && info.user) {

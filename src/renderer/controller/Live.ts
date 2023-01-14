@@ -2,14 +2,13 @@ import { runInAction } from 'mobx';
 import store from '../store';
 import Controller from './Controller';
 import api from './api';
-import RoomInfo from 'floating-live/src/types/room/RoomInfo';
-import { LiveInfo } from 'floating-live/src/types/room/LiveInfo'
-import { MessageType } from 'floating-live/src/types/message/MessageData'
+import { RoomInfo, RoomBaseInfo } from 'floating-live';
+import { MessageData } from 'floating-live/src/types/message/MessageData'
 
 export default class ControllerLive {
   count: number = 0
   constructor(controller: Controller) {
-    api.on('live_message', (e: any, msg: MessageType) => {
+    api.on('live_message', (e: any, msg: MessageData) => {
       store.message.pushMessage(msg, "chat", this.count);
       this.count ++
     });
@@ -37,7 +36,7 @@ export default class ControllerLive {
     api.on('room_close', (e, key: string, room: RoomInfo) => {
       store.live.closeRoom(key)
     })
-    api.on('room_change', (e, key: string, data: Partial<LiveInfo>) => {
+    api.on('room_change', (e, key: string, data: Partial<RoomBaseInfo>) => {
       store.live.changeLiveInfo(key, data)
     })
     api.on('start', (e, timestamp: number) => {

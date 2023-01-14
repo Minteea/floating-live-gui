@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import { MessageType } from 'floating-live/src/types/message/MessageData';
+import { MessageData } from 'floating-live';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 import MessageLine from './MessageLine';
@@ -10,7 +10,7 @@ import {
 
 /** 消息板 */
 const MessageBoard: React.FC<{
-  list: Array<MessageType & {key: string}>;
+  list: Array<MessageData & {key: string}>;
   style?: React.CSSProperties;
 }> = function (props) {
   const refMessageContent = useRef<HTMLDivElement>(null)

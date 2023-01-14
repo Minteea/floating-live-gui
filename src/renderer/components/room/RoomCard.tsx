@@ -1,4 +1,4 @@
-import RoomInfo from 'floating-live/src/types/room/RoomInfo';
+import { RoomInfo } from 'floating-live';
 import { observer } from 'mobx-react';
 
 function getLiveStatus(status: string) {
@@ -42,14 +42,14 @@ const RoomCard: React.FC<{
             <div
               style={{ display: 'inline-block', fontSize: 13, paddingLeft: 10 }}
             >
-              {info?.live.area?.join(' > ') || ''}
+              {info?.base.area?.join(' > ') || ''}
             </div>
           </div>
           <div style={{ display: 'flex', lineHeight: '22px' }}>
             <div style={{ fontSize: 13, paddingRight: 10 }}>
-              ● {getLiveStatus(info?.live.status || '')}
+              ● {getLiveStatus(info?.status || '')}
             </div>
-            <div style={{ fontSize: 13 }}>{info?.live.title || ''}</div>
+            <div style={{ fontSize: 13 }}>{info?.base.title || ''}</div>
           </div>
         </div>
         <div style={{ flexShrink: 0, padding: 5 }}>

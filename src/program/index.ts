@@ -1,7 +1,7 @@
 import IpcLink from './link/ipcLink';
 import { UniLink, UniSender } from './types/UniLink';
-import FloatingLive from 'floating-live'
-import { Registerable } from 'floating-live/src/lib/Registerable';
+import { FloatingLive, Reglist } from 'floating-live'
+import path from 'path'
 
 import bilibiliGetAvatar from './plugins/bilibiliGetAvatar';
 import bilibili from 'floating-live/plugin/bilibili';
@@ -10,19 +10,38 @@ import server from './plugins/server';
 import save from './plugins/save';
 import search from './plugins/search';
 import consoleEvent from 'floating-live/plugin/consoleEvent';
+import Config from './config/config';
+import { ConfigInterface } from './config/ConfigInterface';
+import { defaultConfig } from './config/defaultConfig';
 
 export default class Program extends FloatingLive {
   /** 命令集 */
-  public command = new Registerable<(...args: any) => void>("command")
+  public command: Reglist<(...args: any) => void>
   /** 命令集 */
-  public initFunction = new Registerable<() => {[store: string]: {[key: string]: any}}>("command")
+  public initFunction: Reglist<() => {[store: string]: {[key: string]: any}}>
   /** 前端连接通道 */
   links: UniLink[]
-  constructor() {
+  /** 应用数据存储路径 */
+  readonly appDataPath: string
+  /** 环境 */
+  readonly env: string
+  /** 配置 */
+  public config: Config
+  constructor(conf: {
+    /** 应用数据存储路径 */
+    appDataPath: string,
+  }) {
     super()
+    this.command = new Reglist(this, "command")
+    this.initFunction = new Reglist(this, "initFunction")
+    this.config = new Config(path.resolve(conf.appDataPath, "./config/config.json"), defaultConfig)
     this.links = [new IpcLink()]
+    this.appDataPath = conf.appDataPath
+    this.env = process.env.NODE_ENV || "development"
     this.initPlugin()
     this.initCommand()
+    this.initEvent()
+    this.initLive()
     this.initInit()
     this.links.forEach((link) => {
       link.on("cmd", (e, {cmd, args}) => {
@@ -39,7 +58,7 @@ export default class Program extends FloatingLive {
           }
         })
         e.send('init', initData);
-        e.send('room_list', this.controller.room.keyList.map((key) => [key, this.controller.room.info(key)]))
+        e.send('room_list', this.room.keyList.map((key) => [key, this.room.info(key)]))
       })
     })
   }
@@ -54,10 +73,6 @@ export default class Program extends FloatingLive {
       link.send(channel, ...args)
     })
   }
-  /** 重写插件注册 */
-  public registerPlugin(name: string, pluginFunc: (main: Program) => any) {
-    super.registerPlugin(name, pluginFunc as (main: FloatingLive) => any)
-  }
   /** 执行指令 */
   public cmd(cmd: string, ...args: any) {
     let func = this.command.get(cmd)
@@ -67,16 +82,16 @@ export default class Program extends FloatingLive {
   }
   /** 初始化内置插件 */
   private initPlugin() {
-    this.registerPlugin("consoleEvent", consoleEvent)
+    this.plugin.register("consoleEvent", consoleEvent)
     // 房间插件
-    this.registerPlugin("bilibili", bilibili)
-    this.registerPlugin("acfun", acfun)
+    this.plugin.register("bilibili", bilibili)
+    this.plugin.register("acfun", acfun)
     // 消息优化插件
-    this.registerPlugin("bilibili-get-avatar", bilibiliGetAvatar)
+    this.plugin.register("bilibili-get-avatar", bilibiliGetAvatar)
     // 工具插件
-    this.registerPlugin("save", save)
-    this.registerPlugin("server", server)
-    this.registerPlugin("search", search)
+    this.plugin.register("save", save)
+    this.plugin.register("server", server)
+    this.plugin.register("search", search)
   }
   private initCommand() {
     this.command.register("addRoom", (r: string | {platform: string, id: string | number}, open: boolean = false) => {
@@ -91,39 +106,56 @@ export default class Program extends FloatingLive {
         platform = r.platform.toLowerCase()
         id = r.id
       }
-      this.controller.addRoom({platform, id}, open)
+      this.addRoom({platform, id}, open)
     })
     this.command.register("removeRoom", (key: string) => {
-      this.controller.removeRoom(key)
+      this.removeRoom(key)
     })
     this.command.register("openRoom", (key: string) => {
-      this.controller.openRoom(key)
+      this.openRoom(key)
     })
     this.command.register("closeRoom", (key: string) => {
-      this.controller.closeRoom(key)
+      this.closeRoom(key)
     })
     this.command.register("updateRoom", (key: string) => {
-      this.controller.updateRoomInfo(key)
+      this.updateRoomInfo(key)
     })
     this.command.register("openAll", () => {
-      this.controller.openAllRooms()
+      this.openAllRooms()
     })
     this.command.register("closeAll", () => {
-      this.controller.closeAllRooms()
+      this.closeAllRooms()
     })
     this.command.register("start", () => {
-      this.controller.start()
+      this.start()
     })
     this.command.register("end", () => {
-      this.controller.end()
+      this.end()
+    })
+  }
+  private initLive() {
+    this.config.get("live.rooms").forEach((item: {platform: string, id: string | number}) => {
+      this.addRoom({platform: item.platform, id: item.id})
+    })
+  }
+  private initEvent() {
+    this.on("room_add", (key, room) => {
+      this.config.access("live.rooms", (list) => {
+        list.value().push({key: key, platform: room.platform, id: room.id})
+      })
+    })
+    this.on("room_remove", (key) => {
+      this.config.access("live.rooms", (list: any) => {
+        list.remove((item: {key: string}) => (item.key == key)).value()
+      })
     })
   }
   private initInit() {
     this.initFunction.register("live", () => {
       return {
         live: {
-          started: this.controller.started,
-          timestamp: this.controller.timestamp
+          started: this.started,
+          timestamp: this.timestamp
         }
       }
     })
