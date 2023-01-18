@@ -1,10 +1,11 @@
+import { UserInfo } from 'floating-live';
 import { MessageData } from 'floating-live/src/types/message/MessageData';
 import { getAdminType } from '../../utils/nameUtils';
 import platform from '../../utils/platform';
 
 /** 用户 */
 const User: React.FC<{
-  msg: MessageData;
+  msg: MessageData & { info: { user: UserInfo } };
 }> = function (props) {
   const { msg } = props;
   const { user } = msg.info;
@@ -18,10 +19,10 @@ const User: React.FC<{
   return (
     <span>
       {e_medal}
-      {user.privilege ? (
-        <span>[{platform.getPrivilegeName(msg.platform, user.privilege)}]</span>
+      {user.membership ? (
+        <span>[{platform.getPrivilegeName(msg.platform, user.membership)}]</span>
       ) : null}
-      {user.admin ? <span>[{getAdminType(user.admin)}]</span> : null}
+      {user.identity ? <span>[{getAdminType(user.identity)}]</span> : null}
       <span>{user.name}</span>
     </span>
   );

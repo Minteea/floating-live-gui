@@ -1,6 +1,30 @@
-import { MessageData } from 'floating-live/src/types/message/MessageData';
+import { MessageChat, MessageData } from 'floating-live/src/types/message/MessageData';
 import User from './User';
 import { Image } from 'antd'
+
+function getChatWithEmoticon(msg: MessageChat) {
+  console.log(msg.info.content)
+  let prostr = msg.info.content.split("@").join("@A") // replaceAll("@", "@A")
+  for (let kw in msg.info.emoticon) {
+    let keyword = kw.split("@").join("@A")
+    prostr = prostr.split(
+      keyword
+    ).join(
+      "@/"+ keyword +"@/"
+    )
+  }
+  let list = prostr.split("@/")
+  let result = list.map(item => {
+    let i = item.split("@A").join("@")
+    let e = msg.info.emoticon?.[i]
+    if (e) {
+      return <Image src={e.url} referrerPolicy="no-referrer" width={20} height={e.height || 20} />
+    } else {
+      return i
+    }
+  })
+  return result
+}
 
 /** 消息 */
 const MessageLine: React.FC<{
@@ -17,7 +41,11 @@ const MessageLine: React.FC<{
           {
             msg.info.image
             ?
-            <img src={msg.info.image.url/**`http://${store.link.link}/static/image/emotion/${msg.platform}/${msg.info.image.id}.png` */} referrerPolicy="no-referrer" width={Number(msg.info.image.size?.[0]) / 2 || undefined} height={Number(msg.info.image.size?.[1]) / 2 || undefined} />
+            <img src={msg.info.image.url} referrerPolicy="no-referrer" height={msg.info.image.height || 20} />
+            :
+            msg.info.emoticon
+            ?
+            getChatWithEmoticon(msg)
             :
             <span>{msg.info.content}</span>
           }
