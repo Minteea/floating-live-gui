@@ -10,8 +10,8 @@ export interface ConfigInterface {
   };
   save: {
     path: string;
-    save_message: boolean;
-    save_origin: boolean;
+    saveMessage: boolean;
+    saveOrigin: boolean;
   };
   [key: string]: any
 }

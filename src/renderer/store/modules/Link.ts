@@ -7,7 +7,7 @@ export default class StoreLink {
   link: string = window.location.hostname + ":8130";
 
   /** 是否连接 */
-  link_connected: boolean = false;
+  connected: boolean = false;
 
   constructor() {
     makeAutoObservable(this);

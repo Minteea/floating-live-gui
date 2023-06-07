@@ -49,6 +49,7 @@ export default class Program extends FloatingLive {
         this.cmd(cmd, ...args)
       })
       link.on("connect", (e) => {
+        // 连接后发送当前数据
         const initData: {[module: string]: {[key: string]: any}} = {}
         this.initFunction.getList().forEach((func) => {
           let data = func()
@@ -93,6 +94,7 @@ export default class Program extends FloatingLive {
     this.plugin.register("server", server)
     this.plugin.register("search", search)
   }
+  /** 初始化命令 */
   private initCommand() {
     this.command.register("addRoom", (r: string | {platform: string, id: string | number}, open: boolean = false) => {
       // 获取平台及id

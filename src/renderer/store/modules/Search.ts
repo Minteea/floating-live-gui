@@ -3,26 +3,26 @@ import { RoomInfo } from 'floating-live';
 
 export default class StoreSearch {
   /** 搜索平台 */
-  search_platform: string = '';
+  searchPlatform: string = '';
 
   /** 搜索id */
-  search_id: string = '';
+  searchId: string = '';
 
   /** 搜索房间信息 */
-  search_room_info: RoomInfo | null = null;
+  searchRoomInfo: RoomInfo | null = null;
 
   /** 搜索房间key */
-  search_room_key: string = ''
+  searchRoomKey: string = ''
 
   /** 更新搜索信息 */
   updateRoomInfo(key: string, r: RoomInfo | null) {
-    this.search_room_key = key
-    this.search_room_info = r;
+    this.searchRoomKey = key
+    this.searchRoomInfo = r;
   }
   /** 清除搜索信息 */
   clear() {
-    this.search_room_info = null
-    this.search_room_key = ''
+    this.searchRoomInfo = null
+    this.searchRoomKey = ''
   }
 
   constructor() {

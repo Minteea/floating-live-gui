@@ -23,10 +23,10 @@ const handleChange = (value: string) => {
 /** 搜索及添加直播间的组件 */
 const RoomGenerator: React.FC = function () {
   const [searchPlatform, setSearchPlatform] = useState(
-    store.search.search_platform
+    store.search.searchPlatform
   );
-  const [searchId, setSearchId] = useState(store.search.search_id);
-  const searchRoomInfo = store.search.search_room_info;
+  const [searchId, setSearchId] = useState(store.search.searchId);
+  const searchRoomInfo = store.search.searchRoomInfo;
   const searchRoomKey = `${searchRoomInfo?.platform}:${searchRoomInfo?.id}`;
   return (
     <div>
@@ -38,7 +38,7 @@ const RoomGenerator: React.FC = function () {
           onChange={(value) => {
             setSearchPlatform(value);
             runInAction(() => {
-              store.search.search_platform = value;
+              store.search.searchPlatform = value;
             });
           }}
         >
@@ -62,16 +62,16 @@ const RoomGenerator: React.FC = function () {
           }}
           onBlur={(e) => {
             runInAction(() => {
-              store.search.search_id = e.target.value;
+              store.search.searchId = e.target.value;
             });
           }}
           onPressEnter={() => {
             runInAction(() => {
-              store.search.search_id = searchId;
+              store.search.searchId = searchId;
             });
             controller.cmd("searchRoom", {
-              platform: store.search.search_platform,
-              id: store.search.search_id
+              platform: store.search.searchPlatform,
+              id: store.search.searchId
             });
           }}
         />
@@ -82,8 +82,8 @@ const RoomGenerator: React.FC = function () {
             icon={<SearchOutlined />}
             onClick={() => {
               controller.cmd("searchRoom",{
-                platform: store.search.search_platform,
-                id: store.search.search_id
+                platform: store.search.searchPlatform,
+                id: store.search.searchId
               });
             }}
           />
@@ -97,16 +97,16 @@ const RoomGenerator: React.FC = function () {
               runInAction(() => {
                 setSearchPlatform('');
                 setSearchId('');
-                store.search.search_platform = '';
-                store.search.search_id = '';
+                store.search.searchPlatform = '';
+                store.search.searchId = '';
               });
             }}
           />
         </Tooltip>
       </div>
-      <div style={{ display: store.search.search_room_info ? '' : 'none' }}>
+      <div style={{ display: store.search.searchRoomInfo ? '' : 'none' }}>
         <RoomCard
-          roomInfo={store.search.search_room_info}
+          roomInfo={store.search.searchRoomInfo}
           button={{
             top: [
               <Tooltip title={store.live.roomMap.has(searchRoomKey) ? "房间已添加" : "添加房间到列表"}>
@@ -134,7 +134,7 @@ const RoomGenerator: React.FC = function () {
                   disabled={store.live.roomMap.get(searchRoomKey)?.opening || !searchRoomInfo?.available}
                   onClick={() => {
                     if (searchRoomInfo?.platform && searchRoomInfo?.id) {
-                      store.live.roomMap.has(searchRoomKey) ? 
+                      store.live.roomMap.has(searchRoomKey) ?
                       controller.cmd("openRoom", searchRoomKey) :
                       controller.cmd("addRoom", searchRoomKey, true);
                     }
@@ -164,11 +164,11 @@ const RoomGenerator: React.FC = function () {
                   style={{ marginLeft: 5 }}
                   onClick={() => {
                     if (
-                      store.search.search_platform &&
-                      store.search.search_id
+                      store.search.searchPlatform &&
+                      store.search.searchId
                     ) {
                       runInAction(() => {
-                        store.search.search_room_info = null;
+                        store.search.searchRoomInfo = null;
                       });
                     }
                   }}

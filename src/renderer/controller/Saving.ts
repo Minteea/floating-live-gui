@@ -12,13 +12,13 @@ export default class ControllerSave {
   }
   initEvent() {
     api.on('save_message', (e: any, b: boolean) => {
-      runInAction(() => { store.save.save_message = b })
+      runInAction(() => { store.save.saveMessage = b })
     })
     api.on('save_origin', (e: any, b: boolean) => {
-      runInAction(() => { store.save.save_origin = b })
+      runInAction(() => { store.save.saveOrigin = b })
     })
     api.on('save_path', (e: any, path: string) => {
-      runInAction(() => { store.save.save_path = path })
+      runInAction(() => { store.save.savePath = path })
     })
   }
 }

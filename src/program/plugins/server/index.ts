@@ -1,17 +1,17 @@
-import { EventEmitter } from 'events';
-import WebSocket from 'ws';
-import express from 'express'
-import expressWs from 'express-ws';
+import { EventEmitter } from "events";
+import WebSocket from "ws";
+import express from "express";
+import expressWs from "express-ws";
 
-import Program from '../..';
-import { UniLink, UniSender } from '../../types/UniLink';
-import ImageStorage from './ImageStorage';
+import Program from "../..";
+import { UniLink, UniSender } from "../../types/UniLink";
+import ImageStorage from "./ImageStorage";
 
 class WsUniSender implements UniSender {
-  origin: WebSocket.WebSocket
-  type = "websocket"
+  origin: WebSocket.WebSocket;
+  type = "websocket";
   constructor(ws: WebSocket.WebSocket) {
-    this.origin = ws
+    this.origin = ws;
   }
   send(channel: string, ...args: any[]) {
     this.origin.send(JSON.stringify({ channel, args }));
@@ -20,16 +20,16 @@ class WsUniSender implements UniSender {
 
 class Server extends EventEmitter implements UniLink {
   private app: express.Application = express();
-  private ws: expressWs.Instance = expressWs(this.app)
+  private ws: expressWs.Instance = expressWs(this.app);
   port = 8130;
-  service: any = null
+  service: any = null;
 
   // imageStorage: ImageStorage = new ImageStorage()
 
   program: Program;
 
   get serving() {
-    return !!this.service
+    return !!this.service;
   }
 
   constructor(program: Program, config: any) {
@@ -40,21 +40,21 @@ class Server extends EventEmitter implements UniLink {
   }
 
   private initService() {
-    this.app.use("/static", express.static("./storage"))
+    this.app.use("/static", express.static("./storage"));
     this.ws.app.ws("/ws", (ws, req) => {
-      console.log("有客户端连接")
-      this.emit('connect', new WsUniSender(ws));
-      ws.on('message', (buffer) => {
+      console.log("有客户端连接");
+      this.emit("connect", new WsUniSender(ws));
+      ws.on("message", (buffer) => {
         const data = JSON.parse(buffer.toString());
         this.emit(data.channel, new WsUniSender(ws), ...data.args);
       });
-    })
+    });
   }
 
   open() {
     if (this.service) return;
-    this.service = this.app.listen(this.port)
-    this.program.send('server', this.serving);
+    this.service = this.app.listen(this.port);
+    this.program.send("server", this.serving);
   }
 
   send(channel: string, ...args: any[]) {
@@ -69,9 +69,9 @@ class Server extends EventEmitter implements UniLink {
 
   close() {
     if (!this.service) return;
-    this.service.close()
+    this.service.close();
     this.service = null;
-    this.program.send('server', this.serving);
+    this.program.send("server", this.serving);
   }
 
   changePort(num: number) {
@@ -81,7 +81,7 @@ class Server extends EventEmitter implements UniLink {
       this.close();
       this.open();
     }
-    this.program.send('port', this.port);
+    this.program.send("port", this.port);
   }
 
   getInitData() {
@@ -92,26 +92,30 @@ class Server extends EventEmitter implements UniLink {
   }
 }
 
-export default (ctx: Program) => {
-  const server = new Server(ctx, {})
-  ctx.links.push(server)
-  ctx.command.register("server", (b = true) => {
-    if (b) {
-      server.open();
-    } else {
-      server.close();
-    }
-  })
-  ctx.command.register("port", (num) => {
-    server.changePort(Number(num));
-  })
-  
-  ctx.initFunction.register('server', () => {
-    return {
-      server: {
-        serving: server.serving,
-        port: server.port
-      }
-    }
-  })
-}
+export default () => {
+  return {
+    register: (ctx: Program) => {
+      const server = new Server(ctx, {});
+      ctx.links.push(server);
+      ctx.command.register("server", (b = true) => {
+        if (b) {
+          server.open();
+        } else {
+          server.close();
+        }
+      });
+      ctx.command.register("port", (num) => {
+        server.changePort(Number(num));
+      });
+
+      ctx.initFunction.register("server", () => {
+        return {
+          server: {
+            serving: server.serving,
+            port: server.port,
+          },
+        };
+      });
+    },
+  };
+};

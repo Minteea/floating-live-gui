@@ -42,7 +42,71 @@ npm run start
 ### 弹幕保存
 进入【弹幕保存】选项卡，打开【记录弹幕到本地】即可记录弹幕。
 
-可以更改弹幕文件保存位置。目前仅支持计算机上已存在的文件夹，若文件夹路径不存在则会报错。
+可以更改弹幕文件保存位置，若文件夹路径不存在则会创建一个。
+
+#### 弹幕格式
+为了提高弹幕记录的性能，弹幕记录文件为txt格式，由多个json对象组成，用逗号分隔，形式如下：
+```
+{消息数据...}, {消息数据...}, {消息数据...},
+```
+可以将上述内容手动改成json格式，即去掉最后一个多余的逗号，再用中括号```[]```包裹上述内容：
+```
+[{消息数据...}, {消息数据...}, {消息数据...}]
+```
+单条消息数据的ts类型格式如下：
+```typescript
+interface MessageInterface {
+    /** 平台名称, 一般为英文小写 */
+    platform: string;
+    /** 房间号 */
+    room: number | string;
+    /** 信息类型 */
+    type: string;
+    /** 记录时间 */
+    record_time: number;
+    /** 数据信息, 不同的数据类型具有不同的格式 */
+    info: {
+        [attr: string]: any;
+    };
+    /** 其他属性 */
+    [attr: string]: any;
+}
+```
+以一条弹幕消息为例：
+```json5
+{
+  "platform": "bilibili",   // 直播平台
+  "room": 2064239,          // 房间号
+  "type": "chat",           // 消息类型
+  "record_time": 1674135210265, // 记录时间
+  "info": {
+    "timestamp": 1674135209059, // 服务器时间戳
+    "color": 14893055,          // 弹幕颜色
+    "mode": "bottom",           // 弹幕模式
+    "content": "晚上好",        // 弹幕内容
+    "user": {               // 用户信息
+      "name": "Minteea薄茶",    // 用户名
+      "id": 308906789,          // 用户id
+      "medal": {                // 粉丝牌信息
+        "level": 24,                // 粉丝牌等级
+        "name": "鹿侯爷",           // 粉丝牌名称
+        "id": 5659864,              // 粉丝牌所属用户id
+        "membership": 3             // 粉丝牌直播间会员等级
+      },
+      "membership": 3,          // 直播间会员等级
+      "identity": null,         // 用户身份
+      "avatar": "https://i2.hdslb.com/bfs/face/bf71b26822b4fbeca622cbbb184a440c303bc60a.jpg"  // 头像url
+    }
+  }
+}
+```
+
+目前支持的消息类型有：
+* `chat`[聊天]
+* `gift`[礼物]　`superchat`[付费留言]　`membership`[直播间会员开通]
+* `entry`[进入]　`like`[点赞]　`share`[分享]　`follow`[关注]　`join`[加入粉丝团]
+* `block`[禁言]
+* `live_start`[直播开始]　`live_end`[直播结束]　`live_cut`[直播被切断]　`live_change`[直播信息更改]
 
 ### 网页版本操作
 程序也可以使用网页版进行操作。确保主程序窗口中【本地服务 > 启用websocket服务】处于打开状态。

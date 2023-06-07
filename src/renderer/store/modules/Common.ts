@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
 export default class StoreCommon {
-  command_input: string = ""
+  commandInput: string = ""
 
   constructor() {
     makeAutoObservable(this);

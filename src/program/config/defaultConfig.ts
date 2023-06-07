@@ -10,7 +10,7 @@ export const defaultConfig: ConfigInterface = {
   },
   save: {
     path: "../save",
-    save_message: true,
-    save_origin: false,
+    saveMessage: true,
+    saveOrigin: false,
   }
 };

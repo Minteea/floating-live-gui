@@ -39,14 +39,14 @@ const PageStart: React.FC = function () {
               background: 'white',
             }}
           />
-          <Input 
-            value={store.common.command_input}
+          <Input
+            value={store.common.commandInput}
             onChange={(e) => {
-              runInAction(() => {store.common.command_input = e.target.value})
+              runInAction(() => {store.common.commandInput = e.target.value})
             }}
             onPressEnter={(e) => {
-              controller.exec(store.common.command_input)
-              runInAction(() => {store.common.command_input = ""})
+              controller.exec(store.common.commandInput)
+              runInAction(() => {store.common.commandInput = ""})
             }}
             placeholder="输入指令..."
           />

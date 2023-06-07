@@ -1,6 +1,7 @@
 import { MessageChat, MessageData } from 'floating-live/src/types/message/MessageData';
 import User from './User';
 import { Image } from 'antd'
+import { ImageSize, UserAdmin } from 'floating-live';
 
 function getChatWithEmoticon(msg: MessageChat) {
   console.log(msg.info.content)
@@ -18,12 +19,20 @@ function getChatWithEmoticon(msg: MessageChat) {
     let i = item.split("@A").join("@")
     let e = msg.info.emoticon?.[i]
     if (e) {
-      return <Image src={e.url} referrerPolicy="no-referrer" width={20} height={e.height || 20} />
+      return <Image src={e.url} referrerPolicy="no-referrer" width={20} height={20} />
     } else {
       return i
     }
   })
   return result
+}
+
+function getImageSize(s: ImageSize) {
+  return [100, 20, 40][s]
+}
+
+function getAdmin(a: UserAdmin) {
+  return ["管理员", "房管", "主播"][a]
 }
 
 /** 消息 */
@@ -41,7 +50,7 @@ const MessageLine: React.FC<{
           {
             msg.info.image
             ?
-            <img src={msg.info.image.url} referrerPolicy="no-referrer" height={msg.info.image.height || 20} />
+            <img src={msg.info.image.url} referrerPolicy="no-referrer" height={getImageSize(msg.info.image.size)} />
             :
             msg.info.emoticon
             ?
@@ -49,7 +58,7 @@ const MessageLine: React.FC<{
             :
             <span>{msg.info.content}</span>
           }
-          
+
         </div>
       );
     }
@@ -129,7 +138,7 @@ const MessageLine: React.FC<{
           <User msg={msg} />
           &nbsp; 已被
           <span>
-            {{admin: "房管", anchor: "主播"}[Number(msg.info.operator.identity)]}
+            {getAdmin(msg.info.operator.admin)}
           </span>
           禁言
         </div>

@@ -2,7 +2,7 @@ import { runInAction } from 'mobx';
 import store from '../store';
 import Controller from './Controller';
 import api from './api';
-import { RoomInfo, RoomBaseInfo } from 'floating-live';
+import { RoomInfo, RoomViewInfo, RoomStatus } from 'floating-live';
 import { MessageData } from 'floating-live/src/types/message/MessageData'
 
 export default class ControllerLive {
@@ -36,8 +36,14 @@ export default class ControllerLive {
     api.on('room_close', (e, key: string, room: RoomInfo) => {
       store.live.closeRoom(key)
     })
-    api.on('room_change', (e, key: string, data: Partial<RoomBaseInfo>) => {
-      store.live.changeLiveInfo(key, data)
+    api.on('room_change', (e, key: string, data: Partial<RoomViewInfo>) => {
+      store.live.changeViewInfo(key, data)
+    })
+    api.on('room_status', (e, key: string, status: RoomStatus, {id, timestamp}: {id?: string, timestamp: number}) => {
+      store.live.changeStatus(key, status, {id, timestamp})
+    })
+    api.on('room_stats', (e, key: string, data) => {
+      store.live.changeStats(key, data)
     })
     api.on('start', (e, timestamp: number) => {
       store.message.clear()

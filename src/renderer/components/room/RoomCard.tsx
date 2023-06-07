@@ -1,16 +1,10 @@
-import { RoomInfo } from 'floating-live';
+import { RoomInfo, RoomStatus } from 'floating-live';
 import { observer } from 'mobx-react';
-
-function getLiveStatus(status: string) {
-  switch (status) {
-    case 'live':
-      return '直播中';
-    case 'banned':
-      return '已封禁';
-    default:
-      return '未开播';
-  }
-}
+import { secondToTime } from '../../utils/time';
+import { getLiveStatus } from '../../utils/enumUtils';
+import { useInterval } from 'ahooks';
+import { useEffect, useState } from 'react';
+import { Divider } from 'antd';
 
 /** 直播间卡片 */
 const RoomCard: React.FC<{
@@ -21,6 +15,10 @@ const RoomCard: React.FC<{
   };
 }> = function (props) {
   const info = props.roomInfo;
+  const [timeSec, setTimeSec] = useState((Date.now() - info?.timestamp || 0)/1000)
+  useInterval(() => {
+    setTimeSec((Date.now() - info?.timestamp || 0)/1000)
+  }, 100)
   return (
     <div className="ant-card ant-card-bordered" style={{}}>
       <div style={{ display: 'flex', position: 'relative' }}>
@@ -42,14 +40,14 @@ const RoomCard: React.FC<{
             <div
               style={{ display: 'inline-block', fontSize: 13, paddingLeft: 10 }}
             >
-              {info?.base.area?.join(' > ') || ''}
+              {info?.view.area?.join(' > ') || ''}
             </div>
           </div>
           <div style={{ display: 'flex', lineHeight: '22px' }}>
             <div style={{ fontSize: 13, paddingRight: 10 }}>
-              ● {getLiveStatus(info?.status || '')}
+              ● {getLiveStatus(info?.status || RoomStatus.off)}
             </div>
-            <div style={{ fontSize: 13 }}>{info?.base.title || ''}</div>
+            <div style={{ fontSize: 13 }}>{info?.view.title || ''}</div>
           </div>
         </div>
         <div style={{ flexShrink: 0, padding: 5 }}>
@@ -59,6 +57,24 @@ const RoomCard: React.FC<{
           <div style={{ textAlign: 'right', lineHeight: '30px' }}>
             {props.button?.bottom}
           </div>
+        </div>
+      </div>
+      <div style={{
+        fontSize: 13,
+        display: (info?.opening && info?.status == RoomStatus.live) ? '' : 'none'
+      }}>
+        <Divider style={{margin: 0}}/>
+        <div style={{
+          position: 'relative',
+          display: 'flex',
+          padding: "0 10px",
+          gap: "10px"
+        }}>
+          <div>{secondToTime(timeSec)}</div>
+          {info?.stats?.online != undefined ? <div>在线 {info?.stats?.online}</div> : null}
+          {info?.stats?.watch != undefined ? <div>浏览 {info?.stats?.watch}</div> : null}
+          {info?.stats?.like != undefined ? <div>点赞 {info?.stats?.like}</div> : null}
+          {info?.stats?.popularity != undefined ? <div>人气值 {info?.stats?.popularity}</div> : null}
         </div>
       </div>
     </div>

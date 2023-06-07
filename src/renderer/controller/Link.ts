@@ -32,14 +32,14 @@ export default class ControllerLink {
       console.log('已连接上');
       this.connected = true;
       runInAction(() => {
-        store.link.link_connected = true;
+        store.link.connected = true;
       });
     };
     this.ws.onclose = (e) => {
       console.log('已断开连接');
       this.connected = false;
       runInAction(() => {
-        store.link.link_connected = false;
+        store.link.connected = false;
       });
       if (version.client != 'electron') version.app = '';
     };

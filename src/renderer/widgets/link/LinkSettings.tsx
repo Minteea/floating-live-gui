@@ -16,14 +16,14 @@ const LinkSettings: React.FC = function () {
   const [inputLink, changeInputLink] = useState(store.link.link);
   return (
     <div>
-      <div>{store.link.link_connected ? '已连接' : '未连接'}</div>
+      <div>{store.link.connected ? '已连接' : '未连接'}</div>
       <div style={{ display: 'flex' }}>
-        <Tooltip title={store.link.link_connected ? '重新连接' : '连接'}>
+        <Tooltip title={store.link.connected ? '重新连接' : '连接'}>
           <Button
             type="primary"
             shape="circle"
             icon={
-              store.link.link_connected ? <ReloadOutlined /> : <LinkOutlined />
+              store.link.connected ? <ReloadOutlined /> : <LinkOutlined />
             }
             onClick={() => {
               runInAction(() => {
@@ -39,7 +39,7 @@ const LinkSettings: React.FC = function () {
             changeInputLink(e.target.value);
           }}
           onBlur={(e) => {
-            if (!store.link.link_connected && !(store.link.link == inputLink)) {
+            if (!store.link.connected && !(store.link.link == inputLink)) {
               runInAction(() => {
                 store.link.link = inputLink;
               });
@@ -47,12 +47,12 @@ const LinkSettings: React.FC = function () {
           }}
           placeholder="连接后端url"
           status={
-            store.link.link == inputLink || !store.link.link_connected
+            store.link.link == inputLink || !store.link.connected
               ? ''
               : 'warning'
           }
         />
-        {store.link.link_connected && store.link.link != inputLink ? (
+        {store.link.connected && store.link.link != inputLink ? (
           <Tooltip title="取消更改">
             <Button
               type="ghost"
