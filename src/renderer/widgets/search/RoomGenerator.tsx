@@ -1,6 +1,4 @@
 import { Button, Input, Select, Tooltip } from 'antd';
-import { observer } from 'mobx-react';
-import { runInAction } from 'mobx';
 import {
   // 图标导入
   SearchOutlined,
@@ -14,6 +12,7 @@ import { useState } from 'react';
 import RoomCard from '../../components/room/RoomCard';
 import store from '../../store';
 import controller from '../../controller';
+import { useSnapshot } from 'valtio';
 
 const { Option } = Select;
 const handleChange = (value: string) => {
@@ -22,11 +21,13 @@ const handleChange = (value: string) => {
 
 /** 搜索及添加直播间的组件 */
 const RoomGenerator: React.FC = function () {
+  useSnapshot(store.search)
+  useSnapshot(store.room)
   const [searchPlatform, setSearchPlatform] = useState(
-    store.search.searchPlatform
+    store.search.platform
   );
-  const [searchId, setSearchId] = useState(store.search.searchId);
-  const searchRoomInfo = store.search.searchRoomInfo;
+  const [searchId, setSearchId] = useState(store.search.id);
+  const searchRoomInfo = store.search.roomInfo;
   const searchRoomKey = `${searchRoomInfo?.platform}:${searchRoomInfo?.id}`;
   return (
     <div>
@@ -37,9 +38,7 @@ const RoomGenerator: React.FC = function () {
           value={searchPlatform || null}
           onChange={(value) => {
             setSearchPlatform(value);
-            runInAction(() => {
-              store.search.searchPlatform = value;
-            });
+              store.search.platform = value;
           }}
         >
           <Option value="acfun">
@@ -61,17 +60,13 @@ const RoomGenerator: React.FC = function () {
             setSearchId(e.target.value);
           }}
           onBlur={(e) => {
-            runInAction(() => {
-              store.search.searchId = e.target.value;
-            });
+              store.search.id = e.target.value;
           }}
           onPressEnter={() => {
-            runInAction(() => {
-              store.search.searchId = searchId;
-            });
+              store.search.id = searchId;
             controller.cmd("searchRoom", {
-              platform: store.search.searchPlatform,
-              id: store.search.searchId
+              platform: store.search.platform,
+              id: store.search.id
             });
           }}
         />
@@ -82,8 +77,8 @@ const RoomGenerator: React.FC = function () {
             icon={<SearchOutlined />}
             onClick={() => {
               controller.cmd("searchRoom",{
-                platform: store.search.searchPlatform,
-                id: store.search.searchId
+                platform: store.search.platform,
+                id: store.search.id
               });
             }}
           />
@@ -94,29 +89,27 @@ const RoomGenerator: React.FC = function () {
             shape="circle"
             icon={<CloseOutlined />}
             onClick={() => {
-              runInAction(() => {
                 setSearchPlatform('');
                 setSearchId('');
-                store.search.searchPlatform = '';
-                store.search.searchId = '';
-              });
+                store.search.platform = '';
+                store.search.id = '';
             }}
           />
         </Tooltip>
       </div>
-      <div style={{ display: store.search.searchRoomInfo ? '' : 'none' }}>
+      <div style={{ display: store.search.roomInfo ? '' : 'none' }}>
         <RoomCard
-          roomInfo={store.search.searchRoomInfo}
+          roomInfo={store.search.roomInfo}
           button={{
             top: [
-              <Tooltip title={store.live.roomMap.has(searchRoomKey) ? "房间已添加" : "添加房间到列表"}>
+              <Tooltip title={store.room.roomMap.has(searchRoomKey) ? "房间已添加" : "添加房间到列表"}>
                 <Button
                   type="ghost"
                   shape="circle"
                   size="small"
                   icon={<PlusOutlined />}
                   style={{ marginLeft: 5 }}
-                  disabled={store.live.roomMap.has(searchRoomKey)}
+                  disabled={store.room.roomMap.has(searchRoomKey)}
                   onClick={() => {
                     if (searchRoomInfo?.platform && searchRoomInfo?.id) {
                       controller.cmd("addRoom", searchRoomKey);
@@ -124,17 +117,17 @@ const RoomGenerator: React.FC = function () {
                   }}
                 />
               </Tooltip>,
-              <Tooltip title={store.live.roomMap.get(searchRoomKey)?.opening ? '房间已打开' : !searchRoomInfo?.available ? "房间不可用" : store.live.roomMap.has(searchRoomKey) ? "打开房间" : '添加房间并打开'}>
+              <Tooltip title={store.room.roomMap.get(searchRoomKey)?.opening ? '房间已打开' : !searchRoomInfo?.available ? "房间不可用" : store.room.roomMap.has(searchRoomKey) ? "打开房间" : '添加房间并打开'}>
                 <Button
                   type="primary"
                   shape="circle"
                   size="small"
                   icon={<CaretRightOutlined />}
                   style={{ marginLeft: 5 }}
-                  disabled={store.live.roomMap.get(searchRoomKey)?.opening || !searchRoomInfo?.available}
+                  disabled={store.room.roomMap.get(searchRoomKey)?.opening || !searchRoomInfo?.available}
                   onClick={() => {
                     if (searchRoomInfo?.platform && searchRoomInfo?.id) {
-                      store.live.roomMap.has(searchRoomKey) ?
+                      store.room.roomMap.has(searchRoomKey) ?
                       controller.cmd("openRoom", searchRoomKey) :
                       controller.cmd("addRoom", searchRoomKey, true);
                     }
@@ -164,12 +157,10 @@ const RoomGenerator: React.FC = function () {
                   style={{ marginLeft: 5 }}
                   onClick={() => {
                     if (
-                      store.search.searchPlatform &&
-                      store.search.searchId
+                      store.search.platform &&
+                      store.search.id
                     ) {
-                      runInAction(() => {
-                        store.search.searchRoomInfo = null;
-                      });
+                        store.search.roomInfo = null;
                     }
                   }}
                 />
@@ -182,4 +173,4 @@ const RoomGenerator: React.FC = function () {
   );
 };
 
-export default observer(RoomGenerator);
+export default RoomGenerator;

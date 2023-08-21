@@ -4,7 +4,6 @@ import { Image } from 'antd'
 import { ImageSize, UserAdmin } from 'floating-live';
 
 function getChatWithEmoticon(msg: MessageChat) {
-  console.log(msg.info.content)
   let prostr = msg.info.content.split("@").join("@A") // replaceAll("@", "@A")
   for (let kw in msg.info.emoticon) {
     let keyword = kw.split("@").join("@A")

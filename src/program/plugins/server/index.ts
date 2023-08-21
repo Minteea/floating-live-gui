@@ -108,11 +108,11 @@ export default () => {
         server.changePort(Number(num));
       });
 
-      ctx.initFunction.register("server", () => {
+      ctx.initState.register("server", () => {
         return {
           server: {
-            serving: server.serving,
             port: server.port,
+            opened: server.serving,
           },
         };
       });

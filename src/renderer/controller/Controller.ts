@@ -7,7 +7,6 @@ import version from './version';
 import { CommandSet, FLCommandSet } from '../../program/command/CommandTypes';
 import commandParser from '../../utils/commandParser';
 import store from '../store';
-import { runInAction } from 'mobx';
 import ControllerSave from './Saving';
 
 export default class Controller {
@@ -51,7 +50,7 @@ export default class Controller {
       let storeModule = (store as unknown as {[module: string]: {[key: string]: any}})[moduleName]
       if (storeModule) {
         for (let key in data[moduleName]) {
-          runInAction(() => {storeModule[key] = data[moduleName][key]})
+          storeModule[key] = data[moduleName][key]
         }
       }
     }

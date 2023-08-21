@@ -1,6 +1,5 @@
-import { makeAutoObservable } from 'mobx';
 
-export default class StoreFavor {
+class StoreFavor {
   favorList: Array<{
     platform: string;
     id: string;
@@ -18,7 +17,8 @@ export default class StoreFavor {
     return this.favorList.splice(i, 1);
   }
 
-  constructor() {
-    makeAutoObservable(this);
-  }
 }
+
+const storeFavor = new StoreFavor()
+
+export default storeFavor

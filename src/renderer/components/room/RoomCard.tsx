@@ -1,5 +1,4 @@
 import { RoomInfo, RoomStatus } from 'floating-live';
-import { observer } from 'mobx-react';
 import { secondToTime } from '../../utils/time';
 import { getLiveStatus } from '../../utils/enumUtils';
 import { useInterval } from 'ahooks';
@@ -40,14 +39,14 @@ const RoomCard: React.FC<{
             <div
               style={{ display: 'inline-block', fontSize: 13, paddingLeft: 10 }}
             >
-              {info?.view.area?.join(' > ') || ''}
+              {info?.detail.area?.join(' > ') || ''}
             </div>
           </div>
           <div style={{ display: 'flex', lineHeight: '22px' }}>
             <div style={{ fontSize: 13, paddingRight: 10 }}>
               ● {getLiveStatus(info?.status || RoomStatus.off)}
             </div>
-            <div style={{ fontSize: 13 }}>{info?.view.title || ''}</div>
+            <div style={{ fontSize: 13 }}>{info?.detail.title || ''}</div>
           </div>
         </div>
         <div style={{ flexShrink: 0, padding: 5 }}>
@@ -81,4 +80,4 @@ const RoomCard: React.FC<{
   );
 };
 
-export default observer(RoomCard);
+export default RoomCard;

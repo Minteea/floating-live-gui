@@ -1,28 +1,25 @@
-import StoreLive from './modules/Live';
-import StoreSearch from './modules/Search';
-import StoreSaving from './modules/Save';
-import StoreServer from './modules/Server';
-import StoreFavor from './modules/Favor';
-import StoreMessage from './modules/Message';
-import StoreLink from './modules/Link';
-import StoreCommon from './modules/Common';
+import { storeRoom } from './storeRoom';
+import { storeMessage } from './storeMessage';
+import { storeSearch } from "./storeSearch";
+import { storeServer } from "./storeServer";
+import { storeSave } from "./storeSave";
+import { storeLink } from "./storeLink";
+import { storeCommand } from "./storeCommand";
 
-class Store {
-  live = new StoreLive();
+const store = {
+  search: storeSearch,
 
-  search = new StoreSearch();
+  server: storeServer,
 
-  favor = new StoreFavor();
+  link: storeLink,
 
-  server = new StoreServer();
+  save: storeSave,
 
-  link = new StoreLink();
+  command: storeCommand,
 
-  save = new StoreSaving();
+  message: storeMessage,
 
-  message = new StoreMessage();
+  room: storeRoom,
+};
 
-  common = new StoreCommon();
-}
-
-export default new Store();
+export default store;

@@ -11,7 +11,7 @@ export interface ConfigInterface {
   save: {
     path: string;
     saveMessage: boolean;
-    saveOrigin: boolean;
+    saveRaw: boolean;
   };
-  [key: string]: any
+  [key: string]: any;
 }

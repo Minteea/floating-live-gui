@@ -23,7 +23,7 @@ export type CmdSave = {
   /** 保存消息 */
   saveMessage: [boolean];
   /** 保存源消息 */
-  saveOrigin: [boolean];
+  saveRaw: [boolean];
   /** 保存路径 */
   savePath: [string];
 };

@@ -7,7 +7,6 @@ import {
   CheckOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
-import { observer } from 'mobx-react-lite';
 import controller from '../../controller';
 import RoomCard from './RoomCard';
 
@@ -81,4 +80,4 @@ const RoomList: React.FC<{
   );
 };
 
-export default observer(RoomList);
+export default RoomList;

@@ -1,64 +1,67 @@
-import { Button } from 'antd';
-import { MessageData } from 'floating-live';
-import { observer } from 'mobx-react-lite';
-import { useEffect, useRef, useState } from 'react';
-import MessageLine from './MessageLine';
+import { Button } from "antd";
+import { MessageData } from "floating-live";
+import { useEffect, useRef, useState } from "react";
+import MessageLine from "./MessageLine";
 import {
   // 图标导入
   ArrowDownOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
 /** 消息板 */
 const MessageBoard: React.FC<{
-  list: Array<MessageData & {key: string}>;
+  list: MessageData[];
   style?: React.CSSProperties;
 }> = function (props) {
-  const refMessageContent = useRef<HTMLDivElement>(null)
-  const refMessageContainer = useRef<HTMLDivElement>(null)
-  const [autoScroll, setAutoScroll] = useState(true)
+  const refMessageContent = useRef<HTMLDivElement>(null);
+  const refMessageContainer = useRef<HTMLDivElement>(null);
+  const [autoScroll, setAutoScroll] = useState(true);
   const scrollToBottom = () => {
-    refMessageContent.current!.scrollIntoView({ behavior: "smooth", block: "end" });
-  }
+    refMessageContent.current!.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+  };
   useEffect(() => {
-    console.log("数据更新")
-    autoScroll && scrollToBottom()
-  })
+    console.log("数据更新");
+    autoScroll && scrollToBottom();
+  });
   return (
-    <div style={{position: "relative"}}>
+    <div style={{ position: "relative" }}>
       <div
         ref={refMessageContainer}
-        style={{ overflowY: 'auto', ...props.style }}
+        style={{ overflowY: "auto", ...props.style }}
         className="ant-card ant-card-bordered"
         onWheel={(e) => {
           if (e.deltaY < 0) {
-            setAutoScroll(false)
+            setAutoScroll(false);
           } else if (e.deltaY > 0) {
-            const el = refMessageContainer.current!
+            const el = refMessageContainer.current!;
             if (el.scrollTop + el.clientHeight >= el.scrollHeight - 100) {
-              setAutoScroll(true)
+              setAutoScroll(true);
             }
           }
         }}
       >
-        <div ref={refMessageContent}
-        >
+        <div ref={refMessageContent}>
           {props.list.map((msg) => (
-            <MessageLine msg={msg} key={msg.key} />
+            <MessageLine msg={msg} key={msg.id} />
           ))}
         </div>
       </div>
-      <div style={{
-        position: "absolute",
-        display: autoScroll ? "none" : "",
-        right: 0,
-        bottom: 0
-      }}>
-        <Button 
+      <div
+        style={{
+          position: "absolute",
+          display: autoScroll ? "none" : "",
+          right: 0,
+          bottom: 0,
+        }}
+      >
+        <Button
           type="primary"
           shape="circle"
           onClick={() => {
-            scrollToBottom()
-            setAutoScroll(true)
+            scrollToBottom();
+            setAutoScroll(true);
           }}
           icon={<ArrowDownOutlined />}
         />
@@ -67,4 +70,4 @@ const MessageBoard: React.FC<{
   );
 };
 
-export default observer(MessageBoard);
+export default MessageBoard;
