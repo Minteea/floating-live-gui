@@ -1,7 +1,7 @@
-import { UserInfo } from 'floating-live';
-import { MessageData } from 'floating-live/src/types/message/MessageData';
-import { getAdminType } from '../../utils/enumUtils';
-import platform from '../../utils/platform';
+import { UserInfo } from "floating-live";
+import { MessageData } from "floating-live/src/types/message/MessageData";
+import { getAdminType } from "../../utils/enumUtils";
+import platform from "../../utils/platform";
 
 /** 用户 */
 const User: React.FC<{
@@ -20,9 +20,11 @@ const User: React.FC<{
     <span>
       {e_medal}
       {user.membership ? (
-        <span>[{platform.getPrivilegeName(msg.platform, user.membership)}]</span>
+        <span>
+          [{platform.getPrivilegeName(msg.platform, user.membership)}]
+        </span>
       ) : null}
-      {user.admin ? <span>[{getAdminType(user.admin)}]</span> : null}
+      {user.type ? <span>[{getAdminType(user.type)}]</span> : null}
       <span>{user.name}</span>
     </span>
   );

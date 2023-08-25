@@ -1,10 +1,10 @@
-import { UserAdmin, RoomStatus } from "floating-live";
+import { UserType, RoomStatus } from "floating-live";
 
-export function getAdminType(n?: UserAdmin) {
+export function getAdminType(n?: UserType) {
   switch (n) {
-    case UserAdmin.anchor:
+    case UserType.anchor:
       return "主播";
-    case UserAdmin.admin:
+    case UserType.admin:
       return "房管";
   }
 }

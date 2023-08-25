@@ -21,6 +21,7 @@ export default class ControllerLive {
   count: number = 0;
   constructor(controller: Controller) {
     api.on("live_message", (e: any, msg: MessageData) => {
+      msg.id = `${msg.id}-${this.count}`;
       pushMessage(msg);
       this.count++;
     });
