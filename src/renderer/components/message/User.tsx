@@ -1,11 +1,10 @@
-import { UserInfo } from "floating-live";
-import { MessageData } from "floating-live/src/types/message/MessageData";
+import { Message, UserInfo } from "floating-live/src/types";
 import { getAdminType } from "../../utils/enumUtils";
 import platform from "../../utils/platform";
 
 /** 用户 */
 const User: React.FC<{
-  msg: MessageData & { info: { user: UserInfo } };
+  msg: Message.All & { info: { user: UserInfo } };
 }> = function (props) {
   const { msg } = props;
   const { user } = msg.info;

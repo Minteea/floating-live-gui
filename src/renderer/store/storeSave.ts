@@ -1,13 +1,13 @@
-import { proxy } from "valtio";
+import { atom } from "jotai";
 
 export interface IStateSave {
-  saveMessage: boolean;
-  saveRaw: boolean;
+  message: boolean;
+  raw: boolean;
   path: string;
 }
 
-export const storeSave: IStateSave = proxy({
-  saveMessage: false,
-  saveRaw: false,
-  path: "",
-});
+export const storeSave = {
+  message: atom(false),
+  raw: atom(false),
+  path: atom(""),
+};

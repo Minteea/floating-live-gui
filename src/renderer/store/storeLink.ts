@@ -1,4 +1,5 @@
-import { proxy } from "valtio";
+import { atom } from "jotai";
+import { setAtom } from ".";
 
 export interface IStateLink {
   /** 服务连接(仅web端连接有效) */
@@ -7,7 +8,7 @@ export interface IStateLink {
   connected: boolean;
 }
 
-export const storeLink: IStateLink = proxy({
-  url: window.location.hostname + ":8130",
-  connected: false,
-});
+export const storeLink = {
+  url: atom(window.location.hostname + ":8130"),
+  connected: atom(false),
+};

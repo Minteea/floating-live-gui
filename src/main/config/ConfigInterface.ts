@@ -1,7 +1,7 @@
 export interface ConfigInterface {
   /** 直播设置 */
-  live: {
-    rooms: { platform: string; id: string | number }[];
+  room: {
+    list: { platform: string; id: string | number }[];
   };
   /** 服务设置 */
   server: {
@@ -10,8 +10,8 @@ export interface ConfigInterface {
   };
   save: {
     path: string;
-    saveMessage: boolean;
-    saveRaw: boolean;
+    message: boolean;
+    raw: boolean;
   };
   [key: string]: any;
 }

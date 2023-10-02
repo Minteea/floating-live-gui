@@ -1,20 +1,31 @@
 import MsgSave from "floating-live/plugin/msgSave/msgSave";
 import path from "path";
-import Program from "../..";
-import { RoomInfo, RoomStatus } from "floating-live";
+import {
+  FloatingLive,
+  FloatingLivePlugin,
+  RoomInfo,
+  RoomStatus,
+} from "floating-live";
+import config from "../../main/config/config";
+import { appDataPath, appEnv } from "../../main/appConfig";
 
-export default () => {
+const pluginSave: FloatingLivePlugin<{
+  message: boolean;
+  raw: boolean;
+  path: string;
+}> = () => {
   return {
-    register: (ctx: Program) => {
-      let filePath = ctx.config.get("save.path");
+    name: "save",
+    register: (ctx: FloatingLive, config) => {
+      let filePath = config.path || "";
       // 更新文件路径
       const updateFilePath = () => {
         messageSave.path = path.resolve(
-          ctx.env == "production" ? ctx.appDataPath : ".",
+          appEnv == "production" ? appDataPath : ".",
           filePath
         );
         rawSave.path = path.resolve(
-          ctx.env == "production" ? ctx.appDataPath : ".",
+          appEnv == "production" ? appDataPath : ".",
           filePath
         );
         messageSave.list = new Map();
@@ -24,22 +35,22 @@ export default () => {
       const messageSave = new MsgSave(ctx, {
         filePath,
         sliceByStatus: true,
-        open: ctx.config.get("save.saveMessage"),
+        open: !!config.message,
       });
       const rawSave = new MsgSave(ctx, {
         filePath,
         suffix: ".raw",
-        open: ctx.config.get("save.saveRaw"),
+        open: !!config.raw,
       });
-      ctx.on("live_message", (msg) => {
+      ctx.on("live:message", (msg) => {
         messageSave.write(msg, msg);
       });
-      ctx.on("live_origin", (msg, { platform, room }) => {
+      ctx.on("live:raw", (msg, { platform, room }) => {
         rawSave.write(msg, { platform, room });
       });
       // 直播状态改变时，更新保存信息
       ctx.on(
-        "room_status",
+        "room:status",
         (
           roomKey: string,
           status: RoomStatus,
@@ -58,7 +69,7 @@ export default () => {
         }
       );
       // 打开直播间时，设置保存信息
-      ctx.on("room_open", (roomKey: string, roomInfo: RoomInfo) => {
+      ctx.on("room:open", (roomKey: string, roomInfo: RoomInfo) => {
         const { platform, id, status } = roomInfo;
         const saveInfo = {
           platform,
@@ -71,36 +82,37 @@ export default () => {
         rawSave.setSaveInfo(saveInfo);
       });
       // 关闭直播间时，移除保存信息
-      ctx.on("room_close", (roomKey: string, roomInfo: RoomInfo) => {
+      ctx.on("room:close", (roomKey: string, roomInfo: RoomInfo) => {
         messageSave.removeSaveInfo(roomKey);
         rawSave.removeSaveInfo(roomKey);
       });
-      ctx.command.register("saveMessage", (b: boolean = true) => {
+      ctx.command.register("save.message", (b: boolean = true) => {
         b ? messageSave.start() : messageSave.pause();
-        ctx.emit("save_message", !messageSave.paused);
-        ctx.config.set("save.saveMessage", b);
+        ctx.emit("save:message", !messageSave.paused);
       });
-      ctx.command.register("saveRaw", (b: boolean = true) => {
+      ctx.command.register("save.raw", (b: boolean = true) => {
         b ? rawSave.start() : rawSave.pause();
-        ctx.emit("save_origin", !rawSave.paused);
-        ctx.config.set("save.saveRaw", b);
+        ctx.emit("save:raw", !rawSave.paused);
       });
-      ctx.command.register("savePath", (path: string) => {
+      ctx.command.register("save.path", (path: string) => {
         filePath = path;
         updateFilePath();
-        ctx.emit("save_path", path);
-        ctx.config.set("save.path", path);
+        ctx.emit("save:path", path);
       });
 
-      ctx.initState.register("save", () => {
+      ctx.state.register("save", () => {
         return {
-          save: {
-            saveMessage: !messageSave.paused,
-            saveRaw: !rawSave.paused,
-            path: filePath,
-          },
+          message: !messageSave.paused,
+          raw: !rawSave.paused,
+          path: filePath,
         };
       });
+
+      ctx.on("save:message", (val) => ctx.state.set("save.message", val));
+      ctx.on("save:raw", (val) => ctx.state.set("save.raw", val));
+      ctx.on("save:path", (val) => ctx.state.set("save.path", val));
     },
   };
 };
+
+export default pluginSave;

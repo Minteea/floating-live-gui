@@ -1,6 +1,5 @@
-
 class StoreFavor {
-  favorList: Array<{
+  list: Array<{
     platform: string;
     id: string;
     name: string;
@@ -8,17 +7,16 @@ class StoreFavor {
   }> = [];
 
   /** 添加收藏 */
-  addFavor(r: { platform: string; id: string; name: string; avatar: string }) {
-    this.favorList.push(r);
+  add(r: { platform: string; id: string; name: string; avatar: string }) {
+    this.list.push(r);
   }
 
   /** 移除收藏 */
-  removeFavor(i: number) {
-    return this.favorList.splice(i, 1);
+  remove(i: number) {
+    return this.list.splice(i, 1);
   }
-
 }
 
-const storeFavor = new StoreFavor()
+const storeFavor = new StoreFavor();
 
-export default storeFavor
+export default storeFavor;

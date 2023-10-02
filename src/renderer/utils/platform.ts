@@ -1,5 +1,5 @@
-import { GiftInfo } from 'floating-live/src/types/message/AttributeInfo';
-import { acfun, bilibili, PlatformInfo } from './platformInfo';
+import { GiftInfo } from "floating-live/src/types";
+import { acfun, bilibili, PlatformInfo } from "./platformInfo";
 
 class Platform {
   map: Map<string, PlatformInfo> = new Map();
@@ -10,9 +10,9 @@ class Platform {
 
   getPrivilegeName(platform: string, level?: number | boolean) {
     switch (typeof level) {
-      case 'boolean':
+      case "boolean":
         return level ? this.map.get(platform)?.privilege?.name : undefined;
-      case 'number':
+      case "number":
         return this.map.get(platform)?.privilege?.level?.[level];
       default:
     }
@@ -20,7 +20,7 @@ class Platform {
 
   getGiftValue(platform: string, gift: GiftInfo) {
     const currency =
-      this.map.get(platform)?.currency[gift.currency || 'default'];
+      this.map.get(platform)?.currency[gift.currency || "default"];
     return {
       price: gift.value / (currency?.face || 1),
       cny: currency?.cny ? gift.value / currency?.cny : 0,

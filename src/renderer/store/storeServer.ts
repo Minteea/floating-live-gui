@@ -1,3 +1,4 @@
+import { atom } from "jotai";
 import { proxy } from "valtio";
 
 export interface IStateServer {
@@ -7,9 +8,9 @@ export interface IStateServer {
   opened: boolean;
 }
 
-export const storeServer = proxy({
-  port: 8130,
-  opened: false,
-});
+export const storeServer = {
+  port: atom(8130),
+  opened: atom(false),
+};
 
 export default storeServer;

@@ -1,11 +1,7 @@
-import {
-  RoomInfo,
-  RoomDetail,
-  RoomStatus,
-  RoomStatsInfo,
-} from "floating-live";
-import { proxy } from "valtio";
-import { proxyMap } from "valtio/utils";
+import { RoomInfo, RoomDetail, RoomStatsInfo } from "floating-live/src/types";
+import { RoomStatus } from "floating-live/src/enum";
+import { atom } from "jotai";
+import { getAtom, setAtom } from ".";
 
 export interface IStateRoom {
   /** 活跃状态 */
@@ -19,76 +15,86 @@ export interface IStateRoom {
 }
 
 /** 房间状态 */
-export const storeRoom: IStateRoom = proxy({
-  /** 房间Map */
-  roomMap: proxyMap(),
-  /** 所有房间 */
-  get allRooms(): string[] {
-    return [...storeRoom.roomMap.keys()];
-  },
-  /** 活跃房间 */
-  get activeRooms(): string[] {
-    return [...storeRoom.roomMap]
-      .filter((item) => item[1].opening)
-      .map((item) => item[0]);
-  },
-  /** 活跃状态 */
-  get active(): boolean {
-    return !!storeRoom.activeRooms.length;
-  },
-});
+export const storeRoom = {
+  /** 房间列表 */
+  list: atom<RoomInfo[]>([]),
+};
 
 /** 更新房间信息 */
-export function updateRoomInfo(key: string, value: RoomInfo) {
-  if (!storeRoom.roomMap.has(key)) return;
-  storeRoom.roomMap.set(key, value);
+export function updateRoomInfo(key: string, room: RoomInfo) {
+  const list = [...getAtom(storeRoom.list)];
+  const index = list.findIndex((item) => item.key == key);
+  if (index == -1) return;
+  list[index] = room;
+  setAtom(storeRoom.list, list);
 }
 
 /** 更新直播基本信息 */
-export function updateDetail(key: string, data: Partial<RoomDetail>) {
-  let detail = storeRoom.roomMap.get(key)?.detail;
-  if (!detail) return;
-  Object.assign(detail, data);
+export function updateRoomDetail(key: string, detail: Partial<RoomDetail>) {
+  const list = [...getAtom(storeRoom.list)];
+  const room = list.find((item) => item.key == key);
+  if (!room?.detail) return;
+  Object.assign(room.detail, detail);
+  setAtom(storeRoom.list, list);
 }
 
 /** 更新直播数据信息 */
-export function updateStatsInfo(key: string, data: RoomStatsInfo) {
-  let stats = storeRoom.roomMap.get(key)?.stats;
-  if (!stats) return;
-  Object.assign(stats, data);
+export function updateRoomStats(key: string, stats: RoomStatsInfo) {
+  const list = [...getAtom(storeRoom.list)];
+  const room = list.find((item) => item.key == key);
+  if (!room?.stats) return;
+  Object.assign(room.stats, stats);
+  setAtom(storeRoom.list, list);
 }
 
 /** 更新直播状态 */
-export function updateStatus(
+export function updateRoomStatus(
   key: string,
   status: RoomStatus,
-  { id, timestamp }: { id?: string; timestamp: number }
+  timestamp: number,
+  id?: string
 ) {
-  let room = storeRoom.roomMap.get(key);
+  const list = [...getAtom(storeRoom.list)];
+  const room = list.find((item) => item.key == key);
   if (!room) return;
   room.liveId = id;
   room.status = status;
   room.timestamp = timestamp;
+  setAtom(storeRoom.list, list);
 }
 
 /** 添加房间 */
-export function addRoom(key: string, value: RoomInfo) {
-  storeRoom.roomMap.set(key, value);
+export function roomAdd(key: string, room: RoomInfo) {
+  console.log(key);
+  console.log(room);
+  const list = [...getAtom(storeRoom.list)];
+  list.push(room);
+  setAtom(storeRoom.list, list);
 }
 
 /** 移除房间 */
-export function removeRoom(key: string) {
-  storeRoom.roomMap.delete(key);
+export function roomRemove(key: string) {
+  const list = [...getAtom(storeRoom.list)];
+  const index = list.findIndex((item) => item.key == key);
+  if (index == -1) return;
+  list.splice(index, 1);
+  setAtom(storeRoom.list, list);
 }
 
 /** 打开房间 */
-export function openRoom(key: string) {
-  const room = storeRoom.roomMap.get(key);
-  if (room) room.opening = true;
+export function roomOpen(key: string) {
+  const list = [...getAtom(storeRoom.list)];
+  const room = list.find((item) => item.key == key);
+  if (!room) return;
+  room.opened = true;
+  setAtom(storeRoom.list, list);
 }
 
 /** 关闭房间 */
-export function closeRoom(key: string) {
-  const room = storeRoom.roomMap.get(key);
-  if (room) room.opening = false;
+export function roomClose(key: string) {
+  const list = [...getAtom(storeRoom.list)];
+  const room = list.find((item) => item.key == key);
+  if (!room) return;
+  room.opened = false;
+  setAtom(storeRoom.list, list);
 }

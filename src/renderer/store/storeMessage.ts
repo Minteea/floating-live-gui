@@ -1,30 +1,29 @@
-import { proxy } from "valtio";
-import { MessageData } from "floating-live";
-
-type MessageWithKey = MessageData & { key: string };
+import { Message } from "floating-live/src/types";
+import { atom } from "jotai";
+import { getAtom, setAtom } from ".";
 
 export interface IStateMessage {
   /** 消息列表 */
-  list: Array<MessageData>;
-  /** 当前房间 */
-  currentRoom: string;
+  list: Array<Message.All>;
   /** 消息最大保存数量 */
   maxLimit: number;
 }
 
-export const storeMessage: IStateMessage = proxy({
-  list: [],
-  currentRoom: "",
-  maxLimit: 200,
-});
+export const storeMessage = {
+  list: atom<Message.All[]>([]),
+  maxLimit: atom(200),
+};
 
-export function pushMessage(msg: MessageData) {
-  storeMessage.list.push(msg);
-  if (storeMessage.list.length > storeMessage.maxLimit) {
-    storeMessage.list.splice(0, storeMessage.list.length - storeMessage.maxLimit);
+export function messagePush(msg: Message.All) {
+  const list = getAtom(storeMessage.list);
+  const maxLimit = getAtom(storeMessage.maxLimit);
+  list.push(msg);
+  if (list.length > maxLimit) {
+    list.splice(0, list.length - maxLimit);
   }
+  setAtom(storeMessage.list, list);
 }
 
-export function clearMessage() {
-  storeMessage.list = [];
+export function messageClear() {
+  setAtom(storeMessage.list, []);
 }

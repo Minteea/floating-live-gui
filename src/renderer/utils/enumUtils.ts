@@ -1,4 +1,4 @@
-import { UserType, RoomStatus } from "floating-live";
+import { UserType, RoomStatus } from "floating-live/src/enum";
 
 export function getAdminType(n?: UserType) {
   switch (n) {

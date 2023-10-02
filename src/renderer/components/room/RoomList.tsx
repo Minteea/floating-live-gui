@@ -1,47 +1,51 @@
-import { RoomInfo } from 'floating-live';
-import { Button, Tooltip } from 'antd';
+import { RoomInfo } from "floating-live/src/types";
+import { Button, Tooltip } from "antd";
 import {
   // 图标导入
   CaretRightOutlined,
   DeleteOutlined,
   CheckOutlined,
   SyncOutlined,
-} from '@ant-design/icons';
-import controller from '../../controller';
-import RoomCard from './RoomCard';
+} from "@ant-design/icons";
+import controller from "../../controller";
+import RoomCard from "./RoomCard";
 
 /** 直播间列表 */
 const RoomList: React.FC<{
-  list: Array<{ key: string; room: RoomInfo }>;
+  list: RoomInfo[];
 }> = function (props) {
   return (
     <div>
       {props.list.map((r) => (
         <RoomCard
-          roomInfo={r.room}
+          roomInfo={r}
           key={r.key}
           button={{
             top: [
               <Tooltip
-                title={r.room.opening ? '关闭房间' : r.room.available ? '打开房间' : "房间不可用"}
+                title={
+                  r.opened
+                    ? "关闭房间"
+                    : r.available
+                    ? "打开房间"
+                    : "房间不可用"
+                }
                 arrowPointAtCenter
               >
                 <Button
-                  type={r.room.opening ? 'primary' : 'ghost'}
+                  type={r.opened ? "primary" : "ghost"}
                   shape="circle"
                   size="small"
-                  disabled={!r.room.available}
+                  disabled={!r.available}
                   style={{ marginLeft: 5 }}
-                  icon={
-                    r.room.opening ? <CheckOutlined /> : <CaretRightOutlined />
-                  }
+                  icon={r.opened ? <CheckOutlined /> : <CaretRightOutlined />}
                   onClick={
-                    r.room.opening
+                    r.opened
                       ? () => {
-                          controller.cmd("closeRoom", r.key);
+                          controller.cmd("close", r.key);
                         }
                       : () => {
-                          controller.cmd("openRoom", r.key);
+                          controller.cmd("open", r.key);
                         }
                   }
                 />
@@ -56,7 +60,7 @@ const RoomList: React.FC<{
                   icon={<SyncOutlined />}
                   style={{ marginLeft: 5 }}
                   onClick={() => {
-                    controller.cmd("updateRoom", r.key);
+                    controller.cmd("update", r.key);
                   }}
                 />
               </Tooltip>,
@@ -68,7 +72,7 @@ const RoomList: React.FC<{
                   icon={<DeleteOutlined />}
                   style={{ marginLeft: 5 }}
                   onClick={() => {
-                    controller.cmd("removeRoom", r.key);
+                    controller.cmd("remove", r.key);
                   }}
                 />
               </Tooltip>,

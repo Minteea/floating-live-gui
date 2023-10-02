@@ -1,8 +1,8 @@
 import { ConfigInterface } from "./ConfigInterface";
 
 export const defaultConfig: ConfigInterface = {
-  live: {
-    rooms: [],
+  room: {
+    list: [],
   },
   server: {
     open: true,
@@ -10,7 +10,7 @@ export const defaultConfig: ConfigInterface = {
   },
   save: {
     path: "../save",
-    saveMessage: true,
-    saveRaw: false,
+    message: true,
+    raw: false,
   },
 };

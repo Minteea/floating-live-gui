@@ -1,24 +1,23 @@
-import Controller from './Controller';
-import store from '../store';
-import api from './api';
-import version from './version';
+import Controller from "./Controller";
+import { store, setAtom } from "../store";
+import api from "./api";
+import version from "./version";
 
 export default class ControllerLink {
   controller: Controller;
 
   ws: WebSocket | null = null;
 
-  url: string = 'localhost:8130';
+  url: string = "localhost:8130";
 
   timeout: number = 5000;
 
   connected: boolean = false;
 
-  constructor(controller: Controller) {
-    this.controller = controller;
+  constructor() {
     if (api.browserApi) {
       api.browserApi.sendHandler = (channel, ...args) => {
-        this._browserApiSend(channel, ...args);
+        if (this.connected) return this._browserApiSend(channel, ...args);
       };
     }
   }
@@ -26,21 +25,22 @@ export default class ControllerLink {
   connect() {
     if (this.ws) this.ws.close();
     this.ws = new WebSocket(`ws://${this.url}/ws`);
-    console.log(`ws://${this.url}/ws`)
+    console.log(`ws://${this.url}/ws`);
     this.ws.onopen = (e) => {
-      console.log('已连接上');
+      console.log("已连接上");
       this.connected = true;
-        store.link.connected = true;
+      setAtom(store.link.connected, true);
     };
     this.ws.onclose = (e) => {
-      console.log('已断开连接');
+      console.log("已断开连接");
       this.connected = false;
-        store.link.connected = false;
-      if (version.client != 'electron') version.app = '';
+      setAtom(store.link.connected, false);
+      if (version.client != "electron") version.app = "";
     };
     this.ws.onmessage = (e) => {
-      const data = JSON.parse(e.data);
-      this._browserApiEmit(data.channel, ...data.args);
+      console.log(e.data);
+      const [channel, ...args] = JSON.parse(e.data);
+      this._browserApiEmit(channel, ...args);
     };
   }
 
@@ -54,18 +54,21 @@ export default class ControllerLink {
   }
 
   _browserApiSend(channel: string, ...args: any[]) {
-    console.log({ channel, args });
-    this.ws?.send(JSON.stringify({ channel, args }));
+    return fetch(`http://${this.url}/post`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([channel, ...args]),
+    })
+      .then((response) => response.json())
+      .then(([ok, res]) => (ok ? res : undefined));
   }
 
   link(url: string = this.url) {
     this.url = url;
     this.disconnect();
     this.connect();
-  }
-
-  updateStore({ key, value }: { key: string; value: any }) {
-    switch (key) {
-    }
   }
 }

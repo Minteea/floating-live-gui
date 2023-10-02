@@ -1,5 +1,5 @@
-import { proxy } from "valtio";
-import { RoomInfo } from "floating-live";
+import { RoomInfo } from "floating-live/src/types";
+import { atom } from "jotai";
 
 export interface IStateSearch {
   /** 搜索平台 */
@@ -7,21 +7,11 @@ export interface IStateSearch {
   /** 搜索id */
   id: string;
   /** 搜索房间信息 */
-  roomInfo: RoomInfo | null;
+  result: RoomInfo | null;
 }
 
-export const storeSearch: IStateSearch = proxy({
-  platform: "",
-  id: "",
-  roomInfo: null,
-});
-
-/** 更新搜索信息 */
-export function updateSearch(key: string, r: RoomInfo | null) {
-  storeSearch.roomInfo = r;
-}
-
-/** 清除搜索信息 */
-export function clearSearch() {
-  storeSearch.roomInfo = null;
-}
+export const storeSearch = {
+  platform: atom(""),
+  id: atom(""),
+  result: atom<RoomInfo | null>(null),
+};

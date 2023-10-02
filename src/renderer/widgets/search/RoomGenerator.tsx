@@ -1,4 +1,4 @@
-import { Button, Input, Select, Tooltip } from 'antd';
+import { Button, Input, Select, Tooltip } from "antd";
 import {
   // 图标导入
   SearchOutlined,
@@ -7,12 +7,11 @@ import {
   DeleteOutlined,
   CloseOutlined,
   SyncOutlined,
-} from '@ant-design/icons';
-import { useState } from 'react';
-import RoomCard from '../../components/room/RoomCard';
-import store from '../../store';
-import controller from '../../controller';
-import { useSnapshot } from 'valtio';
+} from "@ant-design/icons";
+import RoomCard from "../../components/room/RoomCard";
+import { store } from "../../store";
+import controller from "../../controller";
+import { useAtom, useAtomValue } from "jotai";
 
 const { Option } = Select;
 const handleChange = (value: string) => {
@@ -21,29 +20,26 @@ const handleChange = (value: string) => {
 
 /** 搜索及添加直播间的组件 */
 const RoomGenerator: React.FC = function () {
-  useSnapshot(store.search)
-  useSnapshot(store.room)
-  const [searchPlatform, setSearchPlatform] = useState(
-    store.search.platform
+  const [platform, setPlatform] = useAtom(store.search.platform);
+  const [id, setId] = useAtom(store.search.id);
+  const [result, setResult] = useAtom(store.search.result);
+  const roomInList = useAtomValue(store.room.list).find(
+    (r) => r.key == result?.key
   );
-  const [searchId, setSearchId] = useState(store.search.id);
-  const searchRoomInfo = store.search.roomInfo;
-  const searchRoomKey = `${searchRoomInfo?.platform}:${searchRoomInfo?.id}`;
+  const listed = !!roomInList;
+  const opened = roomInList?.opened;
   return (
     <div>
       <div>
         <Select
           placeholder="直播平台"
           style={{ width: 100 }}
-          value={searchPlatform || null}
+          value={platform || null}
           onChange={(value) => {
-            setSearchPlatform(value);
-              store.search.platform = value;
+            setPlatform(value);
           }}
         >
-          <Option value="acfun">
-            AcFun
-          </Option>
+          <Option value="acfun">AcFun</Option>
           <Option value="bilibili">bilibili</Option>
           <Option value="douyu" disabled>
             斗鱼
@@ -55,19 +51,14 @@ const RoomGenerator: React.FC = function () {
         <Input
           placeholder="直播间id"
           style={{ width: 150 }}
-          value={searchId}
+          value={id}
           onChange={(e) => {
-            setSearchId(e.target.value);
+            setId(e.target.value);
           }}
-          onBlur={(e) => {
-              store.search.id = e.target.value;
-          }}
-          onPressEnter={() => {
-              store.search.id = searchId;
-            controller.cmd("searchRoom", {
-              platform: store.search.platform,
-              id: store.search.id
-            });
+          onPressEnter={async () => {
+            (setResult as any)(
+              (await controller.cmd("search", platform, id)) || null
+            );
           }}
         />
         <Tooltip title="查找房间">
@@ -75,11 +66,10 @@ const RoomGenerator: React.FC = function () {
             type="primary"
             shape="circle"
             icon={<SearchOutlined />}
-            onClick={() => {
-              controller.cmd("searchRoom",{
-                platform: store.search.platform,
-                id: store.search.id
-              });
+            onClick={async () => {
+              const searchResult = await controller.cmd("search", platform, id);
+              console.log(searchResult);
+              (setResult as any)(searchResult || null);
             }}
           />
         </Tooltip>
@@ -89,47 +79,60 @@ const RoomGenerator: React.FC = function () {
             shape="circle"
             icon={<CloseOutlined />}
             onClick={() => {
-                setSearchPlatform('');
-                setSearchId('');
-                store.search.platform = '';
-                store.search.id = '';
+              setPlatform("");
+              setId("");
             }}
           />
         </Tooltip>
       </div>
-      <div style={{ display: store.search.roomInfo ? '' : 'none' }}>
+      <div style={{ display: result ? "" : "none" }}>
         <RoomCard
-          roomInfo={store.search.roomInfo}
+          roomInfo={result}
           button={{
             top: [
-              <Tooltip title={store.room.roomMap.has(searchRoomKey) ? "房间已添加" : "添加房间到列表"}>
+              <Tooltip title={listed ? "房间已添加" : "添加房间到列表"}>
                 <Button
                   type="ghost"
                   shape="circle"
                   size="small"
                   icon={<PlusOutlined />}
                   style={{ marginLeft: 5 }}
-                  disabled={store.room.roomMap.has(searchRoomKey)}
+                  disabled={listed}
                   onClick={() => {
-                    if (searchRoomInfo?.platform && searchRoomInfo?.id) {
-                      controller.cmd("addRoom", searchRoomKey);
+                    if (result?.platform && result?.id) {
+                      controller.cmd("add", result.platform, result.id);
                     }
                   }}
                 />
               </Tooltip>,
-              <Tooltip title={store.room.roomMap.get(searchRoomKey)?.opening ? '房间已打开' : !searchRoomInfo?.available ? "房间不可用" : store.room.roomMap.has(searchRoomKey) ? "打开房间" : '添加房间并打开'}>
+              <Tooltip
+                title={
+                  opened
+                    ? "房间已打开"
+                    : !result?.available
+                    ? "房间不可用"
+                    : listed
+                    ? "打开房间"
+                    : "添加房间并打开"
+                }
+              >
                 <Button
                   type="primary"
                   shape="circle"
                   size="small"
                   icon={<CaretRightOutlined />}
                   style={{ marginLeft: 5 }}
-                  disabled={store.room.roomMap.get(searchRoomKey)?.opening || !searchRoomInfo?.available}
+                  disabled={opened || !result?.available}
                   onClick={() => {
-                    if (searchRoomInfo?.platform && searchRoomInfo?.id) {
-                      store.room.roomMap.has(searchRoomKey) ?
-                      controller.cmd("openRoom", searchRoomKey) :
-                      controller.cmd("addRoom", searchRoomKey, true);
+                    if (result?.platform && result?.id) {
+                      listed
+                        ? controller.cmd("open", result.key)
+                        : controller.cmd(
+                            "add",
+                            result.platform,
+                            result.id,
+                            true
+                          );
                     }
                   }}
                 />
@@ -144,7 +147,7 @@ const RoomGenerator: React.FC = function () {
                   icon={<SyncOutlined />}
                   style={{ marginLeft: 5 }}
                   onClick={() => {
-                    controller.cmd("searchUpdate")
+                    controller.cmd("searchUpdate");
                   }}
                 />
               </Tooltip>,
@@ -156,11 +159,8 @@ const RoomGenerator: React.FC = function () {
                   icon={<CloseOutlined />}
                   style={{ marginLeft: 5 }}
                   onClick={() => {
-                    if (
-                      store.search.platform &&
-                      store.search.id
-                    ) {
-                        store.search.roomInfo = null;
+                    if (platform && id) {
+                      (setResult as any)(null);
                     }
                   }}
                 />

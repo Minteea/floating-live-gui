@@ -1,60 +1,59 @@
-import { Button, Input, Select, Switch, Tooltip } from 'antd';
+import { Button, Input, Select, Switch, Tooltip } from "antd";
 import {
   // 图标导入
   LinkOutlined,
   ReloadOutlined,
   CloseOutlined,
-} from '@ant-design/icons';
-import { useState } from 'react';
-import store from '../../store';
-import controller from '../../controller';
+} from "@ant-design/icons";
+import { useState } from "react";
+import { store } from "../../store";
+import controller from "../../controller";
+import { useAtom, useAtomValue } from "jotai";
 
 /** 搜索及添加直播间的组件 */
 const LinkSettings: React.FC = function () {
-  const [inputLink, changeInputLink] = useState(store.link.url);
+  const [linkUrl, setLinkUrl] = useAtom(store.link.url);
+  const linkConnected = useAtomValue(store.link.connected);
+  const [linkUrlInput, setLinkUrlInput] = useState(linkUrl);
   return (
     <div>
-      <div>{store.link.connected ? '已连接' : '未连接'}</div>
-      <div style={{ display: 'flex' }}>
-        <Tooltip title={store.link.connected ? '重新连接' : '连接'}>
+      <div>{linkConnected ? "已连接" : "未连接"}</div>
+      <div style={{ display: "flex" }}>
+        <Tooltip title={linkConnected ? "重新连接" : "连接"}>
           <Button
             type="primary"
             shape="circle"
-            icon={
-              store.link.connected ? <ReloadOutlined /> : <LinkOutlined />
-            }
+            icon={linkConnected ? <ReloadOutlined /> : <LinkOutlined />}
             onClick={() => {
-                store.link.url = inputLink;
-              controller.link.link(store.link.url);
+              setLinkUrl(linkUrlInput);
+              controller.link.link(linkUrlInput);
             }}
           />
         </Tooltip>
         <Input
-          value={inputLink}
+          value={linkUrlInput}
           onChange={(e) => {
-            changeInputLink(e.target.value);
+            setLinkUrlInput(e.target.value);
           }}
           onBlur={(e) => {
-            if (!store.link.connected && !(store.link.url == inputLink)) {
-                store.link.url = inputLink;
+            if (!linkConnected && !(linkUrl == linkUrlInput)) {
+              setLinkUrl(linkUrlInput);
             }
           }}
           placeholder="连接后端url"
           status={
-            store.link.url == inputLink || !store.link.connected
-              ? ''
-              : 'warning'
+            linkUrl == linkUrlInput || !store.link.connected ? "" : "warning"
           }
         />
-        {store.link.connected && store.link.url != inputLink ? (
+        {linkConnected && linkUrl != linkUrlInput ? (
           <Tooltip title="取消更改">
             <Button
               type="ghost"
               shape="circle"
-              disabled={store.link.url == inputLink}
+              disabled={linkUrl == linkUrlInput}
               icon={<CloseOutlined />}
               onClick={() => {
-                changeInputLink(store.link.url);
+                setLinkUrlInput(linkUrl);
               }}
             />
           </Tooltip>

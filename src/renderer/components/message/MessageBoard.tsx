@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { MessageData } from "floating-live";
+import { Message } from "floating-live/src/types";
 import { useEffect, useRef, useState } from "react";
 import MessageLine from "./MessageLine";
 import {
@@ -9,7 +9,7 @@ import {
 
 /** 消息板 */
 const MessageBoard: React.FC<{
-  list: MessageData[];
+  list: Message.All[];
   style?: React.CSSProperties;
 }> = function (props) {
   const refMessageContent = useRef<HTMLDivElement>(null);

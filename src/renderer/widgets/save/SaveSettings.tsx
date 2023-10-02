@@ -1,36 +1,38 @@
-import { Button, Input, Select, Switch, Tooltip } from 'antd';
+import { Button, Input, Select, Switch, Tooltip } from "antd";
 import {
   // 图标导入
   CheckOutlined,
   CloseOutlined,
-} from '@ant-design/icons';
-import { useState } from 'react';
-import store from '../../store';
-import controller from '../../controller';
-import { useSnapshot } from 'valtio';
+} from "@ant-design/icons";
+import { useState } from "react";
+import { store } from "../../store";
+import controller from "../../controller";
+import { useSnapshot } from "valtio";
+import { useAtomValue } from "jotai";
 
 /** 搜索及添加直播间的组件 */
 const SavingSettings: React.FC = function () {
-  useSnapshot(store.save)
-  useSnapshot(store.room)
-  const [inputSavePath, changeInputSavePath] = useState(store.save.path);
+  const saveMessage = useAtomValue(store.save.message);
+  const saveRaw = useAtomValue(store.save.raw);
+  const savePath = useAtomValue(store.save.path);
+  const [inputSavePath, changeInputSavePath] = useState(savePath);
   return (
     <div>
       <div>
         记录弹幕到本地
         <Switch
-          checked={store.save.saveMessage}
+          checked={saveMessage}
           onClick={() => {
-            controller.cmd("saveMessage", !store.save.saveMessage);
+            controller.cmd("save.message", !saveMessage);
           }}
         />
       </div>
       <div>
         记录服务器弹幕源数据
         <Switch
-          checked={store.save.saveRaw}
+          checked={saveRaw}
           onClick={() => {
-            controller.cmd("saveRaw", !store.save.saveRaw);
+            controller.cmd("save.raw", !saveRaw);
           }}
         />
       </div>
@@ -38,7 +40,7 @@ const SavingSettings: React.FC = function () {
         保存路径
         <div
           style={{
-            display: 'flex',
+            display: "flex",
           }}
         >
           <Input
@@ -46,30 +48,18 @@ const SavingSettings: React.FC = function () {
             onChange={(e) => {
               changeInputSavePath(e.target.value);
             }}
-            onBlur={(e) => {
-              if (
-                !store.room.active &&
-                !(store.save.path == inputSavePath)
-              ) {
-                controller.cmd("savePath", e.target.value);
-              }
-            }}
-            status={
-              store.save.path == inputSavePath || !store.room.active
-                ? ''
-                : 'warning'
-            }
+            status={savePath == inputSavePath ? "" : "warning"}
           />
           <div style={{ flexShrink: 0 }}>
-            <div style={{ display: store.room.active ? '' : 'none' }}>
+            <div>
               <Tooltip title="应用更改">
                 <Button
                   type="primary"
                   shape="circle"
-                  disabled={store.save.path == inputSavePath}
+                  disabled={savePath == inputSavePath}
                   icon={<CheckOutlined />}
                   onClick={() => {
-                    controller.cmd("savePath", inputSavePath);
+                    controller.cmd("save.path", inputSavePath);
                   }}
                 />
               </Tooltip>
@@ -77,10 +67,10 @@ const SavingSettings: React.FC = function () {
                 <Button
                   type="ghost"
                   shape="circle"
-                  disabled={store.save.path == inputSavePath}
+                  disabled={savePath == inputSavePath}
                   icon={<CloseOutlined />}
                   onClick={() => {
-                    changeInputSavePath(store.save.path);
+                    changeInputSavePath(savePath);
                   }}
                 />
               </Tooltip>

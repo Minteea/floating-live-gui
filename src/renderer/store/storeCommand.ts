@@ -1,4 +1,4 @@
-import { proxy } from "valtio";
+import { atom } from "jotai";
 
 export interface IStateCommand {
   /** 输入值 */
@@ -7,7 +7,7 @@ export interface IStateCommand {
   show: boolean;
 }
 
-export const storeCommand: IStateCommand = proxy({
-  input: "",
-  show: true,
-});
+export const storeCommand = {
+  input: atom(""),
+  show: atom(true),
+};
