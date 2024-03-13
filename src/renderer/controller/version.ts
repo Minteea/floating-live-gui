@@ -9,8 +9,9 @@ const version: {
   // 通用属性
   client: "electron" | "browser"; // 客户端类型
   react: string; // react版本
-  app: string; // 应用版本
   // electron应用端属性
+  app: string; // 应用版本
+  floating?: string; // floating版本
   electron?: string; // electron版本
   node?: string; // node版本
   chrome?: string; // Chrome版本
@@ -21,7 +22,8 @@ const version: {
 } = {
   client: process ? "electron" : "browser",
   react: React.version,
-  app: process?.env.npm_package_version || "",
+  app: window.version?.gui || "",
+  floating: window.version?.floating || "",
   electron: process?.versions.electron || undefined,
   node: process?.versions.node || undefined,
   chrome: process?.versions.chrome || undefined,

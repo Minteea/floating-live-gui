@@ -9,9 +9,14 @@ import {
   SyncOutlined,
 } from "@ant-design/icons";
 import RoomCard from "../../components/room/RoomCard";
-import { store } from "../../store";
-import controller from "../../controller";
-import { useAtom, useAtomValue } from "jotai";
+import { $rooms, controller } from "../../controller";
+import {
+  $searchId,
+  $searchPlatform,
+  $searchResult,
+} from "../../../renderer/store";
+import { useStore } from "@nanostores/react";
+import { atom } from "nanostores";
 
 const { Option } = Select;
 const handleChange = (value: string) => {
@@ -20,12 +25,11 @@ const handleChange = (value: string) => {
 
 /** 搜索及添加直播间的组件 */
 const RoomGenerator: React.FC = function () {
-  const [platform, setPlatform] = useAtom(store.search.platform);
-  const [id, setId] = useAtom(store.search.id);
-  const [result, setResult] = useAtom(store.search.result);
-  const roomInList = useAtomValue(store.room.list).find(
-    (r) => r.key == result?.key
-  );
+  const platform = useStore($searchPlatform);
+  const id = useStore($searchId);
+  const result = useStore($searchResult);
+  const $roomInList = useStore($rooms).find((r) => r.get().key == result?.key);
+  const roomInList = useStore($roomInList || atom(undefined));
   const listed = !!roomInList;
   const opened = roomInList?.opened;
   return (
@@ -36,7 +40,7 @@ const RoomGenerator: React.FC = function () {
           style={{ width: 100 }}
           value={platform || null}
           onChange={(value) => {
-            setPlatform(value);
+            $searchPlatform.set(value);
           }}
         >
           <Option value="acfun">AcFun</Option>
@@ -53,11 +57,11 @@ const RoomGenerator: React.FC = function () {
           style={{ width: 150 }}
           value={id}
           onChange={(e) => {
-            setId(e.target.value);
+            $searchId.set(e.target.value);
           }}
           onPressEnter={async () => {
-            (setResult as any)(
-              (await controller.cmd("search", platform, id)) || null
+            $searchResult.set(
+              (await controller.call(`${platform}.room.info`, id)) || null
             );
           }}
         />
@@ -67,9 +71,11 @@ const RoomGenerator: React.FC = function () {
             shape="circle"
             icon={<SearchOutlined />}
             onClick={async () => {
-              const searchResult = await controller.cmd("search", platform, id);
-              console.log(searchResult);
-              (setResult as any)(searchResult || null);
+              const searchResult = await controller.call(
+                `${platform}.room.info`,
+                id
+              );
+              $searchResult.set(searchResult || null);
             }}
           />
         </Tooltip>
@@ -79,8 +85,8 @@ const RoomGenerator: React.FC = function () {
             shape="circle"
             icon={<CloseOutlined />}
             onClick={() => {
-              setPlatform("");
-              setId("");
+              $searchPlatform.set("");
+              $searchId.set("");
             }}
           />
         </Tooltip>
@@ -88,6 +94,7 @@ const RoomGenerator: React.FC = function () {
       <div style={{ display: result ? "" : "none" }}>
         <RoomCard
           roomInfo={result}
+          key={result?.key || ""}
           button={{
             top: [
               <Tooltip title={listed ? "房间已添加" : "添加房间到列表"}>
@@ -100,7 +107,11 @@ const RoomGenerator: React.FC = function () {
                   disabled={listed}
                   onClick={() => {
                     if (result?.platform && result?.id) {
-                      controller.cmd("add", result.platform, result.id);
+                      controller.call(
+                        "add",
+                        result.platform,
+                        result.id as number
+                      );
                     }
                   }}
                 />
@@ -126,11 +137,11 @@ const RoomGenerator: React.FC = function () {
                   onClick={() => {
                     if (result?.platform && result?.id) {
                       listed
-                        ? controller.cmd("open", result.key)
-                        : controller.cmd(
+                        ? controller.call("open", result.key)
+                        : controller.call(
                             "add",
                             result.platform,
-                            result.id,
+                            result.id as number,
                             true
                           );
                     }
@@ -146,8 +157,14 @@ const RoomGenerator: React.FC = function () {
                   size="small"
                   icon={<SyncOutlined />}
                   style={{ marginLeft: 5 }}
-                  onClick={() => {
-                    controller.cmd("searchUpdate");
+                  onClick={async () => {
+                    if (!result) return;
+                    const { platform, id } = result;
+                    const searchResult = await controller.call(
+                      `${platform}.room.info`,
+                      id
+                    );
+                    $searchResult.set(searchResult || null);
                   }}
                 />
               </Tooltip>,
@@ -160,7 +177,7 @@ const RoomGenerator: React.FC = function () {
                   style={{ marginLeft: 5 }}
                   onClick={() => {
                     if (platform && id) {
-                      (setResult as any)(null);
+                      $searchResult.set(null);
                     }
                   }}
                 />

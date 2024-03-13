@@ -5,17 +5,16 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
-import { store } from "../../store";
-import controller from "../../controller";
-import { useSnapshot } from "valtio";
-import { useAtomValue } from "jotai";
+import { $values, controller } from "../../controller";
+import { useStore } from "@nanostores/react";
 
 /** 搜索及添加直播间的组件 */
 const SavingSettings: React.FC = function () {
-  const saveMessage = useAtomValue(store.save.message);
-  const saveRaw = useAtomValue(store.save.raw);
-  const savePath = useAtomValue(store.save.path);
-  const [inputSavePath, changeInputSavePath] = useState(savePath);
+  const values = useStore($values);
+  const saveMessage = values["save.message"];
+  const saveRaw = values["save.raw"];
+  const savePath = values["save.path"] || "";
+  const [inputSavePath, setInputSavePath] = useState(savePath);
   return (
     <div>
       <div>
@@ -23,7 +22,7 @@ const SavingSettings: React.FC = function () {
         <Switch
           checked={saveMessage}
           onClick={() => {
-            controller.cmd("save.message", !saveMessage);
+            controller.value.set("save.message", !saveMessage);
           }}
         />
       </div>
@@ -32,7 +31,7 @@ const SavingSettings: React.FC = function () {
         <Switch
           checked={saveRaw}
           onClick={() => {
-            controller.cmd("save.raw", !saveRaw);
+            controller.value.set("save.raw", !saveRaw);
           }}
         />
       </div>
@@ -46,7 +45,7 @@ const SavingSettings: React.FC = function () {
           <Input
             value={inputSavePath}
             onChange={(e) => {
-              changeInputSavePath(e.target.value);
+              setInputSavePath(e.target.value);
             }}
             status={savePath == inputSavePath ? "" : "warning"}
           />
@@ -59,7 +58,7 @@ const SavingSettings: React.FC = function () {
                   disabled={savePath == inputSavePath}
                   icon={<CheckOutlined />}
                   onClick={() => {
-                    controller.cmd("save.path", inputSavePath);
+                    controller.value.set("save.path", inputSavePath || "");
                   }}
                 />
               </Tooltip>
@@ -70,7 +69,7 @@ const SavingSettings: React.FC = function () {
                   disabled={savePath == inputSavePath}
                   icon={<CloseOutlined />}
                   onClick={() => {
-                    changeInputSavePath(savePath);
+                    setInputSavePath(savePath);
                   }}
                 />
               </Tooltip>

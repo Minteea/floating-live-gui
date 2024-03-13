@@ -1,4 +1,4 @@
-import { Message, UserInfo } from "floating-live/src/types";
+import { Message, UserInfo } from "floating-live";
 import { getAdminType } from "../../utils/enumUtils";
 import platform from "../../utils/platform";
 

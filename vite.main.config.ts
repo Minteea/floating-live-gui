@@ -1,13 +1,43 @@
-import { defineConfig } from "vite";
+import type { ConfigEnv, UserConfig } from "vite";
+import { defineConfig, mergeConfig } from "vite";
+import {
+  getBuildConfig,
+  getBuildDefine,
+  external,
+  pluginHotRestart,
+} from "./vite.base.config";
+import packageInfo from "./package.json";
 
 // https://vitejs.dev/config
-export default defineConfig({
-  resolve: {
-    // Some libs that can run in both Web and Node.js, such as `axios`, we need to tell Vite to build them in Node.js.
-    browserField: false,
-    mainFields: ["module", "jsnext:main", "jsnext"],
-    alias: {
-      ws: "./node_modules/ws/index.js",
+export default defineConfig((env) => {
+  const forgeEnv = env as ConfigEnv<"build">;
+  const { forgeConfigSelf } = forgeEnv;
+  const define = getBuildDefine(forgeEnv);
+  const config: UserConfig = {
+    build: {
+      lib: {
+        entry: forgeConfigSelf.entry!,
+        fileName: () => "[name].js",
+        formats: ["cjs"],
+      },
+      rollupOptions: {
+        external,
+      },
     },
-  },
+    plugins: [pluginHotRestart("restart")],
+    define: {
+      ...define,
+      GUI_VERSION: JSON.stringify(packageInfo.version),
+      FLOATING_VERSION: JSON.stringify(
+        packageInfo.dependencies["floating-live"]
+      ),
+    },
+    resolve: {
+      mainFields: ["module", "jsnext:main", "jsnext"],
+      alias: {
+        ws: "./node_modules/ws/index.js",
+      },
+    },
+  };
+  return mergeConfig(getBuildConfig(forgeEnv), config);
 });

@@ -1,12 +1,22 @@
 import { Button, Checkbox, Input, Modal, Select, Tabs, Tooltip } from "antd";
-import controller from "../../controller";
-import { AuthOptions } from "floating-live/src/types";
+import { $commands, $values, controller } from "../../controller";
 import { ReactNode, useState } from "react";
 import Markdown from "react-markdown";
-import { useAtom, useAtomValue } from "jotai";
-import { store } from "../../store";
+
 import QRCode from "react-qr-code";
 import { useInterval } from "ahooks";
+import { useStore } from "@nanostores/react";
+import { $authSave } from "../../../renderer/store";
+
+declare module "floating-live" {
+  interface FloatingCommandMap {
+    [name: `${string}.login.qrcode.get`]: () => { key: string; url: string };
+    [name: `${string}.login.qrcode.poll`]: (key: string) => {
+      status: number;
+      credentials: string;
+    };
+  }
+}
 
 const authWarn: Record<string, ReactNode> = {
   bilibili: (
@@ -20,11 +30,6 @@ const authWarn: Record<string, ReactNode> = {
       </a>
     </>
   ),
-};
-
-const authTips: Record<string, ReactNode> = {
-  cookie:
-    "请在登录后的平台页面通过开发者工具获取cookie，并粘贴到上方的输入框。",
 };
 
 function qrStatusInfo(c: number) {
@@ -43,15 +48,19 @@ function qrStatusInfo(c: number) {
 /** 平台登录设置 */
 const PlatformAuth: React.FC<{
   platform: string;
-  options?: AuthOptions;
-}> = function ({ platform, options }) {
+}> = function ({ platform }) {
+  const loginCredentials = $commands
+    .get()
+    .includes(`${platform}.credentials.check`);
+  const loginQrcode = $commands.get().includes(`${platform}.login.qrcode.get`);
+  const values = useStore($values);
+  const authSave = useStore($authSave);
   const [modalOpen, setModalOpen] = useState(false);
   const [authCode, setAuthCode] = useState("");
-  const [authSave, setAuthSave] = useAtom(store.auth.save);
   const [qrData, setQrData] = useState("");
   const [qrKey, setQrKey] = useState("");
   const [qrStatus, setQrStatus] = useState(-2);
-  const userId = useAtomValue(store.auth.status)[platform];
+  const userId = values[`auth.userId.${platform}`];
   useInterval(
     () => {
       QrCheck(qrKey);
@@ -59,12 +68,12 @@ const PlatformAuth: React.FC<{
     qrKey ? 1000 : undefined
   );
   const submit = () => {
-    controller.cmd("auth", platform, authCode);
-    if (authSave) controller.cmd("auth.save", platform, authCode);
+    controller.call("auth", platform, authCode);
+    controller.call("auth.save", platform, authSave ? authCode : "");
     closeModal();
   };
   const QrGenerate = async () => {
-    const result = await controller.cmd(`auth.${platform}.qrcode.get`);
+    const result = await controller.call(`${platform}.login.qrcode.get`);
     if (result) {
       setQrStatus(1);
       setQrData(result.url);
@@ -72,14 +81,15 @@ const PlatformAuth: React.FC<{
     }
   };
   const QrCheck = async (key: string) => {
-    const result = await controller.cmd(`auth.${platform}.qrcode.check`, key);
+    const result = await controller.call(`${platform}.login.qrcode.poll`, key);
     if (result) {
-      const [code, auth] = result;
-      setQrStatus(code);
-      if (code == 0) {
-        if (authSave) controller.cmd("auth.save", platform, auth);
+      const { status, credentials } = result;
+      setQrStatus(status);
+      if (status == 0) {
+        controller.call("auth", platform, credentials);
+        controller.call("auth.save", platform, authSave ? credentials : "");
         closeModal();
-      } else if (code < 0) {
+      } else if (status < 0) {
         setQrKey("");
       }
     } else {
@@ -94,9 +104,26 @@ const PlatformAuth: React.FC<{
     setQrStatus(-2);
   };
   return (
-    <div style={{ display: options ? "" : "none" }}>
+    <div style={{ display: loginCredentials || loginQrcode ? "" : "none" }}>
       <Button onClick={() => setModalOpen(true)}>设置登录凭证</Button>
-      <span>{userId ? `已登录账号: ${userId}` : "当前未登录"}</span>
+      <span style={{ padding: "0 4px" }}>
+        {userId ? (
+          <>
+            <span>已登录账号: {userId}</span>
+            <a
+              onClick={() => {
+                controller.call("auth", platform, "");
+                controller.call("auth.save", platform, "");
+              }}
+              style={{ padding: "0 4px" }}
+            >
+              [退出登录]
+            </a>
+          </>
+        ) : (
+          <span>当前未登录</span>
+        )}
+      </span>
       <div>{authWarn[platform]}</div>
       <Modal
         title={`设置${platform}的登录凭证`}
@@ -110,6 +137,7 @@ const PlatformAuth: React.FC<{
             {
               label: "粘贴凭证",
               key: "auth",
+              disabled: !loginCredentials,
               children: (
                 <div>
                   <Input.TextArea
@@ -123,12 +151,14 @@ const PlatformAuth: React.FC<{
                   <Checkbox
                     checked={authSave}
                     onChange={(e) => {
-                      setAuthSave(e.target.checked);
+                      $authSave.set(e.target.checked);
                     }}
                   >
                     保存登录凭证
                   </Checkbox>
-                  <div>{authTips[options?.auth?.type]}</div>
+                  <div>
+                    请在登录后的平台页面通过开发者工具获取cookie，并粘贴到上方的输入框。
+                  </div>
                   <div>登录凭证属于重要隐私信息，请不要泄露给其他人。</div>
                 </div>
               ),
@@ -136,6 +166,7 @@ const PlatformAuth: React.FC<{
             {
               label: "二维码登录",
               key: "qrcode",
+              disabled: !loginQrcode,
               children: (
                 <div>
                   <div
@@ -180,7 +211,7 @@ const PlatformAuth: React.FC<{
                   <Checkbox
                     checked={authSave}
                     onChange={(e) => {
-                      setAuthSave(e.target.checked);
+                      $authSave.set(e.target.checked);
                     }}
                   >
                     保存登录凭证
@@ -188,7 +219,7 @@ const PlatformAuth: React.FC<{
                 </div>
               ),
             },
-          ]}
+          ].filter((i) => !i.disabled)}
         />
       </Modal>
     </div>

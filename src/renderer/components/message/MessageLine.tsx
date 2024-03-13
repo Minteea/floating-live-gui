@@ -1,9 +1,9 @@
-import { Message } from "floating-live/src/types";
+import { Message } from "floating-live";
 import User from "./User";
 import { Image } from "antd";
-import { ImageSize, UserType } from "floating-live/src/enum";
+import { ImageSize, UserType } from "floating-live";
 
-function getChatWithEmoticon(msg: Message.Chat) {
+function getChatWithEmoticon(msg: Message.Comment) {
   let prostr = msg.info.content.split("@").join("@A"); // replaceAll("@", "@A")
   for (let kw in msg.info.emoticon) {
     let keyword = kw.split("@").join("@A");
@@ -43,7 +43,7 @@ const MessageLine: React.FC<{
 }> = function (props) {
   const { msg } = props;
   switch (msg.type) {
-    case "chat": {
+    case "comment": {
       return (
         <div>
           <Image
@@ -58,7 +58,7 @@ const MessageLine: React.FC<{
             <img
               src={msg.info.image.url}
               referrerPolicy="no-referrer"
-              height={getImageSize(msg.info.image.size)}
+              height={getImageSize(msg.info.image.size || 0)}
             />
           ) : msg.info.emoticon ? (
             getChatWithEmoticon(msg)
@@ -158,7 +158,7 @@ const MessageLine: React.FC<{
         <div>
           <User msg={msg} />
           &nbsp; 已被
-          <span>{getAdmin(msg.info.operator.type)}</span>
+          <span>{getAdmin(msg.info.operator.type || 0)}</span>
           禁言
         </div>
       );

@@ -1,39 +1,12 @@
-import { Atom, getDefaultStore, WritableAtom } from "jotai/vanilla";
-import { storeRoom } from "./storeRoom";
-import { storeMessage } from "./storeMessage";
-import { storeSearch } from "./storeSearch";
-import { storeServer } from "./storeServer";
-import { storeSave } from "./storeSave";
-import { storeLink } from "./storeLink";
-import { storeCommand } from "./storeCommand";
-import { storeAuth } from "./storeAuth";
+import { atom, batched, computed } from "nanostores";
+import { RoomInfo } from "floating-live";
+import { $rooms } from "../controller";
 
-export const atomStore = getDefaultStore();
+export const $commandInput = atom("");
+export const $commandShow = atom(true);
 
-export function getAtom<T>(atom: Atom<T>) {
-  return atomStore.get(atom);
-}
-export function setAtom<T>(
-  atom: WritableAtom<unknown, [T], unknown>,
-  value: T
-) {
-  return atomStore.set(atom, value);
-}
+export const $searchPlatform = atom("");
+export const $searchId = atom("");
+export const $searchResult = atom<RoomInfo | null>(null);
 
-export const store = {
-  search: storeSearch,
-
-  server: storeServer,
-
-  link: storeLink,
-
-  save: storeSave,
-
-  command: storeCommand,
-
-  message: storeMessage,
-
-  room: storeRoom,
-
-  auth: storeAuth,
-};
+export const $authSave = atom(false);

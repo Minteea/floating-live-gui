@@ -1,7 +1,9 @@
 import { Button, Divider, Select } from "antd";
-import { store } from "../../store";
-import { useAtomValue } from "jotai";
+
 import PlatformAuth from "./PlatformAuth";
+import { $searchPlatform } from "../../../renderer/store";
+import { useStore } from "@nanostores/react";
+import { $commands, $manifests } from "../../../renderer/controller";
 
 const { Option } = Select;
 const handleChange = (value: string) => {
@@ -10,13 +12,14 @@ const handleChange = (value: string) => {
 
 /** 平台设置 */
 const PlatformSettings: React.FC = function () {
-  const platform = useAtomValue(store.search.platform);
-  const authOptions = useAtomValue(store.auth.options)[platform];
+  const platform = useStore($searchPlatform);
+  const platformName =
+    useStore($manifests).platform?.[platform]?.name || platform;
   return (
-    <div style={{ display: authOptions ? "" : "none" }}>
+    <div style={{ display: platform ? "" : "none" }}>
       <Divider />
-      <h3>平台设置 - {platform}</h3>
-      <PlatformAuth platform={platform} options={authOptions} />
+      <h3>平台设置 - {platformName}</h3>
+      <PlatformAuth platform={platform} />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { Message } from "floating-live/src/types";
+import { Message } from "floating-live";
 import { useEffect, useRef, useState } from "react";
 import MessageLine from "./MessageLine";
 import {
@@ -16,6 +16,7 @@ const MessageBoard: React.FC<{
   const refMessageContainer = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
   const scrollToBottom = () => {
+    console.log(refMessageContent.current?.clientHeight);
     refMessageContent.current!.scrollIntoView({
       behavior: "smooth",
       block: "end",

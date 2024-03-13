@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "allowJs": true,
+    "target": "ESNext",
     "module": "commonjs",
     "jsx": "react-jsx",
+    "allowJs": true,
+    "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
@@ -12,6 +13,5 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true
-  },
-  "include": ["src/**/*"]
+  }
 }

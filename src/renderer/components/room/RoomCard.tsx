@@ -1,5 +1,5 @@
-import { RoomInfo } from "floating-live/src/types";
-import { RoomStatus } from "floating-live/src/enum";
+import { RoomInfo } from "floating-live";
+import { RoomStatus } from "floating-live";
 import { secondToTime } from "../../utils/time";
 import { getLiveStatus } from "../../utils/enumUtils";
 import { useInterval } from "ahooks";
@@ -16,10 +16,10 @@ const RoomCard: React.FC<{
 }> = function (props) {
   const info = props.roomInfo;
   const [timeSec, setTimeSec] = useState(
-    (Date.now() - info?.timestamp || 0) / 1000
+    (Date.now() - (info?.timestamp || 0)) / 1000
   );
   useInterval(() => {
-    setTimeSec((Date.now() - info?.timestamp || 0) / 1000);
+    setTimeSec((Date.now() - (info?.timestamp || 0)) / 1000);
   }, 100);
   return (
     <div className="ant-card ant-card-bordered" style={{}}>

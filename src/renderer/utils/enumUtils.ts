@@ -1,4 +1,4 @@
-import { UserType, RoomStatus } from "floating-live/src/enum";
+import { UserType, RoomStatus } from "floating-live";
 
 export function getAdminType(n?: UserType) {
   switch (n) {
@@ -13,10 +13,12 @@ export function getLiveStatus(n?: RoomStatus) {
   switch (n) {
     case RoomStatus.live:
       return "直播中";
-    case RoomStatus.banned:
-      return "已封禁";
     case RoomStatus.round:
       return "轮播中";
+    case RoomStatus.banned:
+      return "已封禁";
+    case RoomStatus.locked:
+      return "已上锁";
     default:
       return "未开播";
   }

@@ -5,6 +5,10 @@ declare global {
       env: NodeJS.ProcessEnv;
       platform: NodeJS.Platform;
     };
+    version: {
+      gui: string;
+      floating: string;
+    };
     ipcRenderer: {
       invoke(channel: string, ...args: any[]): Promise<any>;
       on(

@@ -6,14 +6,14 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
-import { store } from "../../store";
-import controller from "../../controller";
-import { useAtom, useAtomValue } from "jotai";
+import { $values, controller } from "../../controller";
+import { useStore } from "@nanostores/react";
 
 /** 搜索及添加直播间的组件 */
 const LinkSettings: React.FC = function () {
-  const [linkUrl, setLinkUrl] = useAtom(store.link.url);
-  const linkConnected = useAtomValue(store.link.connected);
+  const values = useStore($values);
+  const linkConnected = values["link.connected"];
+  const linkUrl = values["link.url"] || "";
   const [linkUrlInput, setLinkUrlInput] = useState(linkUrl);
   return (
     <div>
@@ -25,8 +25,7 @@ const LinkSettings: React.FC = function () {
             shape="circle"
             icon={linkConnected ? <ReloadOutlined /> : <LinkOutlined />}
             onClick={() => {
-              setLinkUrl(linkUrlInput);
-              controller.link.link(linkUrlInput);
+              controller.call("link", linkUrlInput);
             }}
           />
         </Tooltip>
@@ -37,13 +36,11 @@ const LinkSettings: React.FC = function () {
           }}
           onBlur={(e) => {
             if (!linkConnected && !(linkUrl == linkUrlInput)) {
-              setLinkUrl(linkUrlInput);
+              controller.value.set("link.url", linkUrlInput);
             }
           }}
           placeholder="连接后端url"
-          status={
-            linkUrl == linkUrlInput || !store.link.connected ? "" : "warning"
-          }
+          status={linkUrl == linkUrlInput || !linkConnected ? "" : "warning"}
         />
         {linkConnected && linkUrl != linkUrlInput ? (
           <Tooltip title="取消更改">

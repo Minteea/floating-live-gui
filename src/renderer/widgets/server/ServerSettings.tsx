@@ -1,15 +1,15 @@
 import { InputNumber, Switch } from "antd";
 import {} from "@ant-design/icons";
 import { useState } from "react";
-import { store } from "../../store";
-import controller from "../../controller";
-import { useSnapshot } from "valtio";
-import { useAtom, useAtomValue } from "jotai";
+import { $values, controller } from "../../controller";
+
+import { useStore } from "@nanostores/react";
 
 /** 搜索及添加直播间的组件 */
 const ServerSettings: React.FC = function () {
-  const opened = useAtomValue(store.server.opened);
-  const port = useAtomValue(store.server.port);
+  const values = useStore($values);
+  const opened = values["server.open"];
+  const port = values["server.port"];
   return (
     <div>
       <div>
@@ -17,7 +17,7 @@ const ServerSettings: React.FC = function () {
         <Switch
           checked={opened}
           onClick={() => {
-            controller.cmd(opened ? "server.close" : "server.open");
+            controller.call(opened ? "server.close" : "server.open");
           }}
         />
       </div>
@@ -32,7 +32,7 @@ const ServerSettings: React.FC = function () {
           style={{ width: 160 }}
           disabled={opened}
           onBlur={(e) => {
-            controller.cmd("server:port", Number(e.target.value));
+            controller.value.set("server.port", Number(e.target.value));
           }}
         />
       </div>
