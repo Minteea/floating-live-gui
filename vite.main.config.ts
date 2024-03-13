@@ -33,11 +33,10 @@ export default defineConfig((env) => {
       ),
     },
     resolve: {
+      // Load the Node.js entry.
       mainFields: ["module", "jsnext:main", "jsnext"],
-      alias: {
-        ws: "./node_modules/ws/index.js",
-      },
     },
   };
+
   return mergeConfig(getBuildConfig(forgeEnv), config);
 });

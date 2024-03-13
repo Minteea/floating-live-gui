@@ -18,8 +18,14 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+declare global {
+  var floating: FloatingLive;
+}
+
 // 引入程序
-export const floating = new FloatingLive();
+const floating = new FloatingLive();
+
+global.floating = floating;
 
 async function lifeCycle() {
   console.log("Floating Live GUI by Minteea");

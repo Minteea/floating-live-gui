@@ -39,5 +39,6 @@ export default defineConfig((env) => {
       ),
     },
   };
+
   return mergeConfig(getBuildConfig(forgeEnv), config);
 });
