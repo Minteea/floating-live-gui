@@ -682,10 +682,10 @@
   dependencies:
     bilibili-live-ws "^6.3.1"
 
-"@floating-live/plugin-auth@^0.15.5":
-  version "0.15.5"
-  resolved "https://registry.npmjs.org/@floating-live/plugin-auth/-/plugin-auth-0.15.5.tgz#eb05ed424f677fef8ff34f44a6ee929e49dff4ee"
-  integrity sha512-yafS36Ci/O4L6+YXemYrHcbdASTeAoATtpsXlnHF9jOOPAHPUhhlMqMabuJ89CGEykp2z6uREHYMLUW9GNP9wg==
+"@floating-live/plugin-auth@^0.15.6":
+  version "0.15.6"
+  resolved "https://registry.npmjs.org/@floating-live/plugin-auth/-/plugin-auth-0.15.6.tgz#84cdfa24cb0dabf9954aeb54fdfe7093fad540ad"
+  integrity sha512-QwKeS9n37I2s4nd92v/vaPRUUHgvIYQ6XP39walw8W+m8CIZguSIpAZehCVS1itc4H0IK1z9OFAOLSs4eIutfg==
 
 "@floating-live/plugin-console-event@^0.15.1":
   version "0.15.1"

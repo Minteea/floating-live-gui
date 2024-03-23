@@ -47,7 +47,6 @@ export default class AuthSave {
         const auth = safeStorage.decryptString(
           Buffer.from(data[p].encrypted, "base64")
         );
-        console.log(`READ ${p}`);
         console.log(auth);
         this.main.command.call("auth", p, auth);
       } catch (err) {

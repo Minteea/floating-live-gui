@@ -13,6 +13,7 @@ import { PluginBilibili } from "@floating-live/bilibili";
 import { PluginAcfun } from "@floating-live/acfun";
 import { ConsoleEvent } from "@floating-live/plugin-console-event";
 import path from "path";
+import AppBlacklist from "./plugins/appBlacklist";
 
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -34,6 +35,8 @@ async function lifeCycle() {
 
 lifeCycle()
   .then(async () => {
+    // 控制台事件插件
+    await floating.plugin.register(ConsoleEvent);
     // 安装核心插件
     await floating.plugin.register(JsonStorage, {
       path: path.resolve(app.getPath("userData"), "./AppStorage"),
@@ -46,9 +49,10 @@ lifeCycle()
       },
     });
 
+    await floating.plugin.register(AppBlacklist);
+
     await floating.plugin.register(ElectronGui);
 
-    await floating.plugin.register(ConsoleEvent);
     await floating.plugin.register(Auth);
 
     await floating.plugin.register(Save);

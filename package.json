@@ -23,7 +23,7 @@
     "@fastify/websocket": "^8.2.0",
     "@floating-live/acfun": "^0.15.5",
     "@floating-live/bilibili": "^0.15.3",
-    "@floating-live/plugin-auth": "^0.15.5",
+    "@floating-live/plugin-auth": "^0.15.6",
     "@floating-live/plugin-console-event": "^0.15.1",
     "@floating-live/plugin-save": "^0.15.2",
     "@nanostores/persistent": "^0.10.1",

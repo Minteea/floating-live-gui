@@ -41,7 +41,6 @@ export default class ElectronGui {
     // init ipcMain
 
     ipcMain.handle("connect", (e) => {
-      console.log(main.getSnapshot());
       e.sender.send("snapshot", main.getSnapshot());
       return [1];
     });
