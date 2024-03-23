@@ -1,5 +1,6 @@
 import FloatingController from "../../Controller";
 
+declare const NODE_ENV: string;
 declare module "../../types" {
   interface ControllerCommandMap {
     link: (url: string) => void;
@@ -20,7 +21,8 @@ export class WsHttpLink {
   static pluginName = "link";
 
   ws: WebSocket | null = null;
-  url: string = "localhost:8130";
+  url: string =
+    NODE_ENV == "production" ? `${location.host}` : "localhost:8130";
   timeout: number = 5000;
   connected: boolean = false;
   wsRoute: string = "/ws";
@@ -95,9 +97,16 @@ export class WsHttpLink {
         body: JSON.stringify([channel, ...args]),
       })
         .then((response) => response.json())
-        .then(([ok, res]) => (ok ? res : this.main.throw(res)))
+        .then(([ok, res]) => {
+          if (ok) return res;
+          else throw res;
+        })
         .catch((err) => {
-          this.main.throw(err);
+          if (err._error) {
+            this.main.throw(err);
+          } else {
+            throw err;
+          }
         });
     } else {
       this.main.throw({

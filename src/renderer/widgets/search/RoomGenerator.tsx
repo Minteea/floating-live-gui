@@ -12,6 +12,7 @@ import RoomCard from "../../components/room/RoomCard";
 import { $rooms, controller } from "../../controller";
 import {
   $searchId,
+  $searchInfo,
   $searchPlatform,
   $searchResult,
 } from "../../../renderer/store";
@@ -19,19 +20,14 @@ import { useStore } from "@nanostores/react";
 import { atom } from "nanostores";
 
 const { Option } = Select;
-const handleChange = (value: string) => {
-  console.log(`selected ${value}`);
-};
 
 /** 搜索及添加直播间的组件 */
 const RoomGenerator: React.FC = function () {
   const platform = useStore($searchPlatform);
   const id = useStore($searchId);
-  const result = useStore($searchResult);
-  const $roomInList = useStore($rooms).find((r) => r.get().key == result?.key);
-  const roomInList = useStore($roomInList || atom(undefined));
-  const listed = !!roomInList;
-  const opened = roomInList?.opened;
+  const result = useStore($searchInfo);
+  const added = result?.added;
+  const opened = result?.opened;
   return (
     <div>
       <div>
@@ -97,14 +93,14 @@ const RoomGenerator: React.FC = function () {
           key={result?.key || ""}
           button={{
             top: [
-              <Tooltip title={listed ? "房间已添加" : "添加房间到列表"}>
+              <Tooltip title={added ? "房间已添加" : "添加房间到列表"}>
                 <Button
                   type="ghost"
                   shape="circle"
                   size="small"
                   icon={<PlusOutlined />}
                   style={{ marginLeft: 5 }}
-                  disabled={listed}
+                  disabled={added}
                   onClick={() => {
                     if (result?.platform && result?.id) {
                       controller.call(
@@ -122,7 +118,7 @@ const RoomGenerator: React.FC = function () {
                     ? "房间已打开"
                     : !result?.available
                     ? "房间不可用"
-                    : listed
+                    : added
                     ? "打开房间"
                     : "添加房间并打开"
                 }
@@ -136,7 +132,7 @@ const RoomGenerator: React.FC = function () {
                   disabled={opened || !result?.available}
                   onClick={() => {
                     if (result?.platform && result?.id) {
-                      listed
+                      added
                         ? controller.call("open", result.key)
                         : controller.call(
                             "add",

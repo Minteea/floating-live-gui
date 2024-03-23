@@ -17,7 +17,8 @@ declare global {
 export const controller = new Controller();
 
 export const { $messages } = controller.plugin.registerSync(StoreMessages);
-export const { $rooms } = controller.plugin.registerSync(StoreRooms);
+export const { $rooms, $openedRooms } =
+  controller.plugin.registerSync(StoreRooms);
 export const { $values } = controller.plugin.registerSync(StoreValues);
 export const { $commands } = controller.plugin.registerSync(StoreCommands);
 export const { $manifests } = controller.plugin.registerSync(StoreManifests);

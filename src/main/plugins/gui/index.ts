@@ -43,6 +43,7 @@ export default class ElectronGui {
     ipcMain.handle("connect", (e) => {
       console.log(main.getSnapshot());
       e.sender.send("snapshot", main.getSnapshot());
+      return [1];
     });
 
     ipcMain.handle(
@@ -52,7 +53,21 @@ export default class ElectronGui {
         command: T,
         ...args: Parameters<FloatingCommandMap[T]>
       ) => {
-        return await main.call(command, ...args);
+        try {
+          const result = await main.call(command, ...args);
+          return [1, result];
+        } catch (err) {
+          let rej;
+          if (err instanceof Error) {
+            rej = Object.assign(
+              { message: err.message, name: err.name, _error: true },
+              err
+            );
+          } else {
+            rej = err;
+          }
+          return [0, rej];
+        }
       }
     );
 

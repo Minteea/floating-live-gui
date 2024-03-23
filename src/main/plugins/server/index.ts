@@ -20,7 +20,7 @@ declare module "floating-live" {
   }
 }
 
-export default class Server extends EventEmitter {
+export default class Server {
   static readonly pluginName = "server";
   readonly app = fastify();
   port = 8130;
@@ -35,7 +35,6 @@ export default class Server extends EventEmitter {
   }
 
   constructor(main: FloatingLive, options: { port: number; opened: boolean }) {
-    super();
     this.port = options?.port || this.port;
     this.main = main;
     this.initService();
@@ -98,7 +97,7 @@ export default class Server extends EventEmitter {
             let rej;
             if (err instanceof Error) {
               rej = Object.assign(
-                { message: err.message, name: err.name },
+                { message: err.message, name: err.name, _error: true },
                 err
               );
             } else {

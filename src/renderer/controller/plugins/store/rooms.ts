@@ -1,13 +1,17 @@
 import { RoomInfo } from "floating-live";
-import { MapStore, atom, map } from "nanostores";
+import { MapStore, ReadableAtom, atom, computed, map } from "nanostores";
 import FloatingController from "../../Controller";
 
 export default class StoreRooms {
   static pluginName = "rooms";
   readonly main: FloatingController;
   readonly $rooms = atom<MapStore<RoomInfo>[]>([]);
+  readonly $openedRooms: ReadableAtom<MapStore<RoomInfo>[]>;
   constructor(main: FloatingController) {
     this.main = main;
+    this.$openedRooms = computed([this.$rooms], (rooms) => {
+      return rooms.filter((r) => r.get().opened);
+    });
   }
   find(key: string) {
     return this.$rooms.get().find((room) => room.get().key == key);
@@ -37,13 +41,21 @@ export default class StoreRooms {
       }
     });
     this.main.on("room:open", (key) => {
-      this.find(key)?.setKey("opened", true);
+      const $room = this.find(key);
+      if (!$room) return;
+      $room.setKey("opened", true);
+      this.$rooms.set([...this.$rooms.get()]);
     });
     this.main.on("room:close", (key) => {
-      this.find(key)?.setKey("opened", false);
+      const $room = this.find(key);
+      if (!$room) return;
+      $room.setKey("opened", false);
+      this.$rooms.set([...this.$rooms.get()]);
     });
     this.main.on("room:info", (key, room) => {
-      this.find(key)?.set(room);
+      const $room = this.find(key);
+      if (!$room) return;
+      $room.set(room);
     });
     this.main.on("room:detail", (key, detail) => {
       const $room = this.find(key);

@@ -1,4 +1,4 @@
-import commandParser from "../../utils/commandParser";
+import commandParser from "../utils/commandParser";
 import { EventEmitter } from "eventemitter3";
 import { FloatingCommandMap, FloatingEventMap, Message } from "floating-live";
 import { ControllerEventMap } from "./types/maps";

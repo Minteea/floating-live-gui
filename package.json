@@ -26,6 +26,7 @@
     "@floating-live/plugin-auth": "^0.15.5",
     "@floating-live/plugin-console-event": "^0.15.1",
     "@floating-live/plugin-save": "^0.15.2",
+    "@nanostores/persistent": "^0.10.1",
     "@nanostores/react": "^0.7.2",
     "ahooks": "^3.7.7",
     "antd": "^4.23.5",

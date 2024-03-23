@@ -14,9 +14,27 @@ export class IpcLink {
         console.log(["snapshot", snapshot]);
         main.emit("snapshot", snapshot);
       });
-      main.registerSender((channel, ...args) => {
+      main.registerSender(async (channel, ...args) => {
         console.log(["send", channel, ...args]);
-        return this.ipcRenderer!.invoke(channel, ...args);
+        const result = await this.ipcRenderer!.invoke(channel, ...args);
+        if (!result) {
+          main.throw({
+            message: "ipc调用失败",
+            reason: "未知的channel",
+            id: "ipc:unknown_channel",
+          });
+        } else {
+          const [fulfilled, value] = result as [number, any];
+          if (fulfilled) {
+            return value;
+          } else {
+            if (value?._error) {
+              main.throw(value);
+            } else {
+              throw value;
+            }
+          }
+        }
       });
       main.send("connect");
     } else {

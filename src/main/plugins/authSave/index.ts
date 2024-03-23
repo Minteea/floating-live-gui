@@ -29,8 +29,6 @@ export default class AuthSave {
       (platform: string, credentials: string) => {
         const a = safeStorage.encryptString(credentials).toString("base64");
         this.set(platform, { encrypted: a });
-        console.log(`SAVE ${platform}`);
-        console.log(credentials);
       }
     );
   }

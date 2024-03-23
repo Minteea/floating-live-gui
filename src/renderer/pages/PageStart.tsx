@@ -1,20 +1,40 @@
-import { Button, Input } from "antd";
+import { Button, Checkbox, Input } from "antd";
 import RoomList from "../components/room/RoomList";
 import MessageBoard from "../components/message/MessageBoard";
-import { $messages, $rooms, controller } from "../controller";
+import { $messages, $openedRooms, $rooms, controller } from "../controller";
 import { useStore } from "@nanostores/react";
-import { $commandInput } from "../store";
-import commandParser from "../../utils/commandParser";
+import {
+  $boardAutoShow,
+  $boardShow,
+  $commandInput,
+  $roomsListOpened,
+} from "../store";
+import commandParser from "../utils/commandParser";
 import { ControllerCommandMap } from "../controller/types";
 import { FloatingCommandMap } from "floating-live";
 
 const PageStart: React.FC = function () {
-  const roomList = useStore($rooms);
+  const rooms = useStore($rooms);
+  const openedRooms = useStore($openedRooms);
   const messageList = useStore($messages);
   const commandInput = useStore($commandInput);
+  const boardShow = useStore($boardShow);
+  const boardAutoShow = useStore($boardAutoShow);
+  const roomsListOpened = useStore($roomsListOpened);
   return (
     <div>
-      {true ? (
+      <div>
+        <Button onClick={() => $boardShow.set(!boardShow)}>
+          {boardShow ? "隐藏消息板" : "显示消息板"}
+        </Button>
+        <Checkbox
+          checked={boardAutoShow}
+          onChange={(e) => $boardAutoShow.set(e.target.checked)}
+        >
+          打开房间后自动开启消息板
+        </Checkbox>
+      </div>
+      {boardShow && (
         <>
           <MessageBoard
             list={messageList}
@@ -46,8 +66,16 @@ const PageStart: React.FC = function () {
             placeholder="输入指令..."
           />
         </>
-      ) : null}
-      <RoomList list={roomList} />
+      )}
+      {roomsListOpened && !!openedRooms.length && (
+        <div>
+          <div>已开启房间</div>
+          <RoomList list={openedRooms} />
+          <hr />
+          <div>所有房间</div>
+        </div>
+      )}
+      <RoomList list={rooms} />
     </div>
   );
 };

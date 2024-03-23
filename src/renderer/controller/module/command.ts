@@ -46,6 +46,8 @@ export class ModCommand {
               message: "命令不存在",
               id: "command:call_unexist",
             });
+          } else {
+            this.main.throw(err);
           }
         }
       ) as any;
