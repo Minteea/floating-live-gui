@@ -17,7 +17,6 @@ import {
   $searchResult,
 } from "../../../renderer/store";
 import { useStore } from "@nanostores/react";
-import { atom } from "nanostores";
 
 const { Option } = Select;
 
@@ -57,7 +56,7 @@ const RoomGenerator: React.FC = function () {
           }}
           onPressEnter={async () => {
             $searchResult.set(
-              (await controller.call(`${platform}.room.info`, id)) || null
+              (await controller.command(`${platform}.room.data`, id)) || null
             );
           }}
         />
@@ -67,8 +66,8 @@ const RoomGenerator: React.FC = function () {
             shape="circle"
             icon={<SearchOutlined />}
             onClick={async () => {
-              const searchResult = await controller.call(
-                `${platform}.room.info`,
+              const searchResult = await controller.command(
+                `${platform}.room.data`,
                 id
               );
               $searchResult.set(searchResult || null);
@@ -77,7 +76,6 @@ const RoomGenerator: React.FC = function () {
         </Tooltip>
         <Tooltip title="清除">
           <Button
-            type="ghost"
             shape="circle"
             icon={<CloseOutlined />}
             onClick={() => {
@@ -95,7 +93,6 @@ const RoomGenerator: React.FC = function () {
             top: [
               <Tooltip title={added ? "房间已添加" : "添加房间到列表"}>
                 <Button
-                  type="ghost"
                   shape="circle"
                   size="small"
                   icon={<PlusOutlined />}
@@ -103,7 +100,7 @@ const RoomGenerator: React.FC = function () {
                   disabled={added}
                   onClick={() => {
                     if (result?.platform && result?.id) {
-                      controller.call(
+                      controller.command(
                         "add",
                         result.platform,
                         result.id as number
@@ -133,8 +130,8 @@ const RoomGenerator: React.FC = function () {
                   onClick={() => {
                     if (result?.platform && result?.id) {
                       added
-                        ? controller.call("open", result.key)
-                        : controller.call(
+                        ? controller.command("open", result.key)
+                        : controller.command(
                             "add",
                             result.platform,
                             result.id as number,
@@ -156,8 +153,8 @@ const RoomGenerator: React.FC = function () {
                   onClick={async () => {
                     if (!result) return;
                     const { platform, id } = result;
-                    const searchResult = await controller.call(
-                      `${platform}.room.info`,
+                    const searchResult = await controller.command(
+                      `${platform}.room.data`,
                       id
                     );
                     $searchResult.set(searchResult || null);

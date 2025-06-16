@@ -1,141 +1,170 @@
-import { EventEmitter } from "events";
-import fastify from "fastify";
-import cors from "@fastify/cors";
+import { Context, Hono, HonoRequest } from "hono";
+import { BlankEnv, BlankInput, MergePath } from "hono/types";
+import { cors } from "hono/cors";
+import { serve, ServerType } from "@hono/node-server";
+import { createNodeWebSocket } from "@hono/node-ws";
 
-import { FloatingCommandMap, FloatingLive } from "floating-live";
-import fastifyWebsocket from "@fastify/websocket";
+import {
+  AppCommandMap,
+  BasePlugin,
+  FloatingLive,
+  ValueContext,
+} from "floating-live";
+import { UpgradeWebSocket, WSContext } from "hono/ws";
+import WebSocket from "ws";
+import { Server as HttpServer } from "http";
+import { Http2Server, Http2SecureServer } from "http2";
 
 declare module "floating-live" {
-  interface FloatingCommandMap {
+  interface AppCommandMap {
     "server.open": () => void;
     "server.close": () => void;
   }
-  interface FloatingEventMap {
-    "server:open": () => void;
-    "server:close": () => void;
+  interface AppEventDetailMap {
+    "server:open": {};
+    "server:close": {};
   }
-  interface FloatingValueMap {
+  interface AppValueMap {
     "server.open": boolean;
     "server.port": number;
   }
 }
 
-export default class Server {
+export default class Server extends BasePlugin {
   static readonly pluginName = "server";
-  readonly app = fastify();
+  readonly app = new Hono();
+  protected server: ServerType | null = null;
+  private honoWebsocketClients = new Map<WSContext, {}>();
   port = 8130;
   initialized = false;
 
+  private injectWebSocket!: (
+    server: HttpServer | Http2Server | Http2SecureServer
+  ) => void;
+  private upgradeWebSocket!: UpgradeWebSocket<WebSocket>;
+
+  private valueCtxPort!: ValueContext<number>;
+  private valueCtxOpen!: ValueContext<boolean>;
+
   // imageStorage: ImageStorage = new ImageStorage()
 
-  main: FloatingLive;
-
   get opened() {
-    return !!this.app.server.address();
+    return !!this.server?.address();
   }
 
-  constructor(main: FloatingLive, options: { port: number; opened: boolean }) {
+  init(ctx: FloatingLive, options: { port: number; opened: boolean }) {
+    const { injectWebSocket, upgradeWebSocket } = createNodeWebSocket({
+      app: this.app,
+    });
+
+    this.injectWebSocket = injectWebSocket;
+    this.upgradeWebSocket = upgradeWebSocket;
+
     this.port = options?.port || this.port;
-    this.main = main;
     this.initService();
     options?.opened && this.open();
-  }
 
-  register() {
-    this.main.command.register("server.open", () => {
+    this.ctx.registerCommand("server.open", () => {
       this.open();
     });
-    this.main.command.register("server.close", () => {
+    this.ctx.registerCommand("server.close", () => {
       this.close();
     });
 
-    this.main.value.register("server.open", {
+    this.valueCtxOpen = this.ctx.registerValue("server.open", {
       get: () => this.opened,
       set: (value) => (value ? this.open() : this.close()),
     });
-    this.main.value.register("server.port", {
+    this.valueCtxPort = this.ctx.registerValue("server.port", {
       get: () => this.port,
       set: (value) => this.changePort(value),
     });
 
-    this.main.on("event", (channel, ...args) =>
+    this.ctx.on("event", (channel, ...args) =>
       this.send("event", channel, ...args)
     );
   }
 
   private initService() {
-    this.app.register(cors);
-    this.app.register(fastifyWebsocket);
-    this.app.register(async (app) => {
-      app.get("/ws", { websocket: true }, (connection, request) => {
-        // 连接后发送初始化消息
-        connection.socket.send(
-          JSON.stringify(["snapshot", this.main.getSnapshot()])
-        );
-      });
-    });
-    this.app.post(
-      "/post",
-      {
-        schema: {
-          body: {
-            type: "array",
+    this.app.use("/*", cors());
+    this.app.get(
+      "/ws",
+      this.upgradeWebSocket((c) => {
+        let connected = false;
+        return {
+          onMessage: (e, ws) => {
+            const { snapshots } = JSON.parse(e.data as string);
+            const allSnapshots: Record<string, any> = {};
+            (snapshots as string[]).forEach((name) => {
+              try {
+                allSnapshots.name = this.ctx.call(`${name}.snapshot`);
+              } catch (e) {}
+            });
+            ws.send(JSON.stringify(["snapshot", allSnapshots]));
           },
-        },
-      },
-      async (request, reply) => {
-        const [channel, ...args] = request.body as [string, ...any[]];
-        if (channel == "command") {
-          try {
-            const [name, ...cArgs] = args as [
-              keyof FloatingCommandMap,
-              ...Parameters<FloatingCommandMap[keyof FloatingCommandMap]>
-            ];
-            const result = await this.main.call(name, ...cArgs);
-            reply.send(JSON.stringify([1, result]));
-          } catch (err) {
-            let rej;
-            if (err instanceof Error) {
-              rej = Object.assign(
-                { message: err.message, name: err.name, _error: true },
-                err
-              );
-            } else {
-              rej = err;
-            }
-            reply.send(JSON.stringify([0, rej]));
-          }
-        } else {
-          reply.send(
-            JSON.stringify([
-              0,
-              {
-                message: "请求失败",
-                reason: "未知的channel请求",
-                id: "server:unknown_channel",
-              },
-            ])
-          );
-        }
-      }
+          onOpen: (e, ws) => {
+            this.honoWebsocketClients.set(ws, {});
+            const timeout = setTimeout(() => {
+              clearTimeout(timeout);
+              if (!connected) ws.close();
+            }, 5000);
+          },
+          onClose: (e, ws) => {
+            this.honoWebsocketClients.delete(ws);
+          },
+        };
+      })
     );
+
+    this.app.post("/post", async (c) => {
+      const [channel, ...args] = (await c.req.json()) as [string, ...any[]];
+      if (channel == "command") {
+        try {
+          const [name, ...cArgs] = args as [
+            keyof AppCommandMap,
+            ...Parameters<AppCommandMap[keyof AppCommandMap]>
+          ];
+          const result = await this.ctx.call(name, ...cArgs);
+          return Response.json([1, result]);
+        } catch (err) {
+          let rej;
+          if (err instanceof Error) {
+            rej = Object.assign(
+              { message: err.message, name: err.name, _error: true },
+              err
+            );
+          } else {
+            rej = err;
+          }
+          return Response.json([0, rej]);
+        }
+      } else {
+        Response.json([
+          0,
+          {
+            message: "请求失败",
+            reason: "未知的channel请求",
+            id: "server:unknown_channel",
+          },
+        ]);
+      }
+    });
   }
 
   open() {
     if (this.opened) return;
     console.log("服务开启");
-    if (!this.initialized) {
-      this.app.listen({ port: this.port });
-      this.initialized = true;
-    } else {
-      this.app.server.listen(this.port);
-    }
-    this.main.emit("server:open");
-    this.main.value.emit("server.open", true);
+
+    this.server = serve(this.app);
+    this.injectWebSocket(this.server);
+    this.initialized = true;
+
+    this.ctx.emit("server:open", {});
+    this.valueCtxOpen.emit(true);
   }
 
   send(channel: string, ...args: any[]) {
-    this.app?.websocketServer?.clients.forEach((ws: WebSocket) => {
+    this.honoWebsocketClients.forEach((val, ws) => {
       ws.send(JSON.stringify([channel, ...args]));
     });
   }
@@ -143,18 +172,20 @@ export default class Server {
   close() {
     if (!this.opened) return;
     console.log("服务关闭");
-    this.app.server.close();
-    this.main.emit("server:close");
-    this.main.value.emit("server.open", false);
+    this.server?.close();
+    this.server = null;
+    this.ctx.emit("server:close", {});
+    this.valueCtxOpen.emit(false);
   }
 
   changePort(num: number) {
     if (num == this.port) return;
     this.port = num;
     if (this.opened) {
-      this.app.server.close();
-      this.app.server.listen(this.port);
+      this.server?.close();
+      this.server = serve(this.app);
+      this.injectWebSocket(this.server);
     }
-    this.main.value.emit("server.port", this.port);
+    this.valueCtxPort.emit(this.port);
   }
 }

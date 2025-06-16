@@ -18,7 +18,7 @@ const LiveSettings: React.FC = function () {
         <Switch
           checked={opened}
           onClick={() => {
-            controller.value.set("roomLoader.open", !opened);
+            controller.setValue("roomLoader.open", !opened);
           }}
         />
       </div>

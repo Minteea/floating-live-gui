@@ -2,7 +2,6 @@ import { app } from "electron";
 import { FloatingLive } from "floating-live";
 import ElectronGui from "./plugins/gui";
 import Server from "./plugins/server";
-import BilibiliAvatar from "./plugins/bilibiliAvatar";
 import AuthSave from "./plugins/authSave";
 import Config from "./plugins/config";
 import RoomLoader from "./plugins/roomLoader";
@@ -13,20 +12,22 @@ import { PluginBilibili } from "@floating-live/bilibili";
 import { PluginAcfun } from "@floating-live/acfun";
 import { ConsoleEvent } from "@floating-live/plugin-console-event";
 import path from "path";
-import AppBlacklist from "./plugins/appBlacklist";
+import ElectronLoginWindow from "./plugins/webLogin/electronWebLogin";
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
 
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
 declare global {
-  var floating: FloatingLive;
+  var floatingLive: FloatingLive;
 }
 
 // 引入程序
-const floating = new FloatingLive();
+const floatingLive = new FloatingLive();
 
-global.floating = floating;
+global.floatingLive = floatingLive;
 
 async function lifeCycle() {
   console.log("Floating Live GUI by Minteea");
@@ -36,12 +37,12 @@ async function lifeCycle() {
 lifeCycle()
   .then(async () => {
     // 控制台事件插件
-    await floating.plugin.register(ConsoleEvent);
+    await floatingLive.register(ConsoleEvent);
     // 安装核心插件
-    await floating.plugin.register(JsonStorage, {
+    await floatingLive.register(JsonStorage, {
       path: path.resolve(app.getPath("userData"), "./AppStorage"),
     });
-    await floating.plugin.register(Config, {
+    await floatingLive.register(Config, {
       defaultOptions: {
         save: {
           path: "./saves",
@@ -49,25 +50,22 @@ lifeCycle()
       },
     });
 
-    await floating.plugin.register(AppBlacklist);
+    await floatingLive.register(ElectronGui);
 
-    await floating.plugin.register(ElectronGui);
+    await floatingLive.register(Auth);
 
-    await floating.plugin.register(Auth);
+    await floatingLive.register(Save);
+    await floatingLive.register(Server);
 
-    await floating.plugin.register(Save);
-    await floating.plugin.register(Server);
+    await floatingLive.register(PluginBilibili);
+    await floatingLive.register(PluginAcfun);
 
-    await floating.plugin.register(PluginBilibili);
-    await floating.plugin.register(PluginAcfun);
-
-    await floating.plugin.register(BilibiliAvatar);
-
+    await floatingLive.register(ElectronLoginWindow);
     console.log("插件注册完毕");
   })
   .then(async () => {
-    await floating.plugin.register(AuthSave);
-    await floating.plugin.register(RoomLoader, { storage: true });
+    await floatingLive.register(AuthSave);
+    await floatingLive.register(RoomLoader, { storage: true });
     // 载入房间
     console.log("房间加载完毕");
   });

@@ -1,14 +1,20 @@
-import { FloatingLive, Message, UserInfo } from "floating-live";
+import {
+  BasePlugin,
+  LiveMessage,
+  PluginContext,
+  UserInfo,
+} from "floating-live";
 import AvatarService from "./AvatarService";
 
-export default class BilibiliAvatar {
+/** @deprecated */
+export default class BilibiliAvatar extends BasePlugin {
   static pluginName = "bilibiliAvatar";
-  constructor(main: FloatingLive) {
+  init(ctx: PluginContext) {
     // api请求队列
     const service = new AvatarService({ interval: 1000, timeout: 10000 });
 
     // 通过弹幕消息获取头像
-    const avatarHandler = ({ message }: { message: Message.All }) => {
+    const avatarHandler = ({ message }: { message: LiveMessage.All }) => {
       let info = message.info as { user?: UserInfo };
       let user = info.user;
       // 检测弹幕来源是否为B站, 并检测消息中是否有用户数据
@@ -35,6 +41,6 @@ export default class BilibiliAvatar {
       }
     };
 
-    main.hook.register("message", avatarHandler);
+    ctx.useHook("live.message", avatarHandler);
   }
 }

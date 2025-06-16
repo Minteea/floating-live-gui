@@ -1,4 +1,4 @@
-import { FloatingLive } from "floating-live";
+import { BasePlugin, PluginContext } from "floating-live";
 
 interface StorageItem {
   get(name?: string): Promise<any> | any;
@@ -11,23 +11,23 @@ interface ConfigOptions {
 }
 
 /** 配置 */
-export default class Config {
+export default class Config extends BasePlugin {
   static pluginName = "config";
-  protected readonly storage: StorageItem;
-  private configData: Promise<Record<string, any>>;
-  constructor(main: FloatingLive, options: ConfigOptions) {
+  protected storage!: StorageItem;
+  private configData!: Promise<Record<string, any>>;
+  init(ctx: PluginContext, options: ConfigOptions) {
     const defaultOptions = options.defaultOptions || {};
-    this.storage = main.call("storage.require", "config");
+    this.storage = ctx.call("storage.require", "config");
     this.configData = this.get();
-    main.hook.register("plugin.register", async (ctx) => {
-      const { name, options } = ctx;
+    ctx.useHook("plugin.register", async (ctx) => {
+      const { pluginName, options } = ctx;
       ctx.options = {
-        ...defaultOptions[name],
-        ...(await this.configData)[name],
+        ...defaultOptions[pluginName],
+        ...(await this.configData)[pluginName],
         ...options,
       };
     });
-    main.on("value:change", (name, value) => {
+    ctx.on("value:change", ({ name, value }) => {
       this.set(name, value);
     });
   }

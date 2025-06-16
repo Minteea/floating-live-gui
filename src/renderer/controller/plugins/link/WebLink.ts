@@ -1,24 +1,24 @@
-import FloatingController from "../../Controller";
+import { BasePlugin, PluginContext, ValueContext } from "floating-live";
 
 declare const NODE_ENV: string;
-declare module "../../types" {
-  interface ControllerCommandMap {
+declare module "floating-live" {
+  interface AppCommandMap {
     link: (url: string) => void;
   }
 
-  interface ControllerEventMap {
-    link: (url: string) => void;
-    "link:disconnect": () => void;
+  interface AppEventDetailMap {
+    link: { url: string };
+    "link:disconnect": {};
   }
 
-  interface ControllerValueMap {
+  interface AppValueMap {
     "link.url": string;
     "link.connected": boolean;
   }
 }
 
-export class WsHttpLink {
-  static pluginName = "link";
+export class WebLink extends BasePlugin {
+  static pluginName = "webLink";
 
   ws: WebSocket | null = null;
   url: string =
@@ -26,7 +26,12 @@ export class WsHttpLink {
   timeout: number = 5000;
   connected: boolean = false;
   wsRoute: string = "/ws";
-  httpRoute: string = "/post";
+  httpRoute: string = "/api";
+
+  private valueContexts: {
+    url: ValueContext<string>;
+    connected: ValueContext<boolean>;
+  };
 
   get wsUrl() {
     return `${this.url}${this.wsRoute}`;
@@ -34,22 +39,27 @@ export class WsHttpLink {
   get httpUrl() {
     return `${this.url}${this.httpRoute}`;
   }
+  constructor(ctx: PluginContext) {
+    super(ctx);
 
-  readonly main: FloatingController;
+    this.valueContexts = {
+      url: ctx.registerValue("link.url", {
+        get: () => this.url,
+        set: (url) => {
+          this.setUrl(url);
+        },
+      }),
+      connected: ctx.registerValue("link.connected", {
+        get: () => this.connected,
+      }),
+    };
+  }
 
-  constructor(main: FloatingController) {
-    this.main = main;
-    main.registerSender((channel, ...args) => this._send(channel, ...args));
-    main.value.register("link.url", {
-      get: () => this.url,
-      set: (url) => {
-        this.setUrl(url);
-      },
-    });
-    main.value.register("link.connected", {
-      get: () => this.connected,
-    });
-    main.command.register("link", (url: string) => this.link(url));
+  init(ctx: PluginContext) {
+    ctx.registerCommand("send", (e, channel, ...args) =>
+      this._send(channel, ...args)
+    );
+    ctx.registerCommand("link", (e, url: string) => this.link(url));
   }
 
   connect() {
@@ -58,12 +68,14 @@ export class WsHttpLink {
     this.ws.onopen = (e) => {
       console.log("已连接上");
       this.connected = true;
-      this.main.emit("link", this.url);
+      this.valueContexts.connected.emit(true);
+      this.ctx.emit("link", { url: this.url });
     };
     this.ws.onclose = (e) => {
       console.log("已断开连接");
       this.connected = false;
-      this.main.emit("link:disconnect");
+      this.valueContexts.connected.emit(false);
+      this.ctx.emit("link:disconnect", {});
     };
     this.ws.onmessage = (e) => {
       console.log(e.data);
@@ -75,13 +87,13 @@ export class WsHttpLink {
   _emit(channel: string, ...args: any[]) {
     switch (channel) {
       case "event": {
-        const [name, ...eArgs] = args;
-        this.main.emit(name, ...eArgs);
+        const [name, detail] = args;
+        this.ctx.emit(name, detail);
         return;
       }
       case "snapshot": {
         const [snapshot] = args;
-        this.main.emit("snapshot", snapshot);
+        this.ctx.emit("snapshot", snapshot);
         return;
       }
     }
@@ -103,16 +115,15 @@ export class WsHttpLink {
         })
         .catch((err) => {
           if (err._error) {
-            this.main.throw(err);
+            this.ctx.throw(err);
           } else {
             throw err;
           }
         });
     } else {
-      this.main.throw({
+      throw new this.Error("link:send_disconnected", {
         message: "消息发送失败",
-        reason: "未连接服务",
-        id: "link:send_disconnected",
+        cause: "未连接服务",
       });
     }
   }
@@ -124,7 +135,7 @@ export class WsHttpLink {
   setUrl(url: string) {
     if (!this.connected) {
       this.url = url;
-      this.main.value.emit("link.url", url);
+      this.valueContexts.url.emit(url);
     } else {
       this.link(url);
     }
@@ -132,7 +143,7 @@ export class WsHttpLink {
 
   link(url: string) {
     this.url = url;
-    this.main.value.emit("link.url", url);
+    this.valueContexts.url.emit(url);
     this.disconnect();
     this.connect();
   }

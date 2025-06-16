@@ -3,7 +3,7 @@ import { Button, Divider, Select } from "antd";
 import PlatformAuth from "./PlatformAuth";
 import { $searchPlatform } from "../../../renderer/store";
 import { useStore } from "@nanostores/react";
-import { $commands, $manifests } from "../../../renderer/controller";
+import { $commands, $platform } from "../../../renderer/controller";
 
 const { Option } = Select;
 const handleChange = (value: string) => {
@@ -13,8 +13,7 @@ const handleChange = (value: string) => {
 /** 平台设置 */
 const PlatformSettings: React.FC = function () {
   const platform = useStore($searchPlatform);
-  const platformName =
-    useStore($manifests).platform?.[platform]?.name || platform;
+  const platformName = useStore($platform)[platform]?.name || platform;
   return (
     <div style={{ display: platform ? "" : "none" }}>
       <Divider />

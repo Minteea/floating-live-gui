@@ -1,7 +1,12 @@
-import { FloatingLive } from "floating-live";
+import {
+  AppPluginExposesMap,
+  BasePlugin,
+  FloatingLive,
+  PluginContext,
+} from "floating-live";
 
 declare module "floating-live" {
-  interface FloatingValueMap {
+  interface AppValueMap {
     "roomLoader.open": boolean | undefined;
   }
 }
@@ -28,23 +33,26 @@ interface RoomLoaderItem {
   open?: boolean;
 }
 
-export default class RoomLoader {
+export default class RoomLoader extends BasePlugin {
   static pluginName = "roomLoader";
-  protected readonly storage?: StorageItem;
-  readonly main: FloatingLive;
-  constructor(main: FloatingLive, options: RoomLoaderOptions) {
-    this.main = main;
-    if (options.storage) this.storage = main.call("storage.require", "rooms");
-  }
-  async register(main: FloatingLive, options: RoomLoaderOptions) {
+  protected storage?: StorageItem;
+  private room?: AppPluginExposesMap["room"];
+
+  async init(ctx: PluginContext, options: RoomLoaderOptions) {
+    if (options.storage) this.storage = ctx.call("storage.require", "rooms");
+
+    ctx.whenRegister("room", (room) => {
+      this.room = room;
+    });
+
     let list = options?.list || [];
     let open = options.open;
 
-    main.value.register("roomLoader.open", {
+    const valueOpen = ctx.registerValue("roomLoader.open", {
       get: () => open,
       set: (v) => {
         open = v;
-        main.value.emit("roomLoader.open", v);
+        valueOpen.emit(v);
       },
     });
 
@@ -61,14 +69,14 @@ export default class RoomLoader {
     }
     await this.load(list, open);
     if (options.storage) {
-      main.on("room:add", async (key, { platform, id }) => {
+      ctx.on("room:add", async ({ key, room: { platform, id } }) => {
         const list: RoomLoaderItem[] = await this.storage!.get("list");
         if (!list.find((r) => r.platform == platform && r.id == id)) {
           list.push({ platform, id });
           this.storage!.set("list", list);
         }
       });
-      main.on("room:remove", async (key) => {
+      ctx.on("room:remove", async ({ key }) => {
         const list: RoomLoaderItem[] = await this.storage!.get("list");
         const index = list.findIndex((r) => `${r.platform}:${r.id}` == key);
         if (index > -1) {
@@ -76,7 +84,7 @@ export default class RoomLoader {
           this.storage!.set("list", list);
         }
       });
-      main.on("room:open", async (key) => {
+      ctx.on("room:open", async ({ key }) => {
         const list: RoomLoaderItem[] = await this.storage!.get("list");
         const item = list.find((r) => `${r.platform}:${r.id}` == key);
         if (item) {
@@ -84,7 +92,7 @@ export default class RoomLoader {
           this.storage!.set("list", list);
         }
       });
-      main.on("room:close", async (key) => {
+      ctx.on("room:close", async ({ key }) => {
         const list: RoomLoaderItem[] = await this.storage!.get("list");
         const item = list.find((r) => `${r.platform}:${r.id}` == key);
         if (item) {
@@ -97,7 +105,7 @@ export default class RoomLoader {
   async load(list: RoomLoaderItem[], open?: boolean) {
     for (const r of list) {
       const isOpen = open != false && r.open != false && (open || r.open);
-      await this.main.room.add(r.platform, r.id as number, { open: isOpen });
+      await this.room?.add(r.platform, r.id as number, { open: isOpen });
     }
   }
 }

@@ -17,7 +17,7 @@ const ServerSettings: React.FC = function () {
         <Switch
           checked={opened}
           onClick={() => {
-            controller.call(opened ? "server.close" : "server.open");
+            controller.command(opened ? "server.close" : "server.open");
           }}
         />
       </div>
@@ -32,7 +32,7 @@ const ServerSettings: React.FC = function () {
           style={{ width: 160 }}
           disabled={opened}
           onBlur={(e) => {
-            controller.value.set("server.port", Number(e.target.value));
+            controller.setValue("server.port", Number(e.target.value));
           }}
         />
       </div>

@@ -1,9 +1,9 @@
-import { Message } from "floating-live";
+import { LiveMessage } from "floating-live";
 import User from "./User";
 import { Image } from "antd";
 import { ImageSize, UserType } from "floating-live";
 
-function getChatWithEmoticon(msg: Message.Comment) {
+function getChatWithEmoticon(msg: LiveMessage.Comment) {
   let prostr = msg.info.content.split("@").join("@A"); // replaceAll("@", "@A")
   for (let kw in msg.info.emoticon) {
     let keyword = kw.split("@").join("@A");
@@ -39,7 +39,7 @@ function getAdmin(a: UserType) {
 
 /** 消息 */
 const MessageLine: React.FC<{
-  msg: Message.All;
+  msg: LiveMessage.All;
 }> = function (props) {
   const { msg } = props;
   switch (msg.type) {

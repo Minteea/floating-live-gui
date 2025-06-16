@@ -1,4 +1,4 @@
-import { RoomInfo } from "floating-live";
+import { LiveRoomData } from "floating-live";
 import { Button, Tooltip } from "antd";
 import { controller } from "../../controller";
 import RoomCard from "./RoomCard";
@@ -7,7 +7,7 @@ import RoomListCard from "./RoomListCard";
 
 /** 直播间列表 */
 const RoomList: React.FC<{
-  list: WritableAtom<RoomInfo>[];
+  list: WritableAtom<LiveRoomData>[];
 }> = function (props) {
   return (
     <div>

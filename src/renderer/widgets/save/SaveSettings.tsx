@@ -22,7 +22,7 @@ const SavingSettings: React.FC = function () {
         <Switch
           checked={saveMessage}
           onClick={() => {
-            controller.value.set("save.message", !saveMessage);
+            controller.setValue("save.message", !saveMessage);
           }}
         />
       </div>
@@ -31,7 +31,7 @@ const SavingSettings: React.FC = function () {
         <Switch
           checked={saveRaw}
           onClick={() => {
-            controller.value.set("save.raw", !saveRaw);
+            controller.setValue("save.raw", !saveRaw);
           }}
         />
       </div>
@@ -58,13 +58,12 @@ const SavingSettings: React.FC = function () {
                   disabled={savePath == inputSavePath}
                   icon={<CheckOutlined />}
                   onClick={() => {
-                    controller.value.set("save.path", inputSavePath || "");
+                    controller.setValue("save.path", inputSavePath || "");
                   }}
                 />
               </Tooltip>
               <Tooltip title="取消更改">
                 <Button
-                  type="ghost"
                   shape="circle"
                   disabled={savePath == inputSavePath}
                   icon={<CloseOutlined />}

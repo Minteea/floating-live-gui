@@ -25,7 +25,7 @@ const LinkSettings: React.FC = function () {
             shape="circle"
             icon={linkConnected ? <ReloadOutlined /> : <LinkOutlined />}
             onClick={() => {
-              controller.call("link", linkUrlInput);
+              controller.command("link", linkUrlInput);
             }}
           />
         </Tooltip>
@@ -36,7 +36,7 @@ const LinkSettings: React.FC = function () {
           }}
           onBlur={(e) => {
             if (!linkConnected && !(linkUrl == linkUrlInput)) {
-              controller.value.set("link.url", linkUrlInput);
+              controller.setValue("link.url", linkUrlInput);
             }
           }}
           placeholder="连接后端url"
@@ -45,7 +45,6 @@ const LinkSettings: React.FC = function () {
         {linkConnected && linkUrl != linkUrlInput ? (
           <Tooltip title="取消更改">
             <Button
-              type="ghost"
               shape="circle"
               disabled={linkUrl == linkUrlInput}
               icon={<CloseOutlined />}

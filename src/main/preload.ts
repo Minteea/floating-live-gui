@@ -17,6 +17,7 @@ contextBridge.exposeInMainWorld("version", {
 contextBridge.exposeInMainWorld("ipcRenderer", {
   invoke: (channel: string, ...args: any[]) =>
     ipcRenderer.invoke(channel, ...args),
+  send: (channel: string, ...args: any[]) => ipcRenderer.send(channel, ...args),
   on: (channel: string, func: (e: any, ...args: any[]) => void) =>
     ipcRenderer.on(channel, func),
   once: (channel: string, func: (e: any, ...args: any[]) => void) =>

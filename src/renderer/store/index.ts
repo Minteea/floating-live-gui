@@ -1,5 +1,5 @@
 import { atom, batched, computed } from "nanostores";
-import { RoomInfo } from "floating-live";
+import { LiveRoomData } from "floating-live";
 import { $rooms, controller } from "../controller";
 import { persistentAtom } from "@nanostores/persistent";
 
@@ -15,7 +15,7 @@ export const $commandShow = atom(true);
 
 export const $searchPlatform = atom("");
 export const $searchId = atom("");
-export const $searchResult = atom<RoomInfo | null>(null);
+export const $searchResult = atom<LiveRoomData | null>(null);
 export const $searchInfo = computed(
   [$rooms, $searchResult],
   (rooms, searchResult) => {

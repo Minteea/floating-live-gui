@@ -1,13 +1,7 @@
-import Controller from "../controller/Controller";
+import { FloatingLiveController } from "../controller/Controller";
 
 class PluginLoader {
-  constructor(controller: Controller) {
-
-  }
-  register() {
-    
-  }
-  loadFromUrl(url: string) {
-
-  }
+  constructor(controller: FloatingLiveController) {}
+  register() {}
+  loadFromUrl(url: string) {}
 }

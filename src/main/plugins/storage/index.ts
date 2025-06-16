@@ -1,9 +1,9 @@
-import { FloatingLive } from "floating-live";
+import { BasePlugin, PluginContext } from "floating-live";
 import { JsonDB, Config } from "node-json-db";
 import path from "path";
 
 declare module "floating-live" {
-  interface FloatingCommandMap {
+  interface AppCommandMap {
     "storage.require": (name: string) => {
       get(name?: string): Promise<any> | any;
       set(name: string, value: any): Promise<void> | void;
@@ -11,14 +11,12 @@ declare module "floating-live" {
   }
 }
 
-export default class JsonStorage {
+export default class JsonStorage extends BasePlugin {
   static pluginName = "storage";
-  path: string;
-  constructor(main: FloatingLive, options: { path?: string }) {
+  path: string = "";
+  init(ctx: PluginContext, options: { path?: string }) {
     this.path = path.resolve(options.path || "./storage");
-    main.command.register("storage.require", (name: string) =>
-      this.require(name)
-    );
+    ctx.registerCommand("storage.require", (e, name) => this.require(name));
   }
   require(name: string) {
     return new JsonStorageItem(path.resolve(this.path, `${name}.json`));

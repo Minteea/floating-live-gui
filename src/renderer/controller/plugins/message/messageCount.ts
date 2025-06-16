@@ -1,11 +1,10 @@
-import { FloatingLive } from "floating-live";
-import FloatingController from "../../Controller";
+import { BasePlugin, PluginContext } from "floating-live";
 
-export class MessageCount {
+export class MessageCount extends BasePlugin {
   static pluginName = "messageCount";
   count = 0;
-  constructor(main: FloatingController) {
-    main.hook.register("message", ({ message }) => {
+  init(main: PluginContext) {
+    main.useHook("live.message", ({ message }) => {
       this.count++;
       message.id = `${message.id}-${this.count}`;
     });

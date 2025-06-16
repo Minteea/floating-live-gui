@@ -1,47 +1,83 @@
-import FloatingController from "../../Controller";
+import type { IpcRenderer } from "electron";
+import { BasePlugin, PluginContext } from "floating-live";
 
-export class IpcLink {
-  static pluginName = "link";
-  readonly ipcRenderer?: Window["ipcRenderer"];
-  constructor(main: FloatingController) {
-    if (/Electron/.test(navigator.userAgent)) {
-      this.ipcRenderer = window.ipcRenderer;
-      this.ipcRenderer.on("event", (e, eventName, ...args) => {
-        console.log(["event", eventName, ...args]);
-        main.emit(eventName, ...args);
+declare module "floating-live" {
+  interface AppCommandMap {
+    send: (channel: string, ...args: any[]) => any;
+  }
+
+  interface AppEventDetailMap {
+    snapshot: AppSnapshotMap;
+  }
+
+  interface AppSnapshotMap {}
+}
+
+interface FLEGIpcRenderer extends IpcRenderer {
+  invoke(channel: "command", ...args: any[]): Promise<[boolean, any]>;
+  invoke(channel: "connect"): Promise<[boolean]>;
+}
+
+export class IpcLink extends BasePlugin {
+  static pluginName = "ipcLink";
+  readonly isElectron = /Electron/.test(navigator.userAgent);
+  readonly ipcRenderer = this.isElectron ? window.ipcRenderer : undefined;
+  init(ctx: PluginContext) {
+    if (this.isElectron) {
+      const ipcRenderer = this.ipcRenderer!;
+      ipcRenderer.on("event", (e, eventName, detail) => {
+        console.log(["event", eventName, detail]);
+        ctx.emit(eventName, detail);
       });
-      this.ipcRenderer.on("snapshot", (e, snapshot) => {
+      ipcRenderer.on("snapshot", (e, snapshot) => {
         console.log(["snapshot", snapshot]);
-        main.emit("snapshot", snapshot);
+        ctx.emit("snapshot", snapshot);
       });
-      main.registerSender(async (channel, ...args) => {
-        console.log(["send", channel, ...args]);
-        const result = await this.ipcRenderer!.invoke(channel, ...args);
-        if (!result) {
-          main.throw({
-            message: "ipc调用失败",
-            reason: "未知的channel",
-            id: "ipc:unknown_channel",
-          });
-        } else {
-          const [fulfilled, value] = result as [number, any];
-          if (fulfilled) {
-            return value;
+
+      ctx.registerCommand(
+        "send",
+        async (e, channel: string, ...args: any[]) => {
+          console.log(["send", channel, ...args]);
+          const result = await this.ipcRenderer!.invoke(
+            channel as any,
+            ...args
+          );
+          if (!result) {
+            this.throw(
+              new this.Error("ipc:unknown_channel", {
+                message: "ipc调用失败",
+                cause: "未知的channel",
+              })
+            );
           } else {
-            if (value?._error) {
-              main.throw(value);
+            const [fulfilled, value] = result;
+            if (fulfilled) {
+              return value;
             } else {
-              throw value;
+              if (value?._error) {
+                ctx.throw(value);
+              } else {
+                throw value;
+              }
             }
           }
         }
+      );
+
+      ctx.on("snapshot", (e) => {
+        console.log("snapshot");
+        console.log(e);
       });
-      main.send("connect");
+      ctx.call("send", "connect", {
+        snapshots: ["platform", "command", "value", "plugin", "room", "hook"],
+      });
     } else {
-      main.throw({
-        message: "插件初始化失败",
-        reason: "插件非Electron环境",
-      });
+      this.throw(
+        new this.Error("link@ipc:non_electron", {
+          message: "插件初始化失败",
+          reason: "插件非Electron环境",
+        })
+      );
     }
   }
 }

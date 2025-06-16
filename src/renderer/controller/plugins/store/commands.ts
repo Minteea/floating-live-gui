@@ -1,51 +1,45 @@
-import { FloatingValueMap, RoomInfo } from "floating-live";
-import { ReadableAtom, WritableAtom, computed, map } from "nanostores";
-import FloatingController from "../../Controller";
-import { ControllerValueMap } from "../../types";
+import { BasePlugin, PluginContext } from "floating-live";
+import { ReadableAtom, WritableAtom, atom, computed, map } from "nanostores";
 
-export default class StoreCommands {
-  static pluginName = "commands";
-  readonly main: FloatingController;
-  readonly $commands: ReadableAtom<string[]>;
-  readonly $floatingCommands = map<string[]>([]);
-  readonly $controllerCommands = map<string[]>([]);
-  constructor(main: FloatingController) {
-    this.main = main;
+export default class StoreCommands extends BasePlugin {
+  static pluginName = "storeCommands";
+  readonly $commands: ReadableAtom<{ name: string }[]>;
+  readonly $remoteCommands = atom<{ name: string }[]>([]);
+  readonly $localCommands = atom<{ name: string }[]>([]);
+
+  readonly $commandNames: ReadableAtom<string[]>;
+
+  constructor(ctx: PluginContext, options: any) {
+    super(ctx, options);
     this.$commands = computed(
-      [this.$controllerCommands, this.$floatingCommands],
-      (controllerCommands, floatingCommands) => [
-        ...controllerCommands,
-        ...floatingCommands,
-      ]
+      [this.$localCommands, this.$remoteCommands],
+      (localCommands, remoteCommands) => [...localCommands, ...remoteCommands]
+    );
+    this.$commandNames = computed([this.$commands], (commands) =>
+      commands.map(({ name }) => name)
     );
   }
-  register() {
-    this.$controllerCommands.set(this.main.command.getSnapshot());
-    this.main.on("snapshot", (snapshot) => {
-      this.$floatingCommands.set([...snapshot.command]);
+  init(ctx: PluginContext) {
+    this.$localCommands.set(this.ctx.call("command.snapshot"));
+    this.ctx.on("snapshot", (snapshot) => {
+      this.$remoteCommands.set([...snapshot.command]);
     });
-    this.main.on("command:add", (name: string, fromController?: boolean) => {
-      if (fromController) {
-        this.$controllerCommands.set([...this.$controllerCommands.get(), name]);
+    this.ctx.on("command:register", ({ name, remote }) => {
+      if (!remote) {
+        this.$localCommands.set([...this.$localCommands.get(), { name }]);
       } else {
-        this.$floatingCommands.set([...this.$floatingCommands.get(), name]);
+        this.$remoteCommands.set([...this.$remoteCommands.get(), { name }]);
       }
     });
-    this.main.on("command:remove", (name: string, fromController?: boolean) => {
-      if (fromController) {
-        const list = [...this.$controllerCommands.get()];
-        const index = list.findIndex((n) => n == name);
-        if (index > -1) {
-          list.splice(index, 1);
-          this.$controllerCommands.set(list);
-        }
-      } else {
-        const list = [...this.$floatingCommands.get()];
-        const index = list.findIndex((n) => n == name);
-        if (index > -1) {
-          list.splice(index, 1);
-          this.$floatingCommands.set(list);
-        }
+    this.ctx.on("command:unregister", ({ name, remote }) => {
+      const $storeCommands = remote
+        ? this.$remoteCommands
+        : this.$localCommands;
+      const list = [...$storeCommands.get()];
+      const index = list.findIndex((n) => n.name == name);
+      if (index > -1) {
+        list.splice(index, 1);
+        $storeCommands.set(list);
       }
     });
   }

@@ -10,8 +10,7 @@ import {
   $roomsListOpened,
 } from "../store";
 import commandParser from "../utils/commandParser";
-import { ControllerCommandMap } from "../controller/types";
-import { FloatingCommandMap } from "floating-live";
+import { AppCommandMap } from "floating-live";
 
 const PageStart: React.FC = function () {
   const rooms = useStore($rooms);
@@ -52,11 +51,9 @@ const PageStart: React.FC = function () {
             onPressEnter={(e) => {
               try {
                 let [cmd, ...args] = commandParser(commandInput);
-                controller.call(
+                controller.command(
                   cmd,
-                  ...(args as Parameters<
-                    (ControllerCommandMap & FloatingCommandMap)[any]
-                  >)
+                  ...(args as Parameters<AppCommandMap[any]>)
                 );
               } catch (err) {
                 console.error(err);

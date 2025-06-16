@@ -1,25 +1,24 @@
-import React, { useState } from 'react';
-import 'antd/dist/antd.css';
-import './App.css';
-import { Layout } from 'antd';
-import { Navigate, Route, Routes } from 'react-router-dom';
-import SideBar from './layout/SideBar';
-import PageStart from './pages/PageStart';
-import PageRoom from './pages/PageRoom';
-import PageSave from './pages/PageSave';
-import PageServer from './pages/PageServer';
-import PageSettings from './pages/PageSettings';
-import PageAbout from './pages/PageAbout';
+import React, { useState } from "react";
+import "./App.css";
+import { Layout } from "antd";
+import { Navigate, Route, Routes } from "react-router-dom";
+import SideBar from "./layout/SideBar";
+import PageStart from "./pages/PageStart";
+import PageRoom from "./pages/PageRoom";
+import PageSave from "./pages/PageSave";
+import PageServer from "./pages/PageServer";
+import PageSettings from "./pages/PageSettings";
+import PageAbout from "./pages/PageAbout";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const App: React.FC = () => {
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: "100vh" }}>
       <SideBar />
-      <Layout className="site-layout" style={{ position: 'relative' }}>
+      <Layout className="site-layout" style={{ position: "relative" }}>
         <div className="side-drag" />
-        <Content style={{ padding: '16px 16px' }}>
+        <Content style={{ padding: "16px 16px" }}>
           <Routes>
             <Route path="/" element={<PageStart />} />
             <Route path="/room" element={<PageRoom />} />

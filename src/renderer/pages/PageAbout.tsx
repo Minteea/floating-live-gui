@@ -40,7 +40,7 @@ const PageAbout: React.FC = function () {
         {version.client == "electron" ? (
           <Button
             onClick={() => {
-              controller.call("devtools");
+              controller.command("devtools");
             }}
           >
             打开控制台(Ctrl+Shift+I)

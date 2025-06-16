@@ -1,5 +1,5 @@
 import { Tooltip, Button } from "antd";
-import { RoomInfo } from "floating-live";
+import { LiveRoomData } from "floating-live";
 import { WritableAtom } from "nanostores";
 import { controller } from "../../../renderer/controller";
 import RoomCard from "./RoomCard";
@@ -14,7 +14,7 @@ import {
 
 /** 直播间列表 */
 const RoomListCard: React.FC<{
-  info: WritableAtom<RoomInfo>;
+  info: WritableAtom<LiveRoomData>;
 }> = function ({ info }) {
   const r = useStore(info);
   return (
@@ -38,10 +38,10 @@ const RoomListCard: React.FC<{
               onClick={
                 r.opened
                   ? () => {
-                      controller.call("close", r.key);
+                      controller.command("close", r.key);
                     }
                   : () => {
-                      controller.call("open", r.key);
+                      controller.command("open", r.key);
                     }
               }
             />
@@ -56,7 +56,7 @@ const RoomListCard: React.FC<{
               icon={<SyncOutlined />}
               style={{ marginLeft: 5 }}
               onClick={() => {
-                controller.call("update", r.key);
+                controller.command("update", r.key);
               }}
             />
           </Tooltip>,
@@ -68,7 +68,7 @@ const RoomListCard: React.FC<{
               icon={<DeleteOutlined />}
               style={{ marginLeft: 5 }}
               onClick={() => {
-                controller.call("remove", r.key);
+                controller.command("remove", r.key);
               }}
             />
           </Tooltip>,

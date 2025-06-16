@@ -1,5 +1,10 @@
 import { Button, Checkbox, Input, Modal, Select, Tabs, Tooltip } from "antd";
-import { $commands, $values, controller } from "../../controller";
+import {
+  $commandNames,
+  $commands,
+  $values,
+  controller,
+} from "../../controller";
 import { ReactNode, useState } from "react";
 import Markdown from "react-markdown";
 
@@ -9,7 +14,7 @@ import { useStore } from "@nanostores/react";
 import { $authSave } from "../../../renderer/store";
 
 declare module "floating-live" {
-  interface FloatingCommandMap {
+  interface AppCommandMap {
     [name: `${string}.login.qrcode.get`]: () => { key: string; url: string };
     [name: `${string}.login.qrcode.poll`]: (key: string) => {
       status: number;
@@ -49,10 +54,12 @@ function qrStatusInfo(c: number) {
 const PlatformAuth: React.FC<{
   platform: string;
 }> = function ({ platform }) {
-  const loginCredentials = $commands
+  const loginCredentials = $commandNames
     .get()
     .includes(`${platform}.credentials.check`);
-  const loginQrcode = $commands.get().includes(`${platform}.login.qrcode.get`);
+  const loginQrcode = $commandNames
+    .get()
+    .includes(`${platform}.login.qrcode.get`);
   const values = useStore($values);
   const authSave = useStore($authSave);
   const [modalOpen, setModalOpen] = useState(false);
@@ -60,7 +67,7 @@ const PlatformAuth: React.FC<{
   const [qrData, setQrData] = useState("");
   const [qrKey, setQrKey] = useState("");
   const [qrStatus, setQrStatus] = useState(-2);
-  const userId = values[`auth.userId.${platform}`];
+  const userId = values[`auth.user.${platform}`]?.id;
   useInterval(
     () => {
       QrCheck(qrKey);
@@ -68,12 +75,12 @@ const PlatformAuth: React.FC<{
     qrKey ? 1000 : undefined
   );
   const submit = () => {
-    controller.call("auth", platform, authCode);
-    controller.call("auth.save", platform, authSave ? authCode : "");
+    controller.command("auth", platform, authCode);
+    controller.command("auth.save", platform, authSave ? authCode : "");
     closeModal();
   };
   const QrGenerate = async () => {
-    const result = await controller.call(`${platform}.login.qrcode.get`);
+    const result = await controller.command(`${platform}.login.qrcode.get`);
     if (result) {
       setQrStatus(1);
       setQrData(result.url);
@@ -81,13 +88,16 @@ const PlatformAuth: React.FC<{
     }
   };
   const QrCheck = async (key: string) => {
-    const result = await controller.call(`${platform}.login.qrcode.poll`, key);
+    const result = await controller.command(
+      `${platform}.login.qrcode.poll`,
+      key
+    );
     if (result) {
       const { status, credentials } = result;
       setQrStatus(status);
       if (status == 0) {
-        controller.call("auth", platform, credentials);
-        controller.call("auth.save", platform, authSave ? credentials : "");
+        controller.command("auth", platform, credentials);
+        controller.command("auth.save", platform, authSave ? credentials : "");
         closeModal();
       } else if (status < 0) {
         setQrKey("");
@@ -112,8 +122,8 @@ const PlatformAuth: React.FC<{
             <span>已登录账号: {userId}</span>
             <a
               onClick={() => {
-                controller.call("auth", platform, "");
-                controller.call("auth.save", platform, "");
+                controller.command("auth", platform, "");
+                controller.command("auth.save", platform, "");
               }}
               style={{ padding: "0 4px" }}
             >

@@ -1,5 +1,5 @@
-import { RoomInfo } from "floating-live";
-import { RoomStatus } from "floating-live";
+import { LiveRoomData } from "floating-live";
+import { LiveRoomStatus } from "floating-live";
 import { secondToTime } from "../../utils/time";
 import { getLiveStatus } from "../../utils/enumUtils";
 import { useInterval } from "ahooks";
@@ -8,7 +8,7 @@ import { Divider } from "antd";
 
 /** 直播间卡片 */
 const RoomCard: React.FC<{
-  roomInfo?: RoomInfo | null;
+  roomInfo?: LiveRoomData | null;
   button?: {
     top?: Array<React.ReactElement>;
     bottom?: Array<React.ReactElement>;
@@ -53,7 +53,7 @@ const RoomCard: React.FC<{
           </div>
           <div style={{ display: "flex", lineHeight: "22px" }}>
             <div style={{ fontSize: 13, paddingRight: 10 }}>
-              ● {getLiveStatus(info?.status || RoomStatus.off)}
+              ● {getLiveStatus(info?.status || LiveRoomStatus.off)}
             </div>
             <div style={{ fontSize: 13 }}>{info?.detail.title || ""}</div>
           </div>
@@ -71,7 +71,7 @@ const RoomCard: React.FC<{
         style={{
           fontSize: 13,
           display:
-            info?.opened && info?.status == RoomStatus.live ? "" : "none",
+            info?.opened && info?.status == LiveRoomStatus.live ? "" : "none",
         }}
       >
         <Divider style={{ margin: 0 }} />
