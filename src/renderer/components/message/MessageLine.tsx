@@ -4,15 +4,13 @@ import { Image } from "antd";
 import { ImageSize, UserType } from "floating-live";
 
 function getChatWithEmoticon(msg: LiveMessage.Comment) {
-  let prostr = msg.info.content.split("@").join("@A"); // replaceAll("@", "@A")
-  for (let kw in msg.info.emoticon) {
-    let keyword = kw.split("@").join("@A");
-    prostr = prostr.split(keyword).join("@/" + keyword + "@/");
+  let prostr = msg.info.content;
+  for (const keyword in msg.info.emoticon) {
+    prostr = prostr.replaceAll(keyword, `\u0000${keyword}\u0000`);
   }
-  let list = prostr.split("@/");
+  let list = prostr.split("\u0000");
   let result = list.map((item) => {
-    let i = item.split("@A").join("@");
-    let e = msg.info.emoticon?.[i];
+    let e = msg.info.emoticon?.[item];
     if (e) {
       return (
         <Image
@@ -23,7 +21,7 @@ function getChatWithEmoticon(msg: LiveMessage.Comment) {
         />
       );
     } else {
-      return i;
+      return item;
     }
   });
   return result;
@@ -34,7 +32,7 @@ function getImageSize(s: ImageSize) {
 }
 
 function getAdmin(a: UserType) {
-  return ["管理员", "房管", "主播"][a];
+  return ["", "房管", "主播"][a];
 }
 
 /** 消息 */
@@ -112,9 +110,14 @@ const MessageLine: React.FC<{
           />
           <User msg={msg} />
           &nbsp;
-          <span>开通了</span>&nbsp;
-          <span>{msg.info.duration}天的</span>&nbsp;
+          <span>{msg.info.gift.action || "开通"}</span>
+          &nbsp;
           <span>{msg.info.name}</span>
+          &nbsp;
+          <span>
+            x{msg.info.gift.num}
+            {getTimeUnitText(msg.info.gift.unit)}
+          </span>
         </div>
       );
     }
@@ -158,7 +161,7 @@ const MessageLine: React.FC<{
         <div>
           <User msg={msg} />
           &nbsp; 已被
-          <span>{getAdmin(msg.info.operator.type || 0)}</span>
+          <span>{getAdmin(msg.info.operator?.type || 0)}</span>
           禁言
         </div>
       );
@@ -166,21 +169,21 @@ const MessageLine: React.FC<{
     case "live_start": {
       return (
         <div>
-          直播间 {msg.platform}:{msg.room} 已开播
+          直播间 {msg.platform}:{msg.roomId} 已开播
         </div>
       );
     }
     case "live_end": {
       return (
         <div>
-          直播间 {msg.platform}:{msg.room} 已结束直播
+          直播间 {msg.platform}:{msg.roomId} 已结束直播
         </div>
       );
     }
     case "live_cut": {
       return (
         <div>
-          直播间 {msg.platform}:{msg.room} 被切断直播: {msg.info.message}
+          直播间 {msg.platform}:{msg.roomId} 被切断直播: {msg.info.message}
         </div>
       );
     }
@@ -188,5 +191,18 @@ const MessageLine: React.FC<{
       return null;
   }
 };
+
+function getTimeUnitText(unit?: string) {
+  switch (unit) {
+    case "day":
+      return "天";
+    case "month":
+      return "个月";
+    case "year":
+      return "年";
+    default:
+      return unit;
+  }
+}
 
 export default MessageLine;

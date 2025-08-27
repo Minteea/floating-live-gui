@@ -9,6 +9,7 @@ declare module "floating-live" {
   interface AppCommandMap {
     "auth.save": (platform: string, credentials: string) => Promise<void>;
     "auth.read": (platform: string) => Promise<void>;
+    "auth.readAll": () => Promise<void>;
   }
 }
 
@@ -65,9 +66,12 @@ export default class AuthSave extends BasePlugin {
         message: "存储密钥缺失",
       });
     }
-    const auth = await decryptData(encrypted, authToken);
-    console.log(auth);
-    this.ctx.call("auth", platform, auth);
+    const cookie = await decryptData(encrypted, authToken);
+    const { credentials } = await this.ctx.call("auth", platform, cookie);
+
+    console.log("auth", data);
+    // 储存更新后的cookie
+    this.save(platform, credentials);
   }
 }
 

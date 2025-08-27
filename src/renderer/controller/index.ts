@@ -23,6 +23,18 @@ export const { $commands, $commandNames } =
   controller.registerSync(StoreCommands);
 export const { $platform } = controller.registerSync(StorePlatform);
 
+// 移动房间位置
+export const roomsMoveItem = (key: string, position: number) => {
+  const arr = [...$rooms.get()];
+  const index = arr.findIndex((r) => r.get().key == key);
+  if (index > -1) {
+    const [item] = arr.splice(index, 1);
+    arr.splice(position, 0, item);
+    $rooms.set(arr);
+    controller.command("move", key, position);
+  }
+};
+
 /Electron/.test(navigator.userAgent)
   ? controller.register(IpcLink)
   : controller.register(WebLink);

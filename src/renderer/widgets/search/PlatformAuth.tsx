@@ -70,7 +70,7 @@ const PlatformAuth: React.FC<{
   const userId = values[`auth.user.${platform}`]?.id;
   useInterval(
     () => {
-      QrCheck(qrKey);
+      QrCheck(qrKey).catch((err) => console.error(err));
     },
     qrKey ? 1000 : undefined
   );

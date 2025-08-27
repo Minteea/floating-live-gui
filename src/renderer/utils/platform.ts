@@ -17,15 +17,6 @@ class Platform {
       default:
     }
   }
-
-  getGiftValue(platform: string, gift: GiftInfo) {
-    const currency =
-      this.map.get(platform)?.currency[gift.currency || "default"];
-    return {
-      price: gift.value / (currency?.face || 1),
-      cny: currency?.cny ? gift.value / currency?.cny : 0,
-    };
-  }
 }
 
 const platform = new Platform();

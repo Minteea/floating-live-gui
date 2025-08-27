@@ -15,10 +15,11 @@ export const $commandShow = atom(true);
 
 export const $searchPlatform = atom("");
 export const $searchId = atom("");
-export const $searchResult = atom<LiveRoomData | null>(null);
+export const $searchResult = atom<LiveRoomData | Error | null>(null);
 export const $searchInfo = computed(
   [$rooms, $searchResult],
   (rooms, searchResult) => {
+    if (searchResult instanceof Error) return null;
     const roomInList = rooms
       .find((r) => r.get().key == searchResult?.key)
       ?.get();
@@ -30,7 +31,7 @@ export const $searchInfo = computed(
   }
 );
 
-export const $authSave = atom(false);
+export const $authSave = atom(true);
 
 export const $boardShow = storageAtom("config.boardShow", true);
 export const $boardAutoShow = storageAtom("config.boardAutoShow", false);

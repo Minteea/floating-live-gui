@@ -1,11 +1,19 @@
 import LiveSettings from "../widgets/settings/LiveSettings";
+import AppHeader from "../layout/AppHeader";
+import AppContent from "../layout/AppContent";
 
 const PageSettings: React.FC = function () {
   return (
-    <div>
-      <h2>设置</h2>
-      <LiveSettings />
-    </div>
+    <>
+      <div>
+        <AppHeader>
+          <h2 style={{ marginTop: 0 }}>设置</h2>
+        </AppHeader>
+        <AppContent>
+          <LiveSettings />
+        </AppContent>
+      </div>
+    </>
   );
 };
 

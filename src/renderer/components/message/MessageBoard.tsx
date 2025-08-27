@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Card } from "antd";
 import { LiveMessage } from "floating-live";
 import { useEffect, useRef, useState } from "react";
 import MessageLine from "./MessageLine";
@@ -27,11 +27,20 @@ const MessageBoard: React.FC<{
     autoScroll && scrollToBottom();
   });
   return (
-    <div style={{ position: "relative" }}>
+    <Card
+      size="small"
+      style={{ position: "relative", overflow: "hidden", ...props.style }}
+      styles={{ body: { padding: 0 } }}
+    >
       <div
         ref={refMessageContainer}
-        style={{ overflowY: "auto", ...props.style }}
-        className="ant-card ant-card-bordered"
+        style={{
+          position: "absolute",
+          overflowY: "auto",
+          top: 0,
+          bottom: 0,
+          width: "100%",
+        }}
         onWheel={(e) => {
           if (e.deltaY < 0) {
             setAutoScroll(false);
@@ -43,7 +52,7 @@ const MessageBoard: React.FC<{
           }
         }}
       >
-        <div ref={refMessageContent}>
+        <div ref={refMessageContent} style={{ padding: "8px 12px" }}>
           {props.list.map((msg) => (
             <MessageLine msg={msg} key={msg.id} />
           ))}
@@ -53,8 +62,8 @@ const MessageBoard: React.FC<{
         style={{
           position: "absolute",
           display: autoScroll ? "none" : "",
-          right: 0,
-          bottom: 0,
+          right: 12,
+          bottom: 12,
         }}
       >
         <Button
@@ -67,7 +76,7 @@ const MessageBoard: React.FC<{
           icon={<ArrowDownOutlined />}
         />
       </div>
-    </div>
+    </Card>
   );
 };
 

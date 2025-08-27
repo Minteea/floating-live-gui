@@ -41,42 +41,42 @@ export interface PlatformInfo {
 }
 
 export const bilibili: PlatformInfo = {
-  name: 'bilibili',
-  id: 'bilibili',
+  name: "bilibili",
+  id: "bilibili",
   vip: {
-    id: 'milord',
-    name: '直播老爷',
+    id: "milord",
+    name: "直播老爷",
   },
   privilege: {
-    id: 'guard',
-    name: '大航海',
-    level: [null, '总督', '提督', '舰长'],
+    id: "guard",
+    name: "大航海",
+    level: [null, "总督", "提督", "舰长"],
   },
   gift: {
-    action: '投喂',
+    action: "投喂",
   },
   currency: {
     gold: {
-      name: '电池',
+      name: "电池",
       face: 100, // 1金电池=100金瓜子
       cny: 1000, // 1人民币=1000金瓜子
     },
     silver: {
-      name: '银瓜子',
+      name: "银瓜子",
       face: 1,
     },
   },
 };
 
 export const acfun: PlatformInfo = {
-  name: 'AcFun',
-  id: 'acfun',
+  name: "AcFun",
+  id: "acfun",
   gift: {
-    action: '送出',
+    action: "送出",
   },
   currency: {
     coin: {
-      name: 'AC币',
+      name: "AC币",
       face: 1,
       cny: 10, // 1人民币=10AC币
     },

@@ -3,15 +3,37 @@ import { LiveRoomStatus } from "floating-live";
 import { secondToTime } from "../../utils/time";
 import { getLiveStatus } from "../../utils/enumUtils";
 import { useInterval } from "ahooks";
-import { useEffect, useState } from "react";
-import { Divider } from "antd";
+import { ReactNode, useEffect, useState } from "react";
+import { Card, Divider, Tag } from "antd";
+import {
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+  PlayCircleOutlined,
+} from "@ant-design/icons";
+
+export function getLiveStatusIcon(n?: LiveRoomStatus) {
+  switch (n) {
+    case LiveRoomStatus.live:
+      return <PlayCircleOutlined />;
+    case LiveRoomStatus.round:
+      return <ClockCircleOutlined />;
+    case LiveRoomStatus.banned:
+      return <ExclamationCircleOutlined />;
+    case LiveRoomStatus.locked:
+      return <CloseCircleOutlined />;
+    default:
+      return <MinusCircleOutlined />;
+  }
+}
 
 /** 直播间卡片 */
 const RoomCard: React.FC<{
   roomInfo?: LiveRoomData | null;
   button?: {
-    top?: Array<React.ReactElement>;
-    bottom?: Array<React.ReactElement>;
+    top?: Array<ReactNode>;
+    bottom?: Array<ReactNode>;
   };
 }> = function (props) {
   const info = props.roomInfo;
@@ -22,19 +44,19 @@ const RoomCard: React.FC<{
     setTimeSec((Date.now() - (info?.timestamp || 0)) / 1000);
   }, 100);
   return (
-    <div className="ant-card ant-card-bordered" style={{}}>
+    <Card size="small">
       <div style={{ display: "flex", position: "relative" }}>
-        <div style={{ flexShrink: 0, padding: 10 }}>
+        <div style={{ height: 56, flexShrink: 0 }}>
           <img
-            width={50}
-            height={50}
+            width={56}
+            height={56}
             style={{ borderRadius: "50%" }}
             src={info?.anchor.avatar}
             referrerPolicy="no-referrer"
           />
         </div>
-        <div style={{ flexGrow: 1, padding: "10px 0" }}>
-          <div style={{ lineHeight: "25px" }}>
+        <div style={{ flexGrow: 1, paddingLeft: 12 }}>
+          <div style={{ lineHeight: "28px" }}>
             <div
               style={{ display: "inline-block", fontSize: 16, fontWeight: 600 }}
             >
@@ -51,18 +73,23 @@ const RoomCard: React.FC<{
               {info?.detail.area?.join(" > ") || ""}
             </div>
           </div>
-          <div style={{ display: "flex", lineHeight: "22px" }}>
-            <div style={{ fontSize: 13, paddingRight: 10 }}>
-              ● {getLiveStatus(info?.status || LiveRoomStatus.off)}
-            </div>
+          <div style={{ display: "flex", lineHeight: "22px", marginTop: 4 }}>
+            <Tag
+              bordered={false}
+              icon={getLiveStatusIcon(info?.status || LiveRoomStatus.off)}
+              color={info?.status == LiveRoomStatus.live ? "blue" : ""}
+              style={{ lineHeight: "20px", fontSize: 13 }}
+            >
+              {getLiveStatus(info?.status || LiveRoomStatus.off)}
+            </Tag>
             <div style={{ fontSize: 13 }}>{info?.detail.title || ""}</div>
           </div>
         </div>
-        <div style={{ flexShrink: 0, padding: 5 }}>
-          <div style={{ textAlign: "right", lineHeight: "30px" }}>
+        <div style={{ flexShrink: 0 }}>
+          <div style={{ textAlign: "right", height: 24 }}>
             {props.button?.top}
           </div>
-          <div style={{ textAlign: "right", lineHeight: "30px" }}>
+          <div style={{ textAlign: "right", height: 24, marginTop: 6 }}>
             {props.button?.bottom}
           </div>
         </div>
@@ -74,13 +101,13 @@ const RoomCard: React.FC<{
             info?.opened && info?.status == LiveRoomStatus.live ? "" : "none",
         }}
       >
-        <Divider style={{ margin: 0 }} />
+        <Divider style={{ margin: "12px 0 4px" }} />
         <div
           style={{
             position: "relative",
             display: "flex",
-            padding: "0 10px",
             gap: "10px",
+            marginBottom: "-8px",
           }}
         >
           <div>{secondToTime(timeSec)}</div>
@@ -98,7 +125,7 @@ const RoomCard: React.FC<{
           ) : null}
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 

@@ -1,4 +1,5 @@
 import { BasePlugin, PluginContext, ValueContext } from "floating-live";
+import { JsonSerializer } from "../../../../utils/serializer";
 
 declare const NODE_ENV: string;
 declare module "floating-live" {
@@ -79,7 +80,7 @@ export class WebLink extends BasePlugin {
     };
     this.ws.onmessage = (e) => {
       console.log(e.data);
-      const [channel, ...args] = JSON.parse(e.data);
+      const [channel, ...args] = JsonSerializer.deserialize(e.data);
       this._emit(channel, ...args);
     };
   }
@@ -106,7 +107,7 @@ export class WebLink extends BasePlugin {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify([channel, ...args]),
+        body: JsonSerializer.serialize([channel, ...args]),
       })
         .then((response) => response.json())
         .then(([ok, res]) => {

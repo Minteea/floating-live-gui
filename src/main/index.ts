@@ -12,7 +12,6 @@ import { PluginBilibili } from "@floating-live/bilibili";
 import { PluginAcfun } from "@floating-live/acfun";
 import { ConsoleEvent } from "@floating-live/plugin-console-event";
 import path from "path";
-import ElectronLoginWindow from "./plugins/webLogin/electronWebLogin";
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 
@@ -60,11 +59,13 @@ lifeCycle()
     await floatingLive.register(PluginBilibili);
     await floatingLive.register(PluginAcfun);
 
-    await floatingLive.register(ElectronLoginWindow);
     console.log("插件注册完毕");
   })
   .then(async () => {
     await floatingLive.register(AuthSave);
+
+    await floatingLive.call("auth.read", "bilibili");
+
     await floatingLive.register(RoomLoader, { storage: true });
     // 载入房间
     console.log("房间加载完毕");

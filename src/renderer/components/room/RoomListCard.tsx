@@ -10,26 +10,33 @@ import {
   DeleteOutlined,
   CheckOutlined,
   SyncOutlined,
+  PlusOutlined,
+  HolderOutlined,
 } from "@ant-design/icons";
+import { ReactNode } from "react";
+import { useSortable } from "@dnd-kit/sortable";
 
 /** 直播间列表 */
-const RoomListCard: React.FC<{
+export const RoomListCard: React.FC<{
   info: WritableAtom<LiveRoomData>;
-}> = function ({ info }) {
+  topAddition?: ReactNode[];
+  bottomAddition?: ReactNode[];
+}> = function ({ info, topAddition, bottomAddition }) {
   const r = useStore(info);
   return (
     <RoomCard
       roomInfo={r}
       button={{
         top: [
+          ...(topAddition || []),
           <Tooltip
             title={
               r.opened ? "关闭房间" : r.available ? "打开房间" : "房间不可用"
             }
-            arrowPointAtCenter
+            arrow={{ pointAtCenter: true }}
           >
             <Button
-              type={r.opened ? "primary" : "ghost"}
+              type={r.opened ? "primary" : "default"}
               shape="circle"
               size="small"
               disabled={!r.available}
@@ -48,7 +55,12 @@ const RoomListCard: React.FC<{
           </Tooltip>,
         ],
         bottom: [
-          <Tooltip title="刷新信息" arrowPointAtCenter placement="bottom">
+          ...(bottomAddition || []),
+          <Tooltip
+            title="刷新信息"
+            arrow={{ pointAtCenter: true }}
+            placement="bottom"
+          >
             <Button
               type="text"
               shape="circle"
@@ -60,7 +72,11 @@ const RoomListCard: React.FC<{
               }}
             />
           </Tooltip>,
-          <Tooltip title="删除房间" arrowPointAtCenter placement="bottom">
+          <Tooltip
+            title="删除房间"
+            arrow={{ pointAtCenter: true }}
+            placement="bottom"
+          >
             <Button
               type="text"
               shape="circle"
@@ -75,6 +91,52 @@ const RoomListCard: React.FC<{
         ],
       }}
     />
+  );
+};
+
+export const DraggableRoomListCard: React.FC<{
+  info: WritableAtom<LiveRoomData>;
+}> = ({ info }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: info.get().key,
+    transition: {
+      duration: 150,
+      easing: "ease",
+    },
+  });
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: `translate3d(${transform?.x || 0}px, ${
+          transform?.y || 0
+        }px, 0)`,
+        transition,
+        zIndex: isDragging ? 100 : 0,
+        cursor: isDragging ? "pointer" : "",
+      }}
+    >
+      <RoomListCard
+        info={info}
+        bottomAddition={[
+          <Button
+            type="text"
+            shape="circle"
+            size="small"
+            icon={<HolderOutlined />}
+            {...listeners}
+            {...attributes}
+          />,
+        ]}
+      />
+    </div>
   );
 };
 

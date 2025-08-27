@@ -3,6 +3,8 @@ import { MapStore, ReadableAtom, atom, computed, map } from "nanostores";
 
 export default class StoreRooms extends BasePlugin {
   static pluginName = "storeRooms";
+
+  readonly $remoteRooms = atom<MapStore<LiveRoomData>[]>([]);
   readonly $rooms = atom<MapStore<LiveRoomData>[]>([]);
   readonly $openedRooms: ReadableAtom<MapStore<LiveRoomData>[]>;
 
@@ -11,45 +13,51 @@ export default class StoreRooms extends BasePlugin {
     this.$openedRooms = computed([this.$rooms], (rooms) => {
       return rooms.filter((r) => r.get().opened);
     });
+
+    this.$remoteRooms.listen((value) => {
+      this.$rooms.set([...value]);
+    });
   }
   find(key: string) {
-    return this.$rooms.get().find((room) => room.get().key == key);
+    return this.$remoteRooms.get().find((room) => room.get().key == key);
   }
   init(ctx: PluginContext) {
     ctx.on("snapshot", (snapshot) => {
-      this.$rooms.set(snapshot.room.map((room) => map(room)));
+      this.$remoteRooms.set(snapshot.room.map((room) => map(room)));
     });
     ctx.on("room:add", ({ room }) => {
-      this.$rooms.set([...this.$rooms.get(), map(room)]);
+      const list = [...this.$remoteRooms.get(), map(room)];
+      this.$remoteRooms.set(list);
+      this.$remoteRooms.set(list);
     });
     ctx.on("room:remove", ({ key }) => {
-      const rooms = [...this.$rooms.get()];
+      const rooms = [...this.$remoteRooms.get()];
       const index = rooms.findIndex((room) => room.get().key == key);
       if (index > -1) {
         rooms.splice(index, 1);
-        this.$rooms.set(rooms);
+        this.$remoteRooms.set(rooms);
       }
     });
     ctx.on("room:move", ({ key, position }) => {
-      const rooms = [...this.$rooms.get()];
+      const rooms = [...this.$remoteRooms.get()];
       const index = rooms.findIndex((room) => room.get().key == key);
       if (index > -1) {
         const [room] = rooms.splice(index, 1);
         rooms.splice(position, 0, room);
-        this.$rooms.set(rooms);
+        this.$remoteRooms.set(rooms);
       }
     });
     this.ctx.on("room:open", ({ key }) => {
       const $room = this.find(key);
       if (!$room) return;
       $room.setKey("opened", true);
-      this.$rooms.set([...this.$rooms.get()]);
+      this.$remoteRooms.set([...this.$remoteRooms.get()]);
     });
     this.ctx.on("room:close", ({ key }) => {
       const $room = this.find(key);
       if (!$room) return;
       $room.setKey("opened", false);
-      this.$rooms.set([...this.$rooms.get()]);
+      this.$remoteRooms.set([...this.$remoteRooms.get()]);
     });
     this.ctx.on("room:update", ({ key, room }) => {
       const $room = this.find(key);

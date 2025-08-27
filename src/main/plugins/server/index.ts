@@ -11,9 +11,9 @@ import {
   ValueContext,
 } from "floating-live";
 import { UpgradeWebSocket, WSContext } from "hono/ws";
-import WebSocket from "ws";
 import { Server as HttpServer } from "http";
 import { Http2Server, Http2SecureServer } from "http2";
+import { JsonSerializer } from "../../../utils/serializer";
 
 declare module "floating-live" {
   interface AppCommandMap {
@@ -93,14 +93,14 @@ export default class Server extends BasePlugin {
         let connected = false;
         return {
           onMessage: (e, ws) => {
-            const { snapshots } = JSON.parse(e.data as string);
+            const { snapshots } = JsonSerializer.deserialize(e.data as string);
             const allSnapshots: Record<string, any> = {};
             (snapshots as string[]).forEach((name) => {
               try {
                 allSnapshots.name = this.ctx.call(`${name}.snapshot`);
               } catch (e) {}
             });
-            ws.send(JSON.stringify(["snapshot", allSnapshots]));
+            ws.send(JsonSerializer.serialize(["snapshot", allSnapshots]));
           },
           onOpen: (e, ws) => {
             this.honoWebsocketClients.set(ws, {});
@@ -165,7 +165,7 @@ export default class Server extends BasePlugin {
 
   send(channel: string, ...args: any[]) {
     this.honoWebsocketClients.forEach((val, ws) => {
-      ws.send(JSON.stringify([channel, ...args]));
+      ws.send(JsonSerializer.serialize([channel, ...args]));
     });
   }
 

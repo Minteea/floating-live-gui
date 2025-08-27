@@ -1,5 +1,6 @@
 import type { IpcRenderer } from "electron";
 import { BasePlugin, PluginContext } from "floating-live";
+import { deserializeError, isErrorLike } from "serialize-error";
 
 declare module "floating-live" {
   interface AppCommandMap {
@@ -42,6 +43,7 @@ export class IpcLink extends BasePlugin {
             channel as any,
             ...args
           );
+          console.log(["result", result]);
           if (!result) {
             this.throw(
               new this.Error("ipc:unknown_channel", {
@@ -54,11 +56,7 @@ export class IpcLink extends BasePlugin {
             if (fulfilled) {
               return value;
             } else {
-              if (value?._error) {
-                ctx.throw(value);
-              } else {
-                throw value;
-              }
+              throw isErrorLike(value) ? deserializeError(value) : value;
             }
           }
         }

@@ -1,13 +1,19 @@
-import version from '../controller/version';
-import LinkSettings from '../widgets/link/LinkSettings';
-import ServerSettings from '../widgets/server/ServerSettings';
+import version from "../controller/version";
+import LinkSettings from "../widgets/link/LinkSettings";
+import ServerSettings from "../widgets/server/ServerSettings";
+import AppHeader from "../layout/AppHeader";
+import AppContent from "../layout/AppContent";
 
 const PageServer: React.FC = function () {
-  if (version.client == 'electron') {
+  if (version.client == "electron") {
     return (
       <div>
-        <h2>本地服务</h2>
-        <ServerSettings />
+        <AppHeader>
+          <h2 style={{ marginTop: 0 }}>本地服务</h2>
+        </AppHeader>
+        <AppContent>
+          <ServerSettings />
+        </AppContent>
       </div>
     );
   }

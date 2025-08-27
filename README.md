@@ -1,6 +1,6 @@
 # Floating Live GUI
 
-Floating Live 弹幕工具的可视化界面版本，基于 `floating-live` 库的基础上添加了一些操作功能。
+Floating Live 弹幕工具的可视化界面版本，基于 `floating-live` 库。
 
 后端使用 NodeJS + Vite 开发，可视化程序界面使用 Electron 实现，前端界面使用 React + Typescript 开发，UI 框架为 Ant Design。
 
@@ -152,7 +152,7 @@ interface MessageInterface {
 
 开发模式下，程序也可以使用网页版进行操作。确保主程序窗口中【本地服务 > 启用 websocket 服务】处于打开状态。
 
-打开浏览器，在地址栏中输入`localhost:5173`即可进入网页界面（vite server 默认入口）。
+打开浏览器，在地址栏中输入`localhost:35173`即可进入网页界面（vite server 默认入口）。
 
 此时页面需要与后端连接才能对程序进行操作。在浏览器页面中进入【连接服务】，点击连接按钮即可连接主程序，设置项将实时同步。
 
@@ -166,6 +166,7 @@ interface MessageInterface {
 - ✅ 配置与登录信息保存
 - ✅ 服务端插件系统
 - ✅ 网页端插件系统
+- 🟨 网页登录支持
 - ⬜ 自动发送弹幕屏蔽插件
 - ⬜ 网页服务插件
 - ⬜ 弹幕记录文件读取
