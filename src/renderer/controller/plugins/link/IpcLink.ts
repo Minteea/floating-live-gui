@@ -27,29 +27,25 @@ export class IpcLink extends BasePlugin {
     if (this.isElectron) {
       const ipcRenderer = this.ipcRenderer!;
       ipcRenderer.on("event", (e, eventName, detail) => {
-        console.log(["event", eventName, detail]);
         ctx.emit(eventName, detail);
       });
       ipcRenderer.on("snapshot", (e, snapshot) => {
-        console.log(["snapshot", snapshot]);
         ctx.emit("snapshot", snapshot);
       });
 
       ctx.registerCommand(
         "send",
         async (e, channel: string, ...args: any[]) => {
-          console.log(["send", channel, ...args]);
           const result = await this.ipcRenderer!.invoke(
             channel as any,
-            ...args
+            ...args,
           );
-          console.log(["result", result]);
           if (!result) {
             this.throw(
               new this.Error("ipc:unknown_channel", {
                 message: "ipc调用失败",
                 cause: "未知的channel",
-              })
+              }),
             );
           } else {
             const [fulfilled, value] = result;
@@ -59,13 +55,8 @@ export class IpcLink extends BasePlugin {
               throw isErrorLike(value) ? deserializeError(value) : value;
             }
           }
-        }
+        },
       );
-
-      ctx.on("snapshot", (e) => {
-        console.log("snapshot");
-        console.log(e);
-      });
       ctx.call("send", "connect", {
         snapshots: ["platform", "command", "value", "plugin", "room", "hook"],
       });
@@ -74,7 +65,7 @@ export class IpcLink extends BasePlugin {
         new this.Error("link@ipc:non_electron", {
           message: "插件初始化失败",
           reason: "插件非Electron环境",
-        })
+        }),
       );
     }
   }

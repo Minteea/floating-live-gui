@@ -38,7 +38,7 @@ const RoomCard: React.FC<{
 }> = function (props) {
   const info = props.roomInfo;
   const [timeSec, setTimeSec] = useState(
-    (Date.now() - (info?.timestamp || 0)) / 1000
+    (Date.now() - (info?.timestamp || 0)) / 1000,
   );
   useInterval(() => {
     setTimeSec((Date.now() - (info?.timestamp || 0)) / 1000);
@@ -86,10 +86,17 @@ const RoomCard: React.FC<{
           </div>
         </div>
         <div style={{ flexShrink: 0 }}>
-          <div style={{ textAlign: "right", height: 24 }}>
+          <div style={{ display: "flex", justifyContent: "right", height: 24 }}>
             {props.button?.top}
           </div>
-          <div style={{ textAlign: "right", height: 24, marginTop: 6 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "right",
+              height: 24,
+              marginTop: 6,
+            }}
+          >
             {props.button?.bottom}
           </div>
         </div>

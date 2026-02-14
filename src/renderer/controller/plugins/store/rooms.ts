@@ -1,4 +1,9 @@
-import { BasePlugin, PluginContext, LiveRoomData } from "floating-live";
+import {
+  BasePlugin,
+  PluginContext,
+  LiveRoomData,
+  LiveConnectionStatus,
+} from "floating-live";
 import { MapStore, ReadableAtom, atom, computed, map } from "nanostores";
 
 export default class StoreRooms extends BasePlugin {
@@ -57,6 +62,7 @@ export default class StoreRooms extends BasePlugin {
       const $room = this.find(key);
       if (!$room) return;
       $room.setKey("opened", false);
+      $room.setKey("connectionStatus", LiveConnectionStatus.off);
       this.$remoteRooms.set([...this.$remoteRooms.get()]);
     });
     this.ctx.on("room:update", ({ key, room }) => {
@@ -82,6 +88,30 @@ export default class StoreRooms extends BasePlugin {
       room.timestamp = timestamp || 0;
       room.status = status;
       $room.set(room);
+    });
+    this.ctx.on("room:connecting", ({ key }) => {
+      const $room = this.find(key);
+      if (!$room) return;
+      $room.setKey("connectionStatus", LiveConnectionStatus.connecting);
+      this.$remoteRooms.set([...this.$remoteRooms.get()]);
+    });
+    this.ctx.on("room:connected", ({ key }) => {
+      const $room = this.find(key);
+      if (!$room) return;
+      $room.setKey("connectionStatus", LiveConnectionStatus.connected);
+      this.$remoteRooms.set([...this.$remoteRooms.get()]);
+    });
+    this.ctx.on("room:disconnect", ({ key }) => {
+      const $room = this.find(key);
+      if (!$room) return;
+      $room.setKey("connectionStatus", LiveConnectionStatus.disconnected);
+      this.$remoteRooms.set([...this.$remoteRooms.get()]);
+    });
+    this.ctx.on("room:enter", ({ key }) => {
+      const $room = this.find(key);
+      if (!$room) return;
+      $room.setKey("connectionStatus", LiveConnectionStatus.entered);
+      this.$remoteRooms.set([...this.$remoteRooms.get()]);
     });
   }
 }

@@ -39,7 +39,7 @@ export default class Server extends BasePlugin {
   initialized = false;
 
   private injectWebSocket!: (
-    server: HttpServer | Http2Server | Http2SecureServer
+    server: HttpServer | Http2Server | Http2SecureServer,
   ) => void;
   private upgradeWebSocket!: UpgradeWebSocket<WebSocket>;
 
@@ -64,10 +64,10 @@ export default class Server extends BasePlugin {
     this.initService();
     options?.opened && this.open();
 
-    this.ctx.registerCommand("server.open", () => {
+    ctx.registerCommand("server.open", () => {
       this.open();
     });
-    this.ctx.registerCommand("server.close", () => {
+    ctx.registerCommand("server.close", () => {
       this.close();
     });
 
@@ -80,9 +80,7 @@ export default class Server extends BasePlugin {
       set: (value) => this.changePort(value),
     });
 
-    this.ctx.on("event", (channel, ...args) =>
-      this.send("event", channel, ...args)
-    );
+    ctx.on("event", (channel, ...args) => this.send("event", channel, ...args));
   }
 
   private initService() {
@@ -113,8 +111,12 @@ export default class Server extends BasePlugin {
             this.honoWebsocketClients.delete(ws);
           },
         };
-      })
+      }),
     );
+
+    this.app.get("/test", async (c) => {
+      return Response.json({ msg: "test" });
+    });
 
     this.app.post("/post", async (c) => {
       const [channel, ...args] = (await c.req.json()) as [string, ...any[]];
@@ -122,7 +124,7 @@ export default class Server extends BasePlugin {
         try {
           const [name, ...cArgs] = args as [
             keyof AppCommandMap,
-            ...Parameters<AppCommandMap[keyof AppCommandMap]>
+            ...Parameters<AppCommandMap[keyof AppCommandMap]>,
           ];
           const result = await this.ctx.call(name, ...cArgs);
           return Response.json([1, result]);
@@ -131,7 +133,7 @@ export default class Server extends BasePlugin {
           if (err instanceof Error) {
             rej = Object.assign(
               { message: err.message, name: err.name, _error: true },
-              err
+              err,
             );
           } else {
             rej = err;
@@ -155,7 +157,7 @@ export default class Server extends BasePlugin {
     if (this.opened) return;
     console.log("服务开启");
 
-    this.server = serve(this.app);
+    this.server = serve({ fetch: this.app.fetch, port: this.port });
     this.injectWebSocket(this.server);
     this.initialized = true;
 
@@ -183,7 +185,7 @@ export default class Server extends BasePlugin {
     this.port = num;
     if (this.opened) {
       this.server?.close();
-      this.server = serve(this.app);
+      this.server = serve({ fetch: this.app.fetch, port: this.port });
       this.injectWebSocket(this.server);
     }
     this.valueCtxPort.emit(this.port);

@@ -1,5 +1,5 @@
-import { Tooltip, Button } from "antd";
-import { LiveRoomData } from "floating-live";
+import { Tooltip, Button, Tag, Typography } from "antd";
+import { LiveConnectionStatus, LiveRoomData } from "floating-live";
 import { WritableAtom } from "nanostores";
 import { controller } from "../../../renderer/controller";
 import RoomCard from "./RoomCard";
@@ -16,6 +16,21 @@ import {
 import { ReactNode } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 
+function getConnectionStatusColor(status: LiveConnectionStatus) {
+  switch (status) {
+    case -1:
+      return "red";
+    case 0:
+      return "lightgrey";
+    case 1:
+      return "orange";
+    case 2:
+      return "gold";
+    case 3:
+      return "limegreen";
+  }
+}
+
 /** 直播间列表 */
 export const RoomListCard: React.FC<{
   info: WritableAtom<LiveRoomData>;
@@ -29,6 +44,27 @@ export const RoomListCard: React.FC<{
       button={{
         top: [
           ...(topAddition || []),
+          r.connectionStatus && r.connectionStatus != 3 ? (
+            <span style={{ fontSize: "0.875em", lineHeight: "24px" }}>
+              {r.connectionStatus == 1
+                ? "正在连接服务器"
+                : r.connectionStatus == 2
+                  ? "正在连接直播间"
+                  : r.connectionStatus == -1
+                    ? "连接断开"
+                    : "未知状态"}
+            </span>
+          ) : null,
+          <div
+            style={{
+              lineHeight: "24px",
+              width: "24px",
+              textAlign: "center",
+              color: getConnectionStatusColor(r.connectionStatus),
+            }}
+          >
+            ●
+          </div>,
           <Tooltip
             title={
               r.opened ? "关闭房间" : r.available ? "打开房间" : "房间不可用"

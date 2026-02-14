@@ -18,7 +18,7 @@ const MessageBoard: React.FC<{
   const scrollToBottom = () => {
     console.log(refMessageContent.current?.clientHeight);
     refMessageContent.current!.scrollIntoView({
-      behavior: "smooth",
+      behavior: "instant",
       block: "end",
     });
   };

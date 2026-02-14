@@ -44,7 +44,8 @@ const MessageLine: React.FC<{
     case "comment": {
       return (
         <div>
-          <Image
+          <img
+            loading="lazy"
             src={msg.info.user.avatar}
             referrerPolicy="no-referrer"
             width={20}
@@ -54,6 +55,7 @@ const MessageLine: React.FC<{
           :&nbsp;
           {msg.info.image ? (
             <img
+              loading="lazy"
               src={msg.info.image.url}
               referrerPolicy="no-referrer"
               height={getImageSize(msg.info.image.size || 0)}
@@ -70,6 +72,7 @@ const MessageLine: React.FC<{
       return (
         <div>
           <img
+            loading="lazy"
             src={msg.info.user.avatar}
             referrerPolicy="no-referrer"
             width={20}
@@ -87,6 +90,7 @@ const MessageLine: React.FC<{
       return (
         <div>
           <img
+            loading="lazy"
             src={msg.info.user.avatar}
             referrerPolicy="no-referrer"
             width={20}
@@ -103,6 +107,7 @@ const MessageLine: React.FC<{
       return (
         <div>
           <img
+            loading="lazy"
             src={msg.info.user.avatar}
             referrerPolicy="no-referrer"
             width={20}
@@ -124,6 +129,13 @@ const MessageLine: React.FC<{
     case "entry": {
       return (
         <div>
+          <img
+            loading="lazy"
+            src={msg.info.user.avatar}
+            referrerPolicy="no-referrer"
+            width={20}
+            height={20}
+          />
           <User msg={msg} /> 进入直播间
         </div>
       );
@@ -131,6 +143,13 @@ const MessageLine: React.FC<{
     case "like": {
       return (
         <div>
+          <img
+            loading="lazy"
+            src={msg.info.user.avatar}
+            referrerPolicy="no-referrer"
+            width={20}
+            height={20}
+          />
           <User msg={msg} /> 点赞了
         </div>
       );
@@ -138,6 +157,13 @@ const MessageLine: React.FC<{
     case "share": {
       return (
         <div>
+          <img
+            loading="lazy"
+            src={msg.info.user.avatar}
+            referrerPolicy="no-referrer"
+            width={20}
+            height={20}
+          />
           <User msg={msg} /> 分享了直播间
         </div>
       );
@@ -145,6 +171,13 @@ const MessageLine: React.FC<{
     case "follow": {
       return (
         <div>
+          <img
+            loading="lazy"
+            src={msg.info.user.avatar}
+            referrerPolicy="no-referrer"
+            width={20}
+            height={20}
+          />
           <User msg={msg} /> 关注了主播
         </div>
       );
@@ -152,6 +185,13 @@ const MessageLine: React.FC<{
     case "join": {
       return (
         <div>
+          <img
+            loading="lazy"
+            src={msg.info.user.avatar}
+            referrerPolicy="no-referrer"
+            width={20}
+            height={20}
+          />
           <User msg={msg} /> 加入了粉丝团
         </div>
       );
@@ -160,9 +200,8 @@ const MessageLine: React.FC<{
       return (
         <div>
           <User msg={msg} />
-          &nbsp; 已被
-          <span>{getAdmin(msg.info.operator?.type || 0)}</span>
-          禁言
+          &nbsp;
+          <span>已被{getAdmin(msg.info.operator?.type || 0)}禁言</span>
         </div>
       );
     }

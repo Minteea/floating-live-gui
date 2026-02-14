@@ -27,6 +27,7 @@ export default class StoreMessages extends BasePlugin {
 
     ctx.on("live:message", ({ message }) => {
       const messages = this.$messages.get();
+      message.id += `#${Math.floor(100000 * Math.random())}`;
       if (messages.length > this.maxNumber) {
         messages.splice(0, messages.length - this.maxNumber);
       }
