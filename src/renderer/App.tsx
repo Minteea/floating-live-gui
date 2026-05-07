@@ -10,8 +10,6 @@ import PageServer from "./pages/PageServer";
 import PageSettings from "./pages/PageSettings";
 import PageAbout from "./pages/PageAbout";
 
-const { Header, Content, Footer, Sider } = Layout;
-
 const App: React.FC = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>

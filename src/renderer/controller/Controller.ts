@@ -1,6 +1,12 @@
 import commandParser from "../utils/commandParser";
 import { App, AppCommandMap, AppValueMap } from "floating-live";
 
+declare module "floating-live" {
+  interface AppCommandMap {
+    devtools: () => void;
+  }
+}
+
 export class FloatingLiveController extends App {
   protected remoteValueController: RemoteValueController;
   constructor() {
@@ -27,10 +33,7 @@ export class FloatingLiveController extends App {
     return super.call("send", "command", name, ...args);
   }
   /** 指令控制 */
-  command<T extends keyof AppCommandMap>(
-    name: T,
-    ...args: Parameters<AppCommandMap[T]>
-  ) {
+  command<T extends keyof AppCommandMap>(name: T, ...args: Parameters<AppCommandMap[T]>) {
     if (this.hasCommand(name)) {
       return this.call(name, ...args);
     } else {

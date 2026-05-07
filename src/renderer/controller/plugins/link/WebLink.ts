@@ -22,8 +22,7 @@ export class WebLink extends BasePlugin {
   static pluginName = "webLink";
 
   ws: WebSocket | null = null;
-  url: string =
-    NODE_ENV == "production" ? `${location.host}` : "localhost:8130";
+  url: string = NODE_ENV == "production" ? `${location.host}` : "localhost:8130";
   timeout: number = 5000;
   connected: boolean = false;
   wsRoute: string = "/ws";
@@ -57,9 +56,7 @@ export class WebLink extends BasePlugin {
   }
 
   init(ctx: PluginContext) {
-    ctx.registerCommand("send", (e, channel, ...args) =>
-      this._send(channel, ...args)
-    );
+    ctx.registerCommand("send", (e, channel, ...args) => this._send(channel, ...args));
     ctx.registerCommand("link", (e, url: string) => this.link(url));
   }
 

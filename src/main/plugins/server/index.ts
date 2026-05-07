@@ -4,12 +4,7 @@ import { cors } from "hono/cors";
 import { serve, ServerType } from "@hono/node-server";
 import { createNodeWebSocket } from "@hono/node-ws";
 
-import {
-  AppCommandMap,
-  BasePlugin,
-  FloatingLive,
-  ValueContext,
-} from "floating-live";
+import { AppCommandMap, BasePlugin, FloatingLive, ValueContext } from "floating-live";
 import { UpgradeWebSocket, WSContext } from "hono/ws";
 import { Server as HttpServer } from "http";
 import { Http2Server, Http2SecureServer } from "http2";
@@ -38,9 +33,7 @@ export default class Server extends BasePlugin {
   port = 8130;
   initialized = false;
 
-  private injectWebSocket!: (
-    server: HttpServer | Http2Server | Http2SecureServer,
-  ) => void;
+  private injectWebSocket!: (server: HttpServer | Http2Server | Http2SecureServer) => void;
   private upgradeWebSocket!: UpgradeWebSocket<WebSocket>;
 
   private valueCtxPort!: ValueContext<number>;
@@ -111,7 +104,7 @@ export default class Server extends BasePlugin {
             this.honoWebsocketClients.delete(ws);
           },
         };
-      }),
+      })
     );
 
     this.app.get("/test", async (c) => {
@@ -131,10 +124,7 @@ export default class Server extends BasePlugin {
         } catch (err) {
           let rej;
           if (err instanceof Error) {
-            rej = Object.assign(
-              { message: err.message, name: err.name, _error: true },
-              err,
-            );
+            rej = Object.assign({ message: err.message, name: err.name, _error: true }, err);
           } else {
             rej = err;
           }
