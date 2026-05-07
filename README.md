@@ -72,7 +72,7 @@ npm run package
 [{消息数据...}, {消息数据...}, {消息数据...}]
 ```
 
-单条消息数据的 ts 类型格式如下：
+单条消息数据的 TypeScript 类型格式如下：
 
 ```typescript
 interface MessageInterface {
@@ -124,7 +124,7 @@ interface MessageInterface {
 }
 ```
 
-目前支持的消息类型及支持程度如下：
+目前支持的消息类型及平台适配程度如下：
 🟩 支持　 🟨 部分支持　 ⬜ 尚未支持
 |类型 |描述 |bilibili|AcFun|
 |---------------|---------------|-------|-----|
@@ -167,10 +167,11 @@ interface MessageInterface {
 - ✅ 服务端插件系统
 - ✅ 网页端插件系统
 - 🟨 网页登录支持
+- 🟨 插件加载器
 - ⬜ 自动发送弹幕屏蔽插件
 - ⬜ 网页服务插件
 - ⬜ 弹幕记录文件读取
-- ⬜ 插件加载器
+
 
 ## Q&A
 
@@ -182,7 +183,7 @@ interface MessageInterface {
 
 ### 为什么要用 JavaScript 而不是其他语言作为后端
 
-众所周知，JavaScript 是网页开发的常用语言，而后端代码与前端语言统一可以省去很多麻烦，比如可以使用同一套类型声明而无需在前后端同时修改。例如在这个项目的前端代码中就使用了在 floating-live 库中定义的 ts 类型及接口。而且前后端使用一种语言可以降低项目开发者的语言门槛。
+众所周知，JavaScript 是网页开发的常用语言，而后端代码与前端语言统一可以省去很多麻烦，比如可以使用同一套类型声明而无需在前后端同时修改。例如在这个项目的前端代码中就使用了在 floating-live 库中定义的 TypeScript 类型及接口。而且前后端使用一种语言可以降低项目开发者的语言门槛。
 
 ## 技术栈
 
@@ -190,7 +191,7 @@ interface MessageInterface {
 - 运行环境 - NodeJS
 - 桌面框架 - Electron
 - web 框架 - Hono
-- 构建工具 - Yarn + Electron Forge
+- 构建工具 - Electron Vite
 
 - 前端框架 - React
 - 状态管理 - Nanostores
@@ -206,9 +207,9 @@ interface MessageInterface {
 
 ### 相关工具
 
-- 构建工具：[github:electron/forge](https://github.com/electron/forge)
+- 构建工具：[github:alex8088/electron-vite](https://github.com/alex8088/electron-vite)
 
 ### 弹幕库参考
-
+程序及其插件所使用弹幕库（直播消息库）均在下列项目的基础上进行改进
 - bilibili 弹幕库 [MIT]: [github:simon300000/bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws)
 - AcFun 弹幕库 [GPLv3]: [github:ACFUN-FOSS/ac-danmu.js](https://github.com/ACFUN-FOSS/ac-danmu.js)
