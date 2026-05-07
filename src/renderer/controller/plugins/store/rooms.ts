@@ -33,7 +33,6 @@ export default class StoreRooms extends BasePlugin {
     ctx.on("room:add", ({ room }) => {
       const list = [...this.$remoteRooms.get(), map(room)];
       this.$remoteRooms.set(list);
-      this.$remoteRooms.set(list);
     });
     ctx.on("room:remove", ({ key }) => {
       const rooms = [...this.$remoteRooms.get()];

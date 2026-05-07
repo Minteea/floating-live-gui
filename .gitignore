@@ -100,3 +100,8 @@ events.md
 /save
 /saves
 .legacy
+/playground
+/build
+
+.yarn/
+.yarnrc.yml

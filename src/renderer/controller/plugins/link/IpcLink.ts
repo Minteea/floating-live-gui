@@ -11,7 +11,7 @@ declare module "floating-live" {
     snapshot: AppSnapshotMap;
   }
 
-  interface AppSnapshotMap {}
+  interface AppSnapshotMap { }
 }
 
 interface FLEGIpcRenderer extends IpcRenderer {
@@ -52,7 +52,7 @@ export class IpcLink extends BasePlugin {
         }
       });
       ctx.call("send", "connect", {
-        snapshots: ["platform", "command", "value", "plugin", "room", "hook"],
+        snapshots: ["platform", "command", "value", "plugin", "room", "hook", "pluginLoader"],
       });
     } else {
       this.throw(

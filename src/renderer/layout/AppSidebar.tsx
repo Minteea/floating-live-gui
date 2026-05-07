@@ -8,6 +8,7 @@ import {
   SaveOutlined,
   SettingOutlined,
   InfoCircleOutlined,
+  AppstoreOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -37,6 +38,7 @@ const items: MenuItem[] = [
     ? getMenuLinkItem("本地服务", "/server", <DesktopOutlined />)
     : getMenuLinkItem("连接服务", "/server", <LinkOutlined />),
   getMenuLinkItem("设置", "/settings", <SettingOutlined />),
+  getMenuLinkItem("插件", "/plugins", <AppstoreOutlined />),
   getMenuLinkItem("关于", "/about", <InfoCircleOutlined />),
 ];
 

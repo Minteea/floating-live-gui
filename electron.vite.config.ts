@@ -14,11 +14,13 @@ function versionTrim(v: string) {
 export default defineConfig({
   main: {
     build: {
+      target: "node22",
       rollupOptions: {
         output: {
           format: "es",
         },
       },
+      watch: {}
     },
     define: {
       GUI_VERSION: JSON.stringify(packageInfo.version),

@@ -9,6 +9,8 @@ import PageSave from "./pages/PageSave";
 import PageServer from "./pages/PageServer";
 import PageSettings from "./pages/PageSettings";
 import PageAbout from "./pages/PageAbout";
+import PagePlugin from "./pages/PagePlugin";
+import version from "./controller/version";
 
 const App: React.FC = () => {
   return (
@@ -23,7 +25,9 @@ const App: React.FC = () => {
           <Route path="/server" element={<PageServer />} />
           <Route path="/settings" element={<PageSettings />} />
           <Route path="/about" element={<PageAbout />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/plugins" element={<PagePlugin />} />
+          { version.client == "electron"
+    ? <Route path="*" element={<Navigate to="/" replace />} /> : null }
         </Routes>
       </Layout>
     </Layout>

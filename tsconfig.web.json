@@ -9,6 +9,7 @@
     "src/utils/**/*"
   ],
   "compilerOptions": {
+    "module": "esnext",
     "composite": true,
     "jsx": "react-jsx",
     "paths": {

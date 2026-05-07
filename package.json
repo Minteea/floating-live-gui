@@ -46,6 +46,7 @@
     "@nanostores/react": "^1.1.0",
     "ahooks": "^3.9.7",
     "antd": "^6.3.7",
+    "compressing": "^2.1.1",
     "electron-squirrel-startup": "^1.0.1",
     "electron-updater": "^6.3.9",
     "floating-live": "^0.16.6",

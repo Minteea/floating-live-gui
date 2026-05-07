@@ -33,6 +33,11 @@ interface RoomLoaderItem {
   open?: boolean;
 }
 
+
+/** 房间加载器插件
+ * @description
+ * **框架插件**，一次性加载对应房间，在启用storage的情况下可持久化存取房间数据。
+ */
 export default class RoomLoader extends BasePlugin {
   static pluginName = "roomLoader";
   protected storage?: StorageItem;
@@ -69,6 +74,13 @@ export default class RoomLoader extends BasePlugin {
     }
     await this.load(list, open);
     if (options.storage) {
+
+      if (open == false) {
+        // 如果全局不开启，则将所有房间设置为不开启状态
+        const list: RoomLoaderItem[] = await this.storage!.get("list");
+        this.storage!.set("list", list.map((r) => ({ ...r, open: false })));
+      }
+
       ctx.on("room:add", async ({ key, room: { platform, id } }) => {
         const list: RoomLoaderItem[] = await this.storage!.get("list");
         if (!list.find((r) => r.platform == platform && r.id == id)) {

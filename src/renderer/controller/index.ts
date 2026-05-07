@@ -7,6 +7,7 @@ import { IpcLink } from "./plugins/link/IpcLink";
 import { WebLink } from "./plugins/link/WebLink";
 import { MessageCount } from "./plugins/message/messageCount";
 import StorePlatform from "./plugins/store/platform";
+import StorePlugins from "./plugins/store/plugins";
 
 declare global {
   interface Window {
@@ -16,6 +17,7 @@ declare global {
 
 export const controller = new FloatingLiveController();
 
+export const { $plugins, $currentPlugin, $currentPluginInfo, $installedPlugins, $internalPlugins } = controller.registerSync(StorePlugins);
 export const { $messages } = controller.registerSync(StoreMessages);
 export const { $rooms, $openedRooms } = controller.registerSync(StoreRooms);
 export const { $values } = controller.registerSync(StoreValues);
