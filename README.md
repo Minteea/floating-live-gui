@@ -158,7 +158,7 @@ interface MessageInterface {
 
 ## TODO
 
-当前版本 **<!--/version-->0.11.0-beta.4<!--/-->**
+当前版本 **<!--/version-->0.11.0-beta.5<!--/-->**
 
 ⬜ 计划中 · 🟨 开发中 · ✅ 已实现
 
