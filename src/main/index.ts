@@ -1,5 +1,5 @@
 import { app } from "electron";
-import { FloatingLive } from "floating-live";
+import { FloatingLive, PluginRegisterOptions } from "floating-live";
 import ElectronGui from "./plugins/gui";
 import Server from "./plugins/server";
 import AuthSave from "./plugins/authSave";
@@ -26,13 +26,13 @@ const pluginExternalDependencies = new Set(["floating-live"])
 const cwd = process.cwd();
 moduleRegisterHooks({
   resolve: (specifier, context, nextResolve) => {
-    console.log("resolve: ", " -> ", specifier);
-    console.log(context)
+    // console.log("resolve: ", " -> ", specifier);
+    // console.log(context)
 
     let parentURL = context.parentURL;
     if (parentURL && !isUnderDir(cwd, fileURLToPath(parentURL)) && pluginExternalDependencies.has(specifier)) {
 
-      console.log("resolve external dependency");
+      // console.log("resolve external dependency");
       context.parentURL = undefined;
     }
     return nextResolve(specifier, context);
@@ -42,11 +42,6 @@ moduleRegisterHooks({
 
 const require = createRequire(import.meta.url);
 
-const b = import("floating-live").then((mod) => {
-  console.log("import: ", mod);
-}).catch((err) => {
-  console.error("import error: ", err);
-});
 
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -66,33 +61,58 @@ async function lifeCycle() {
   return;
 }
 
+function frameworkPluginRegisterOptions({ context, unremovable, accessApp }: PluginRegisterOptions = {}): PluginRegisterOptions {
+  return {
+    context,
+    unremovable: unremovable ?? true,
+    accessApp: accessApp ?? false,
+    pluginType: "framework",
+  }
+}
+
+function internalPluginRegisterOptions({ context, unremovable, accessApp, pluginType }: PluginRegisterOptions = {}): PluginRegisterOptions {
+  return {
+    context,
+    unremovable: unremovable ?? true,
+    accessApp: accessApp ?? false,
+    pluginType: pluginType ?? "",
+  }
+}
+
 lifeCycle()
   .then(async () => {
     // 控制台事件插件
-    await floatingLive.register(ConsoleEvent);
+    await floatingLive.register(ConsoleEvent, frameworkPluginRegisterOptions());
+
     // 加载框架插件
     await floatingLive.register(JsonStorage, {
       path: path.resolve(app.getPath("userData"), "./AppStorage"),
-    });
+    }, frameworkPluginRegisterOptions());
+
     await floatingLive.register(Config, {
       defaultOptions: {
         save: {
           path: "./saves",
         },
       },
-    });
+    }, frameworkPluginRegisterOptions());
 
-    await floatingLive.register(ElectronGui);
-
-    await floatingLive.register(Server);
-
-    await floatingLive.register(Auth);
-
-    await floatingLive.register(Save);
+    await floatingLive.register(ElectronGui, {}, frameworkPluginRegisterOptions());
 
     // 其他框架插件加载完毕后，加载插件包加载器和安装器插件
-    await floatingLive.register(PluginLoader, { storage: true, basePath: path.resolve(app.getPath("userData"), "./AppPlugins") });
-    await floatingLive.register(PluginInstaller);
+    await floatingLive.register(PluginLoader,
+      { storage: true, basePath: path.resolve(app.getPath("userData"), "./AppPlugins"), skipErrors: true },
+      frameworkPluginRegisterOptions()
+    );
+    await floatingLive.register(PluginInstaller, {}, frameworkPluginRegisterOptions());
+
+    // 加载内置功能插件
+
+    await floatingLive.register(Server, {}, internalPluginRegisterOptions());
+
+    await floatingLive.register(Auth, {}, internalPluginRegisterOptions());
+
+    await floatingLive.register(Save, {}, internalPluginRegisterOptions());
 
     // 加载内置平台插件
     await floatingLive.register(PluginBilibili);
@@ -101,11 +121,11 @@ lifeCycle()
     console.log("插件注册完毕");
   })
   .then(async () => {
-    await floatingLive.register(AuthSave);
+    await floatingLive.register(AuthSave, {}, internalPluginRegisterOptions());
 
     await floatingLive.call("auth.read", "bilibili");
 
-    await floatingLive.register(RoomLoader, { storage: true });
+    await floatingLive.register(RoomLoader, { storage: true }, frameworkPluginRegisterOptions());
     // 载入房间
     console.log("房间加载完毕");
   });

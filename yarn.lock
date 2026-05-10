@@ -1050,28 +1050,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-live/acfun@npm:^0.16.11":
-  version: 0.16.11
-  resolution: "@floating-live/acfun@npm:0.16.11"
+"@floating-live/acfun@npm:^0.17.0-alpha.0":
+  version: 0.17.0-alpha.0
+  resolution: "@floating-live/acfun@npm:0.17.0-alpha.0"
   dependencies:
     "@floating-live/cookies": "npm:^0.1.0"
     acfun-live-danmaku: "npm:^0.8.0"
   peerDependencies:
-    floating-live: ^0.16.6
-  checksum: 10c0/2dff9bdebad794057eb9854538e8990a03f903d83d3854c4e9f37cbff9d3eb426dcdcbd5204a6039d339e4e4723e3e1419779155572180892a1ef9a5355aabe8
+    floating-live: 0.17.0-alpha.1
+  checksum: 10c0/1098bbbc432bbc0c3bfc9638677403fecdc7c702cc816e956c4dbd688a025407f25983a3648cbc578663cb2cd67909fcefa9d9b7c7fdab86726dab11c3db02c7
   languageName: node
   linkType: hard
 
-"@floating-live/bilibili@npm:^0.16.17":
-  version: 0.16.17
-  resolution: "@floating-live/bilibili@npm:0.16.17"
+"@floating-live/bilibili@npm:^0.17.0-alpha.0":
+  version: 0.17.0-alpha.0
+  resolution: "@floating-live/bilibili@npm:0.17.0-alpha.0"
   dependencies:
     "@floating-live/cookies": "npm:^0.1.0"
     bilibili-live-danmaku: "npm:^0.7.15"
     md5: "npm:^2.3.0"
   peerDependencies:
-    floating-live: ^0.16.6
-  checksum: 10c0/6d39246e593f07e6d1580c3b689bfb72923ad5333bdebdea9fb2479b3c317f25b7ff029920de1ae83f0086e3cedf872250376483e96c5bf23a8cbfc5332d387f
+    floating-live: 0.17.0-alpha.1
+  checksum: 10c0/6178bd06961c5b6d6a76a84e1f39965f5223d913bd5a0df5a16aa84e64cb51c713d556922d05759c5bcda85a6c242cd5ff50c4c5d13dd0d16967c262af6b07f5
   languageName: node
   linkType: hard
 
@@ -1082,47 +1082,107 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-live/plugin-auth@npm:^0.16.5":
-  version: 0.16.5
-  resolution: "@floating-live/plugin-auth@npm:0.16.5"
+"@floating-live/gui@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@floating-live/gui@workspace:."
+  dependencies:
+    "@ant-design/icons": "npm:^6.2.2"
+    "@dnd-kit/core": "npm:^6.3.1"
+    "@dnd-kit/modifiers": "npm:^9.0.0"
+    "@dnd-kit/sortable": "npm:^10.0.0"
+    "@electron-toolkit/eslint-config-prettier": "npm:^3.0.0"
+    "@electron-toolkit/eslint-config-ts": "npm:^3.1.0"
+    "@electron-toolkit/preload": "npm:^3.0.2"
+    "@electron-toolkit/tsconfig": "npm:^2.0.0"
+    "@electron-toolkit/utils": "npm:^4.0.0"
+    "@floating-live/acfun": "npm:^0.17.0-alpha.0"
+    "@floating-live/bilibili": "npm:^0.17.0-alpha.0"
+    "@floating-live/plugin-auth": "npm:^0.17.0-alpha.0"
+    "@floating-live/plugin-console-event": "npm:^0.17.0-alpha.0"
+    "@floating-live/plugin-save": "npm:^0.17.0-alpha.0"
+    "@floating-live/snapshot": "npm:^0.17.0-alpha.0"
+    "@hono/node-server": "npm:^1.14.0"
+    "@hono/node-ws": "npm:^1.1.1"
+    "@msgpack/msgpack": "npm:^3.1.2"
+    "@nanostores/persistent": "npm:^1.3.4"
+    "@nanostores/react": "npm:^1.1.0"
+    "@types/node": "npm:^22.19.1"
+    "@types/react": "npm:^19.2.7"
+    "@types/react-dom": "npm:^19.2.3"
+    "@vitejs/plugin-react": "npm:^5.1.1"
+    ahooks: "npm:^3.9.7"
+    antd: "npm:^6.3.7"
+    compressing: "npm:^2.1.1"
+    electron: "npm:^41.5.0"
+    electron-builder: "npm:^26.0.12"
+    electron-squirrel-startup: "npm:^1.0.1"
+    electron-updater: "npm:^6.3.9"
+    electron-vite: "npm:^5.0.0"
+    eslint: "npm:^9.39.1"
+    eslint-plugin-react: "npm:^7.37.5"
+    eslint-plugin-react-hooks: "npm:^7.0.1"
+    eslint-plugin-react-refresh: "npm:^0.4.24"
+    floating-live: "npm:^0.17.0-alpha.3"
+    hono: "npm:^4.12.18"
+    keytar: "npm:^7.9.0"
+    nanostores: "npm:^1.3.0"
+    node-abi: "npm:^4.31.0"
+    node-json-db: "npm:^2.3.0"
+    portfinder: "npm:^1.0.37"
+    prettier: "npm:^3.7.4"
+    react: "npm:^19.2.1"
+    react-dom: "npm:^19.2.1"
+    react-markdown: "npm:^10.1.0"
+    react-qr-code: "npm:^2.0.21"
+    react-router-dom: "npm:^7.15.0"
+    sass: "npm:^1.99.0"
+    serialize-error: "npm:^12.0.0"
+    tsx: "npm:^4.21.0"
+    typescript: "npm:^5.9.3"
+    uint8arrays: "npm:^5.1.0"
+    vite: "npm:^7.2.6"
+    yaml: "npm:^2.1.3"
+  languageName: unknown
+  linkType: soft
+
+"@floating-live/plugin-auth@npm:^0.17.0-alpha.0":
+  version: 0.17.0-alpha.0
+  resolution: "@floating-live/plugin-auth@npm:0.17.0-alpha.0"
   peerDependencies:
-    events: ^3.3.0
-    floating-live: ^0.15.6
-  checksum: 10c0/482759c829fdc647d78ce4d774dc4f1caa5f122bf56da57117774d58285b310b69751c31d59b64f983496aa91a9701e835271d746fe62f46305affbfe27284d2
+    floating-live: 0.17.0-alpha.1
+  checksum: 10c0/00adb33eb8e265dc3e930ea821936ce36426a583f9f966a2d30cb82e157f38eff2fd2d35ef652490213e9bdaee8e9311a56e04e167cd166335a9acba3934a1cc
   languageName: node
   linkType: hard
 
-"@floating-live/plugin-console-event@npm:^0.16.3":
-  version: 0.16.3
-  resolution: "@floating-live/plugin-console-event@npm:0.16.3"
+"@floating-live/plugin-console-event@npm:^0.17.0-alpha.0":
+  version: 0.17.0-alpha.0
+  resolution: "@floating-live/plugin-console-event@npm:0.17.0-alpha.0"
   dependencies:
     chalk: "npm:^5.4.1"
   peerDependencies:
-    events: ^3.3.0
-    floating-live: ^0.16.6
-  checksum: 10c0/3143fb3ed6fb170c61657b45447654df744871ab9dbae9ca1015ae9e8b82171a47c22512f760c4c4b8c3038f93c217dda4261dbdc50e04958978ae1944e28c03
+    floating-live: 0.17.0-alpha.1
+  checksum: 10c0/cb72da7b7984d27be4b61029d653b06e3f8f8cbb021b0fdd0d97e2f72a846e9e91aeb2cea9c75777fd438a42a280e00fa44b70dc306ce65b41d0ba14cb523575
   languageName: node
   linkType: hard
 
-"@floating-live/plugin-save@npm:^0.16.4":
-  version: 0.16.4
-  resolution: "@floating-live/plugin-save@npm:0.16.4"
+"@floating-live/plugin-save@npm:^0.17.0-alpha.0":
+  version: 0.17.0-alpha.0
+  resolution: "@floating-live/plugin-save@npm:0.17.0-alpha.0"
   dependencies:
     "@msgpack/msgpack": "npm:^3.1.3"
     fs-extra: "npm:^11.1.0"
   peerDependencies:
-    events: ^3.3.0
-    floating-live: ^0.16.6
-  checksum: 10c0/0a9894a9dde94f49d94741f70e3077d1ba1ee1e2c88aafc76f66eb9f3037f263bbb4454507224e5e9dee9db770ea5a6f62f1a7ecaf6ec4553904e00bd9967f80
+    floating-live: 0.17.0-alpha.1
+  checksum: 10c0/8b9aa277844f4b4584d24067edf61b18ffe587573ac36dcc830285a769d94272f027ac34413ba03c7e0be0f95e447815582b03a76b69710a884a26a5116658e1
   languageName: node
   linkType: hard
 
-"@floating-live/snapshot@npm:^0.16.3":
-  version: 0.16.3
-  resolution: "@floating-live/snapshot@npm:0.16.3"
+"@floating-live/snapshot@npm:^0.17.0-alpha.0":
+  version: 0.17.0-alpha.0
+  resolution: "@floating-live/snapshot@npm:0.17.0-alpha.0"
   peerDependencies:
-    floating-live: ^0.16.6
-  checksum: 10c0/3d7bb8e724c0e32d394c6664fe4792d5e2a78cdbaa5648eade0299acc1dd5e14fa25c5ba44e540c5749d272050ab09aad30b64606f32bc73c9d1b213c1fba7c3
+    floating-live: 0.17.0-alpha.1
+  checksum: 10c0/188348076081a0949a13f3ca07d9a0921304d0e0623a00b6586804a4f28488af3fb99125d28196075664bfa5da5e75a3b0093e799249c1162a8d73ce94cc7723
   languageName: node
   linkType: hard
 
@@ -4750,73 +4810,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"floating-live-gui@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "floating-live-gui@workspace:."
-  dependencies:
-    "@ant-design/icons": "npm:^6.2.2"
-    "@dnd-kit/core": "npm:^6.3.1"
-    "@dnd-kit/modifiers": "npm:^9.0.0"
-    "@dnd-kit/sortable": "npm:^10.0.0"
-    "@electron-toolkit/eslint-config-prettier": "npm:^3.0.0"
-    "@electron-toolkit/eslint-config-ts": "npm:^3.1.0"
-    "@electron-toolkit/preload": "npm:^3.0.2"
-    "@electron-toolkit/tsconfig": "npm:^2.0.0"
-    "@electron-toolkit/utils": "npm:^4.0.0"
-    "@floating-live/acfun": "npm:^0.16.11"
-    "@floating-live/bilibili": "npm:^0.16.17"
-    "@floating-live/plugin-auth": "npm:^0.16.5"
-    "@floating-live/plugin-console-event": "npm:^0.16.3"
-    "@floating-live/plugin-save": "npm:^0.16.4"
-    "@floating-live/snapshot": "npm:^0.16.3"
-    "@hono/node-server": "npm:^1.14.0"
-    "@hono/node-ws": "npm:^1.1.1"
-    "@msgpack/msgpack": "npm:^3.1.2"
-    "@nanostores/persistent": "npm:^1.3.4"
-    "@nanostores/react": "npm:^1.1.0"
-    "@types/node": "npm:^22.19.1"
-    "@types/react": "npm:^19.2.7"
-    "@types/react-dom": "npm:^19.2.3"
-    "@vitejs/plugin-react": "npm:^5.1.1"
-    ahooks: "npm:^3.9.7"
-    antd: "npm:^6.3.7"
-    compressing: "npm:^2.1.1"
-    electron: "npm:^41.5.0"
-    electron-builder: "npm:^26.0.12"
-    electron-squirrel-startup: "npm:^1.0.1"
-    electron-updater: "npm:^6.3.9"
-    electron-vite: "npm:^5.0.0"
-    eslint: "npm:^9.39.1"
-    eslint-plugin-react: "npm:^7.37.5"
-    eslint-plugin-react-hooks: "npm:^7.0.1"
-    eslint-plugin-react-refresh: "npm:^0.4.24"
-    floating-live: "npm:^0.16.6"
-    hono: "npm:^4.12.18"
-    keytar: "npm:^7.9.0"
-    nanostores: "npm:^1.3.0"
-    node-abi: "npm:^4.31.0"
-    node-json-db: "npm:^2.3.0"
-    portfinder: "npm:^1.0.37"
-    prettier: "npm:^3.7.4"
-    react: "npm:^19.2.1"
-    react-dom: "npm:^19.2.1"
-    react-markdown: "npm:^10.1.0"
-    react-qr-code: "npm:^2.0.21"
-    react-router-dom: "npm:^7.15.0"
-    sass: "npm:^1.99.0"
-    serialize-error: "npm:^12.0.0"
-    tsx: "npm:^4.21.0"
-    typescript: "npm:^5.9.3"
-    uint8arrays: "npm:^5.1.0"
-    vite: "npm:^7.2.6"
-    yaml: "npm:^2.1.3"
-  languageName: unknown
-  linkType: soft
-
-"floating-live@npm:^0.16.6":
-  version: 0.16.6
-  resolution: "floating-live@npm:0.16.6"
-  checksum: 10c0/186bfc0ab09d1a5b44636de5213d6ed4e51057f9c33f625fd085fed6a9136ad51923eb8660eee738b4a2eb61b765a2c9d374647bcbc7c03794a88be16c1eb719
+"floating-live@npm:^0.17.0-alpha.3":
+  version: 0.17.0-alpha.3
+  resolution: "floating-live@npm:0.17.0-alpha.3"
+  checksum: 10c0/6dd48ee639302647bd50dd73f2dde6384107008331ddfec9d2556a04c42bec3496b866cd1b60f80ff3e1b9a692836763f007db0a53c502813d5ccaae7e242318
   languageName: node
   linkType: hard
 

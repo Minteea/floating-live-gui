@@ -1,11 +1,6 @@
+import type { OpenDialogOptions, OpenDialogReturnValue } from "electron";
 import commandParser from "../utils/commandParser";
 import { App, AppCommandMap, AppValueMap } from "floating-live";
-
-declare module "floating-live" {
-  interface AppCommandMap {
-    devtools: () => void;
-  }
-}
 
 export class FloatingLiveController extends App {
   protected remoteValueController: RemoteValueController;

@@ -6,16 +6,18 @@
     "src/renderer/**/*.tsx",
     "src/preload/*.d.ts",
     "src/types/**/*",
-    "src/utils/**/*"
+    "src/utils/**/*",
+    "src/main/plugins/**/*.ts"
   ],
   "compilerOptions": {
     "module": "esnext",
     "composite": true,
     "jsx": "react-jsx",
     "paths": {
-      "@renderer/*": ["./src/renderer/*"]
+      "@renderer/*": [
+        "./src/renderer/*"
+      ]
     },
-
     "allowJs": true,
     "strict": true,
     "skipLibCheck": true,

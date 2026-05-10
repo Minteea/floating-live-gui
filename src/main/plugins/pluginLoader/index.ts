@@ -155,7 +155,7 @@ export default class PluginLoader extends BasePlugin {
       try {
         await this.register(item);
       } catch (err) {
-        if (!options.skipErrors) {
+        if (options.skipErrors) {
           console.error(`加载插件${item.pluginName}失败`, err);
         }
       }

@@ -46,8 +46,8 @@ export default class RoomLoader extends BasePlugin {
   async init(ctx: PluginContext, options: RoomLoaderOptions) {
     if (options.storage) this.storage = ctx.call("storage.require", "rooms");
 
-    ctx.whenRegister("room", (room) => {
-      this.room = room;
+    ctx.whenRegister("room", () => {
+      this.room = ctx.getPluginExposes("room");
     });
 
     let list = options?.list || [];
@@ -60,6 +60,7 @@ export default class RoomLoader extends BasePlugin {
         valueOpen.emit(v);
       },
     });
+
 
     if (options.storage) {
       const storageList: RoomLoaderItem[] =
@@ -117,7 +118,7 @@ export default class RoomLoader extends BasePlugin {
   async load(list: RoomLoaderItem[], open?: boolean) {
     for (const r of list) {
       const isOpen = open != false && r.open != false && (open || r.open);
-      await this.room?.add(r.platform, r.id as number, { open: isOpen });
+      this.room?.add(r.platform, r.id as number, { open: isOpen });
     }
   }
 }
