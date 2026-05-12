@@ -22,7 +22,7 @@ import { fileURLToPath } from "node:url";
 
 const pluginExternalDependencies = new Set(["floating-live"]);
 
-const cwd = process.cwd();
+const appPath = app.getAppPath();
 moduleRegisterHooks({
   resolve: (specifier, context, nextResolve) => {
     // console.log("resolve: ", " -> ", specifier);
@@ -31,7 +31,7 @@ moduleRegisterHooks({
     const parentURL = context.parentURL;
     if (
       parentURL &&
-      !isUnderDir(cwd, fileURLToPath(parentURL)) &&
+      !isUnderDir(appPath, fileURLToPath(parentURL)) &&
       pluginExternalDependencies.has(specifier)
     ) {
       // console.log("resolve external dependency");
@@ -40,6 +40,17 @@ moduleRegisterHooks({
     return nextResolve(specifier, context);
   },
 });
+
+// function printEnvInfo() {
+//   console.log("process.cwd(): ", process.cwd())
+//   console.log("__filename: ", fileURLToPath(import.meta.url))
+//   console.log("app.isPackaged: ", app.isPackaged)
+//   console.log("app.getAppPath(): ", app.getAppPath())
+//   console.log("app.getPath('userData'): ", app.getPath("userData"))
+//   console.log("process.env.NODE_ENV: ", process.env.NODE_ENV)
+// }
+
+// printEnvInfo()
 
 const require = createRequire(import.meta.url);
 

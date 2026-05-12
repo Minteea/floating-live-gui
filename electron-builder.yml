@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: my-app
+appId: com.floatinglive.gui
+productName: FloatingLiveGUI
 directories:
   buildResources: build
 files:
@@ -9,10 +9,14 @@ files:
   - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!scripts/*'
+  - '!playground/*'
+  - '!.vite/*'
+asar: true
 asarUnpack:
   - resources/**
 win:
-  executableName: my-app
+  executableName: FloatingLiveGUI
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

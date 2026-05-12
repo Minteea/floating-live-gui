@@ -26,16 +26,18 @@ export const $searchInfo = computed(
     return roomInList
       ? { ...roomInList, added: true }
       : searchResult
-      ? { ...searchResult, added: false }
-      : null;
+        ? { ...searchResult, added: false }
+        : null;
   }
 );
 
 export const $authSave = atom(true);
 
+/** 显示消息板 */
 export const $boardShow = storageAtom("config.boardShow", true);
+/** 打开房间后自动显示消息板 */
 export const $boardAutoShow = storageAtom("config.boardAutoShow", false);
-
+/** 单独列出已打开的房间 */
 export const $roomsListOpened = storageAtom("config.roomsListOpened", false);
 
 // 自动显示消息板初始化设置
