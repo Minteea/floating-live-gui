@@ -15,8 +15,8 @@ export default class BilibiliAvatar extends BasePlugin {
 
     // 通过弹幕消息获取头像
     const avatarHandler = ({ message }: { message: LiveMessage.All }) => {
-      let info = message.info as { user?: UserInfo };
-      let user = info.user;
+      const info = message.info as { user?: UserInfo };
+      const user = info.user;
       // 检测弹幕来源是否为B站, 并检测消息中是否有用户数据
       if (message.platform == "bilibili" && user) {
         // 如果该条消息有头像数据(礼物类、SC类等), 则先保存在表中

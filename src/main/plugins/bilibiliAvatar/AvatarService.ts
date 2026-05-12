@@ -29,14 +29,11 @@ export default class AvatarService {
   /** 发送头像请求 */
   async requestAvatar(uid: string, delay?: number) {
     if (delay) await wait(delay);
-    const { code, data } = await fetch(
-      `https://api.bilibili.com/x/space/wbi/acc/info?mid=${uid}`,
-      {
-        headers: {
-          "User-Agent": USER_AGENT,
-        },
-      }
-    ).then((res: any) => res.json());
+    const { code, data } = await fetch(`https://api.bilibili.com/x/space/wbi/acc/info?mid=${uid}`, {
+      headers: {
+        "User-Agent": USER_AGENT,
+      },
+    }).then((res: any) => res.json());
     if (code == 0) {
       const url = data.face as string;
       this.requestMap.delete(uid);
@@ -44,6 +41,7 @@ export default class AvatarService {
       console.log(`[${this.avatarMap.size}]从API获取: ${uid} -> ${url}`);
       return url;
     }
+    return;
   }
   /** 获取头像 */
   async get(uid: string) {

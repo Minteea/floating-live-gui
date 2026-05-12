@@ -1,4 +1,4 @@
-import { resolve } from "path";
+import { resolve } from "node:path";
 import { defineConfig } from "electron-vite";
 import react from "@vitejs/plugin-react";
 import packageInfo from "./package.json";
@@ -20,7 +20,7 @@ export default defineConfig({
           format: "es",
         },
       },
-      watch: {}
+      watch: {},
     },
     define: {
       GUI_VERSION: JSON.stringify(packageInfo.version),

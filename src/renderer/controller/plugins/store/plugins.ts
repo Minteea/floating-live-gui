@@ -1,5 +1,5 @@
-import { AppValueMap, BasePlugin, PluginContext } from "floating-live";
-import { MapStore, WritableAtom, atom, computed, map } from "nanostores";
+import { BasePlugin } from "floating-live";
+import { MapStore, atom, computed, map } from "nanostores";
 import type { PluginLoaderItem } from "../../../../main/plugins/pluginLoader";
 
 export default class StorePlugins extends BasePlugin {

@@ -1,4 +1,3 @@
-import type { OpenDialogOptions, OpenDialogReturnValue } from "electron";
 import commandParser from "../utils/commandParser";
 import { App, AppCommandMap, AppValueMap } from "floating-live";
 
@@ -14,7 +13,7 @@ export class FloatingLiveController extends App {
   /** @deprecated */
   exec(str: string) {
     try {
-      let [cmd, ...args] = commandParser(str);
+      const [cmd, ...args] = commandParser(str);
       this.call(cmd, ...(args as Parameters<AppCommandMap[any]>));
     } catch (err) {
       console.log(`指令错误: ${str}`);

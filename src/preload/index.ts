@@ -1,4 +1,4 @@
-import { app, contextBridge, ipcRenderer } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 
 declare const GUI_VERSION: string;
 declare const FLOATING_VERSION: string;

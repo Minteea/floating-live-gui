@@ -1,9 +1,4 @@
-import {
-  AppPluginExposesMap,
-  BasePlugin,
-  FloatingLive,
-  PluginContext,
-} from "floating-live";
+import { AppPluginExposesMap, BasePlugin, PluginContext } from "floating-live";
 
 declare module "floating-live" {
   interface AppValueMap {
@@ -25,6 +20,8 @@ interface RoomLoaderOptions {
    * 若为true，则开启所有未单独设置为开启的房间；若为false，则不开启任何房间，包括被单独设置开启的房间
    */
   open?: boolean;
+  /** 是否允许加载无效房间 */
+  allowInvalidRoom: boolean;
 }
 
 interface RoomLoaderItem {
@@ -32,7 +29,6 @@ interface RoomLoaderItem {
   id: string | number;
   open?: boolean;
 }
-
 
 /** 房间加载器插件
  * @description
@@ -52,6 +48,7 @@ export default class RoomLoader extends BasePlugin {
 
     let list = options?.list || [];
     let open = options.open;
+    const allowInvalidRoom = options.allowInvalidRoom;
 
     const valueOpen = ctx.registerValue("roomLoader.open", {
       get: () => open,
@@ -60,7 +57,6 @@ export default class RoomLoader extends BasePlugin {
         valueOpen.emit(v);
       },
     });
-
 
     if (options.storage) {
       const storageList: RoomLoaderItem[] =
@@ -73,13 +69,41 @@ export default class RoomLoader extends BasePlugin {
       });
       list = list.concat(storageList);
     }
-    await this.load(list, open);
-    if (options.storage) {
+    await this.load(list, open, allowInvalidRoom);
 
+    console.log(
+      ctx.call("room.snapshot").map(({ key, valid, platform }) => ({ key, valid, platform }))
+    );
+    // 注册平台插件时，自动为符合条件的无效房间执行生效指令
+    ctx.on("plugin:register", ({ role }) => {
+      const [roleType, serviceId] = role.split("/");
+      if (roleType === "platform") {
+        this.room?.getList().forEach((room) => {
+          if (room.serviceId === serviceId && !room.valid) {
+            ctx.call("room.validate", room.key, {});
+          }
+        });
+      }
+    });
+    ctx.on("plugin:unregister", ({ role }) => {
+      const [roleType, serviceId] = role.split("/");
+      if (roleType === "platform") {
+        this.room?.getList().forEach((room) => {
+          if (room.serviceId === serviceId && room.valid) {
+            ctx.call("room.invalidate", room.key);
+          }
+        });
+      }
+    });
+
+    if (options.storage) {
       if (open == false) {
         // 如果全局不开启，则将所有房间设置为不开启状态
         const list: RoomLoaderItem[] = await this.storage!.get("list");
-        this.storage!.set("list", list.map((r) => ({ ...r, open: false })));
+        this.storage!.set(
+          "list",
+          list.map((r) => ({ ...r, open: false }))
+        );
       }
 
       ctx.on("room:add", async ({ key, room: { platform, id } }) => {
@@ -94,6 +118,15 @@ export default class RoomLoader extends BasePlugin {
         const index = list.findIndex((r) => `${r.platform}:${r.id}` == key);
         if (index > -1) {
           list.splice(index, 1);
+          this.storage!.set("list", list);
+        }
+      });
+      ctx.on("room:move", async ({ key, position }) => {
+        const list: RoomLoaderItem[] = await this.storage!.get("list");
+        const index = list.findIndex((r) => `${r.platform}:${r.id}` == key);
+        if (index > -1) {
+          const [item] = list.splice(index, 1);
+          list.splice(position, 0, item);
           this.storage!.set("list", list);
         }
       });
@@ -115,10 +148,10 @@ export default class RoomLoader extends BasePlugin {
       });
     }
   }
-  async load(list: RoomLoaderItem[], open?: boolean) {
+  async load(list: RoomLoaderItem[], open?: boolean, allowInvalidRoom?: boolean) {
     for (const r of list) {
       const isOpen = open != false && r.open != false && (open || r.open);
-      this.room?.add(r.platform, r.id as number, { open: isOpen });
+      await this.room?.add(r.platform, r.id as number, { open: isOpen, allowInvalidRoom });
     }
   }
 }

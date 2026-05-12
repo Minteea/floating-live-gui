@@ -4,132 +4,106 @@ export default function getBrowserInfo(browserUserAgentString: string) {
 
     const lowerStr = browserUserAgentString.toLowerCase();
 
-    if (lowerStr != '') {
-      let startIdx = browserUserAgentString.indexOf('(');
-      let endIdx = browserUserAgentString.indexOf(')', startIdx + 1);
+    if (lowerStr != "") {
+      let startIdx = browserUserAgentString.indexOf("(");
+      let endIdx = browserUserAgentString.indexOf(")", startIdx + 1);
 
-      let name = '';
+      let name = "";
 
-      let version = '';
+      let version = "";
 
       const deviceOS = browserUserAgentString.substring(startIdx + 1, endIdx);
 
       // web browser on mobile device.
-      if (lowerStr.indexOf('mobile') > 0) {
-        const KEYWORD_OPR = 'opt/';
-        const KEYWORD_CHROME = 'crios/';
-        const KEYWORD_FIREFOX = 'fxios/';
-        const KEYWORD_EDG = 'edgios/';
-        const KEYWORD_SAFARI = 'version/';
+      if (lowerStr.indexOf("mobile") > 0) {
+        const KEYWORD_OPR = "opt/";
+        const KEYWORD_CHROME = "crios/";
+        const KEYWORD_FIREFOX = "fxios/";
+        const KEYWORD_EDG = "edgios/";
+        const KEYWORD_SAFARI = "version/";
 
         if (lowerStr.indexOf(KEYWORD_OPR) > -1) {
           startIdx = lowerStr.indexOf(KEYWORD_OPR);
 
-          name = 'Opera';
+          name = "Opera";
 
-          version = browserUserAgentString.substring(
-            startIdx + KEYWORD_OPR.length
-          );
+          version = browserUserAgentString.substring(startIdx + KEYWORD_OPR.length);
         } else if (lowerStr.indexOf(KEYWORD_CHROME) > -1) {
           startIdx = lowerStr.indexOf(KEYWORD_CHROME);
 
-          endIdx = lowerStr.indexOf(' ', startIdx + KEYWORD_CHROME.length);
+          endIdx = lowerStr.indexOf(" ", startIdx + KEYWORD_CHROME.length);
 
-          name = 'Chrome';
+          name = "Chrome";
 
-          version = browserUserAgentString.substring(
-            startIdx + KEYWORD_CHROME.length,
-            endIdx
-          );
+          version = browserUserAgentString.substring(startIdx + KEYWORD_CHROME.length, endIdx);
         } else if (lowerStr.indexOf(KEYWORD_FIREFOX) > -1) {
           startIdx = lowerStr.indexOf(KEYWORD_FIREFOX);
 
-          endIdx = lowerStr.indexOf(' ', startIdx + 1);
+          endIdx = lowerStr.indexOf(" ", startIdx + 1);
 
-          name = 'Firefox';
+          name = "Firefox";
 
-          version = browserUserAgentString.substring(
-            startIdx + KEYWORD_FIREFOX.length,
-            endIdx
-          );
+          version = browserUserAgentString.substring(startIdx + KEYWORD_FIREFOX.length, endIdx);
         } else if (lowerStr.indexOf(KEYWORD_EDG) > -1) {
           startIdx = lowerStr.indexOf(KEYWORD_EDG);
 
-          endIdx = lowerStr.indexOf(' ', startIdx + 1);
+          endIdx = lowerStr.indexOf(" ", startIdx + 1);
 
-          name = 'Microsoft Edge';
+          name = "Microsoft Edge";
 
-          version = browserUserAgentString.substring(
-            startIdx + KEYWORD_EDG.length,
-            endIdx
-          );
+          version = browserUserAgentString.substring(startIdx + KEYWORD_EDG.length, endIdx);
         } else {
-          name = 'Safari';
+          name = "Safari";
 
           startIdx = lowerStr.indexOf(KEYWORD_SAFARI);
 
-          endIdx = lowerStr.indexOf(' ', startIdx + 1);
+          endIdx = lowerStr.indexOf(" ", startIdx + 1);
 
-          version = browserUserAgentString.substring(
-            startIdx + KEYWORD_SAFARI.length,
-            endIdx
-          );
+          version = browserUserAgentString.substring(startIdx + KEYWORD_SAFARI.length, endIdx);
         }
       }
       // web browser on desktop or laptop OS.
       else {
-        const KEYWORD_OPR = 'opr/';
-        const KEYWORD_CHROME = 'chrome/';
-        const KEYWORD_FIREFOX = 'firefox/';
-        const KEYWORD_EDG = 'edg/';
-        const KEYWORD_SAFARI = 'version/';
+        const KEYWORD_OPR = "opr/";
+        const KEYWORD_CHROME = "chrome/";
+        const KEYWORD_FIREFOX = "firefox/";
+        const KEYWORD_EDG = "edg/";
+        const KEYWORD_SAFARI = "version/";
 
         if (lowerStr.indexOf(KEYWORD_OPR) > -1) {
           startIdx = lowerStr.indexOf(KEYWORD_OPR);
 
-          name = 'Opera';
+          name = "Opera";
 
-          version = browserUserAgentString.substring(
-            startIdx + KEYWORD_OPR.length
-          );
+          version = browserUserAgentString.substring(startIdx + KEYWORD_OPR.length);
         } else if (lowerStr.indexOf(KEYWORD_EDG) > -1) {
           startIdx = lowerStr.indexOf(KEYWORD_EDG);
 
-          name = 'Microsoft Edge';
+          name = "Microsoft Edge";
 
-          version = browserUserAgentString.substring(
-            startIdx + KEYWORD_EDG.length
-          );
+          version = browserUserAgentString.substring(startIdx + KEYWORD_EDG.length);
         } else if (lowerStr.indexOf(KEYWORD_FIREFOX) > -1) {
           startIdx = lowerStr.indexOf(KEYWORD_FIREFOX);
 
-          name = 'Firefox';
+          name = "Firefox";
 
-          version = browserUserAgentString.substring(
-            startIdx + KEYWORD_FIREFOX.length
-          );
+          version = browserUserAgentString.substring(startIdx + KEYWORD_FIREFOX.length);
         } else if (lowerStr.indexOf(KEYWORD_CHROME) > -1) {
           startIdx = lowerStr.indexOf(KEYWORD_CHROME);
 
-          endIdx = lowerStr.indexOf(' ', startIdx + 1);
+          endIdx = lowerStr.indexOf(" ", startIdx + 1);
 
-          name = 'Chrome';
+          name = "Chrome";
 
-          version = browserUserAgentString.substring(
-            startIdx + KEYWORD_CHROME.length,
-            endIdx
-          );
+          version = browserUserAgentString.substring(startIdx + KEYWORD_CHROME.length, endIdx);
         } else {
-          name = 'Safari';
+          name = "Safari";
 
           startIdx = lowerStr.indexOf(KEYWORD_SAFARI);
 
-          endIdx = lowerStr.indexOf(' ', startIdx + 1);
+          endIdx = lowerStr.indexOf(" ", startIdx + 1);
 
-          version = browserUserAgentString.substring(
-            startIdx + KEYWORD_SAFARI.length,
-            endIdx
-          );
+          version = browserUserAgentString.substring(startIdx + KEYWORD_SAFARI.length, endIdx);
         }
       }
 
@@ -140,4 +114,5 @@ export default function getBrowserInfo(browserUserAgentString: string) {
       };
     }
   }
+  return undefined;
 }

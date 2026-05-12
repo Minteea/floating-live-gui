@@ -6,6 +6,8 @@ export function getAdminType(n?: UserType) {
       return "主播";
     case UserType.admin:
       return "房管";
+    default:
+      return undefined;
   }
 }
 

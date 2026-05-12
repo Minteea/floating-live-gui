@@ -1,6 +1,6 @@
 import { BasePlugin, PluginContext } from "floating-live";
 import { JsonDB, Config } from "node-json-db";
-import path from "path";
+import path from "node:path";
 
 declare module "floating-live" {
   interface AppCommandMap {

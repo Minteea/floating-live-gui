@@ -1,4 +1,4 @@
-import { atom, batched, computed } from "nanostores";
+import { atom, computed } from "nanostores";
 import { LiveRoomData } from "floating-live";
 import { $rooms, controller } from "../controller";
 import { persistentAtom } from "@nanostores/persistent";

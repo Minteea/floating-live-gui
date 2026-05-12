@@ -1,6 +1,5 @@
-import { InputNumber, Switch } from "antd";
+import { Switch } from "antd";
 import {} from "@ant-design/icons";
-import { useState } from "react";
 import { $values, controller } from "../../controller";
 
 import { useStore } from "@nanostores/react";

@@ -18,7 +18,6 @@ import {
 import commandParser from "../utils/commandParser";
 import { AppCommandMap } from "floating-live";
 import AppHeader from "../layout/AppHeader";
-import AppContent from "../layout/AppContent";
 
 const PageStart: React.FC = function () {
   const rooms = useStore($rooms);
@@ -76,7 +75,7 @@ const PageStart: React.FC = function () {
               }}
               onPressEnter={(e) => {
                 try {
-                  let [cmd, ...args] = commandParser(commandInput);
+                  const [cmd, ...args] = commandParser(commandInput);
                   controller.command(
                     cmd,
                     ...(args as Parameters<AppCommandMap[any]>)

@@ -4,12 +4,11 @@ import {
   SearchOutlined,
   PlusOutlined,
   CaretRightOutlined,
-  DeleteOutlined,
   CloseOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
 import RoomCard from "../../components/room/RoomCard";
-import { $rooms, controller } from "../../controller";
+import { controller } from "../../controller";
 import {
   $searchId,
   $searchInfo,

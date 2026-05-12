@@ -1,4 +1,4 @@
-import { BasePlugin, PluginContext, ValueContext } from "floating-live";
+import { appError, BasePlugin, PluginContext, ValueContext } from "floating-live";
 import { JsonSerializer } from "../../../../utils/serializer";
 
 declare const NODE_ENV: string;
@@ -113,15 +113,15 @@ export class WebLink extends BasePlugin {
         })
         .catch((err) => {
           if (err._error) {
-            this.ctx.throw(err);
+            throw err;
           } else {
             throw err;
           }
         });
     } else {
-      throw new this.Error("link:send_disconnected", {
+      throw appError("link:send_disconnected", {
         message: "消息发送失败",
-        cause: "未连接服务",
+        reason: "未连接服务",
       });
     }
   }

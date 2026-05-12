@@ -1,14 +1,13 @@
-import { Button, Divider, Select } from "antd";
+import { Divider } from "antd";
 
 import PlatformAuth from "./PlatformAuth";
 import { $searchPlatform } from "../../../renderer/store";
 import { useStore } from "@nanostores/react";
-import { $commands, $platform } from "../../../renderer/controller";
+import { $platform } from "../../../renderer/controller";
 
-const { Option } = Select;
-const handleChange = (value: string) => {
-  console.log(`selected ${value}`);
-};
+// const handleChange = (value: string) => {
+//   console.log(`selected ${value}`);
+// };
 
 /** 平台设置 */
 const PlatformSettings: React.FC = function () {

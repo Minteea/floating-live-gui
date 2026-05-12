@@ -3,30 +3,9 @@ import { LiveRoomStatus } from "floating-live";
 import { secondToTime } from "../../utils/time";
 import { getLiveStatus } from "../../utils/enumUtils";
 import { useInterval } from "ahooks";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import { Card, Divider, Tag } from "antd";
-import {
-  ClockCircleOutlined,
-  CloseCircleOutlined,
-  ExclamationCircleOutlined,
-  MinusCircleOutlined,
-  PlayCircleOutlined,
-} from "@ant-design/icons";
-
-export function getLiveStatusIcon(n?: LiveRoomStatus) {
-  switch (n) {
-    case LiveRoomStatus.live:
-      return <PlayCircleOutlined />;
-    case LiveRoomStatus.round:
-      return <ClockCircleOutlined />;
-    case LiveRoomStatus.banned:
-      return <ExclamationCircleOutlined />;
-    case LiveRoomStatus.locked:
-      return <CloseCircleOutlined />;
-    default:
-      return <MinusCircleOutlined />;
-  }
-}
+import { getLiveStatusIcon } from "./utils";
 
 /** 直播间卡片 */
 const RoomCard: React.FC<{
@@ -37,9 +16,7 @@ const RoomCard: React.FC<{
   };
 }> = function (props) {
   const info = props.roomInfo;
-  const [timeSec, setTimeSec] = useState(
-    (Date.now() - (info?.timestamp || 0)) / 1000,
-  );
+  const [timeSec, setTimeSec] = useState(() => (Date.now() - (info?.timestamp || 0)) / 1000);
   useInterval(() => {
     setTimeSec((Date.now() - (info?.timestamp || 0)) / 1000);
   }, 100);
@@ -58,18 +35,30 @@ const RoomCard: React.FC<{
         <div style={{ flexGrow: 1, paddingLeft: 12 }}>
           <div style={{ lineHeight: "28px" }}>
             <div
-              style={{ display: "inline-block", fontSize: 16, fontWeight: 600 }}
+              style={{
+                display: "inline-block",
+                fontSize: 16,
+                fontWeight: 600,
+                color: info?.valid ? (info?.anchor.name ? undefined : "lightgray") : "darkred",
+              }}
             >
-              {info?.anchor.name || "--"}
+              {info?.anchor.name || (info?.valid ? "加载中..." : "<无效房间>")}
             </div>
             <div
-              style={{ display: "inline-block", fontSize: 13, paddingLeft: 10 }}
+              style={{
+                display: "inline-block",
+                fontSize: 13,
+                paddingLeft: 10,
+                color: info?.valid
+                  ? info?.platform && info?.id
+                    ? undefined
+                    : "lightgray"
+                  : "darkred",
+              }}
             >
               {info?.platform || "--"}:{info?.id || "--"}
             </div>
-            <div
-              style={{ display: "inline-block", fontSize: 13, paddingLeft: 10 }}
-            >
+            <div style={{ display: "inline-block", fontSize: 13, paddingLeft: 10 }}>
               {info?.detail.area?.join(" > ") || ""}
             </div>
           </div>
@@ -104,8 +93,7 @@ const RoomCard: React.FC<{
       <div
         style={{
           fontSize: 13,
-          display:
-            info?.opened && info?.status == LiveRoomStatus.live ? "" : "none",
+          display: info?.opened && info?.status == LiveRoomStatus.live ? "" : "none",
         }}
       >
         <Divider style={{ margin: "12px 0 4px" }} />
@@ -118,15 +106,9 @@ const RoomCard: React.FC<{
           }}
         >
           <div>{secondToTime(timeSec)}</div>
-          {info?.stats?.online != undefined ? (
-            <div>在线 {info?.stats?.online}</div>
-          ) : null}
-          {info?.stats?.view != undefined ? (
-            <div>浏览 {info?.stats?.view}</div>
-          ) : null}
-          {info?.stats?.like != undefined ? (
-            <div>点赞 {info?.stats?.like}</div>
-          ) : null}
+          {info?.stats?.online != undefined ? <div>在线 {info?.stats?.online}</div> : null}
+          {info?.stats?.view != undefined ? <div>浏览 {info?.stats?.view}</div> : null}
+          {info?.stats?.like != undefined ? <div>点赞 {info?.stats?.like}</div> : null}
           {info?.stats?.popularity != undefined ? (
             <div>人气值 {info?.stats?.popularity}</div>
           ) : null}

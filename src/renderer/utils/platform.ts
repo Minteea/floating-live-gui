@@ -1,4 +1,3 @@
-import { GiftInfo } from "floating-live";
 import { acfun, bilibili, PlatformInfo } from "./platformInfo";
 
 class Platform {
@@ -15,6 +14,7 @@ class Platform {
       case "number":
         return this.map.get(platform)?.privilege?.level?.[level];
       default:
+        return undefined;
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Button, Input, Select, Switch, Tooltip } from "antd";
+import { Button, Input, Switch, Tooltip } from "antd";
 import {
   // 图标导入
   CheckOutlined,
@@ -7,6 +7,7 @@ import {
 import { useState } from "react";
 import { $values, controller } from "../../controller";
 import { useStore } from "@nanostores/react";
+import type {} from "@floating-live/plugin-save";
 
 /** 搜索及添加直播间的组件 */
 const SavingSettings: React.FC = function () {

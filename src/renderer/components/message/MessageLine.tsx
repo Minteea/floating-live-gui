@@ -8,18 +8,11 @@ function getChatWithEmoticon(msg: LiveMessage.Comment) {
   for (const keyword in msg.info.emoticon) {
     prostr = prostr.replaceAll(keyword, `\u0000${keyword}\u0000`);
   }
-  let list = prostr.split("\u0000");
-  let result = list.map((item) => {
-    let e = msg.info.emoticon?.[item];
+  const list = prostr.split("\u0000");
+  const result = list.map((item, i) => {
+    const e = msg.info.emoticon?.[item];
     if (e) {
-      return (
-        <Image
-          src={e.url}
-          referrerPolicy="no-referrer"
-          width={20}
-          height={20}
-        />
-      );
+      return <Image key={i} src={e.url} referrerPolicy="no-referrer" width={20} height={20} />;
     } else {
       return item;
     }

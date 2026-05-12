@@ -1,5 +1,4 @@
-import type { IpcRenderer } from "electron";
-import { BasePlugin, PluginContext } from "floating-live";
+import { appError, BasePlugin, PluginContext } from "floating-live";
 import { deserializeError, isErrorLike } from "serialize-error";
 
 declare module "floating-live" {
@@ -11,13 +10,13 @@ declare module "floating-live" {
     snapshot: AppSnapshotMap;
   }
 
-  interface AppSnapshotMap { }
+  interface AppSnapshotMap {}
 }
 
-interface FLEGIpcRenderer extends IpcRenderer {
-  invoke(channel: "command", ...args: any[]): Promise<[boolean, any]>;
-  invoke(channel: "connect"): Promise<[boolean]>;
-}
+// interface FLEGIpcRenderer extends IpcRenderer {
+//   invoke(channel: "command", ...args: any[]): Promise<[boolean, any]>;
+//   invoke(channel: "connect"): Promise<[boolean]>;
+// }
 
 export class IpcLink extends BasePlugin {
   static pluginName = "ipcLink";
@@ -36,12 +35,10 @@ export class IpcLink extends BasePlugin {
       ctx.registerCommand("send", async (e, channel: string, ...args: any[]) => {
         const result = await this.ipcRenderer!.invoke(channel as any, ...args);
         if (!result) {
-          this.throw(
-            new this.Error("ipc:unknown_channel", {
-              message: "ipc调用失败",
-              cause: "未知的channel",
-            })
-          );
+          throw appError("ipc:unknown_channel", {
+            message: "ipc调用失败",
+            reason: "未知的channel",
+          });
         } else {
           const [fulfilled, value] = result;
           if (fulfilled) {
@@ -55,12 +52,10 @@ export class IpcLink extends BasePlugin {
         snapshots: ["platform", "command", "value", "plugin", "room", "hook", "pluginLoader"],
       });
     } else {
-      this.throw(
-        new this.Error("link@ipc:non_electron", {
-          message: "插件初始化失败",
-          reason: "插件非Electron环境",
-        })
-      );
+      throw appError("link@ipc:non_electron", {
+        message: "插件初始化失败",
+        reason: "插件非Electron环境",
+      });
     }
   }
 }

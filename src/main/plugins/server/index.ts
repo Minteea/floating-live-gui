@@ -1,5 +1,4 @@
-import { Context, Hono, HonoRequest } from "hono";
-import { BlankEnv, BlankInput, MergePath } from "hono/types";
+import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { serve, ServerType } from "@hono/node-server";
 import { createNodeWebSocket } from "@hono/node-ws";
@@ -81,7 +80,7 @@ export default class Server extends BasePlugin {
     this.app.get(
       "/ws",
       this.upgradeWebSocket((c) => {
-        let connected = false;
+        const connected = false;
         return {
           onMessage: (e, ws) => {
             const { snapshots } = JsonSerializer.deserialize(e.data as string);
@@ -131,7 +130,7 @@ export default class Server extends BasePlugin {
           return Response.json([0, rej]);
         }
       } else {
-        Response.json([
+        return Response.json([
           0,
           {
             message: "请求失败",

@@ -1,4 +1,4 @@
-import { Tooltip, Button, Tag, Typography } from "antd";
+import { Tooltip, Button } from "antd";
 import { LiveConnectionStatus, LiveRoomData } from "floating-live";
 import { WritableAtom } from "nanostores";
 import { controller } from "../../../renderer/controller";
@@ -10,7 +10,6 @@ import {
   DeleteOutlined,
   CheckOutlined,
   SyncOutlined,
-  PlusOutlined,
   HolderOutlined,
 } from "@ant-design/icons";
 import { ReactNode } from "react";
@@ -45,7 +44,7 @@ export const RoomListCard: React.FC<{
         top: [
           ...(topAddition || []),
           r.connectionStatus && r.connectionStatus != 3 ? (
-            <span style={{ fontSize: "0.875em", lineHeight: "24px" }}>
+            <span key="connection-status-info" style={{ fontSize: "0.875em", lineHeight: "24px" }}>
               {r.connectionStatus == 1
                 ? "正在连接服务器"
                 : r.connectionStatus == 2
@@ -56,6 +55,7 @@ export const RoomListCard: React.FC<{
             </span>
           ) : null,
           <div
+            key="connection-status-dot"
             style={{
               lineHeight: "24px",
               width: "24px",
@@ -66,9 +66,8 @@ export const RoomListCard: React.FC<{
             ●
           </div>,
           <Tooltip
-            title={
-              r.opened ? "关闭房间" : r.available ? "打开房间" : "房间不可用"
-            }
+            key="action-open"
+            title={r.opened ? "关闭房间" : r.available ? "打开房间" : "房间不可用"}
             arrow={{ pointAtCenter: true }}
           >
             <Button
@@ -93,6 +92,7 @@ export const RoomListCard: React.FC<{
         bottom: [
           ...(bottomAddition || []),
           <Tooltip
+            key="action-update"
             title="刷新信息"
             arrow={{ pointAtCenter: true }}
             placement="bottom"
@@ -109,6 +109,7 @@ export const RoomListCard: React.FC<{
             />
           </Tooltip>,
           <Tooltip
+            key="action-delete"
             title="删除房间"
             arrow={{ pointAtCenter: true }}
             placement="bottom"
@@ -133,14 +134,7 @@ export const RoomListCard: React.FC<{
 export const DraggableRoomListCard: React.FC<{
   info: WritableAtom<LiveRoomData>;
 }> = ({ info }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: info.get().key,
     transition: {
       duration: 150,
@@ -151,9 +145,7 @@ export const DraggableRoomListCard: React.FC<{
     <div
       ref={setNodeRef}
       style={{
-        transform: `translate3d(${transform?.x || 0}px, ${
-          transform?.y || 0
-        }px, 0)`,
+        transform: `translate3d(${transform?.x || 0}px, ${transform?.y || 0}px, 0)`,
         transition,
         zIndex: isDragging ? 100 : 0,
         cursor: isDragging ? "pointer" : "",
@@ -163,6 +155,7 @@ export const DraggableRoomListCard: React.FC<{
         info={info}
         bottomAddition={[
           <Button
+            key="action-drag"
             type="text"
             shape="circle"
             size="small"

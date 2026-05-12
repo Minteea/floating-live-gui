@@ -1,5 +1,5 @@
 import { BasePlugin, PluginContext } from "floating-live";
-import { ReadableAtom, WritableAtom, atom, computed, map } from "nanostores";
+import { ReadableAtom, atom, computed } from "nanostores";
 
 export default class StoreCommands extends BasePlugin {
   static pluginName = "storeCommands";
@@ -15,9 +15,7 @@ export default class StoreCommands extends BasePlugin {
       [this.$localCommands, this.$remoteCommands],
       (localCommands, remoteCommands) => [...localCommands, ...remoteCommands]
     );
-    this.$commandNames = computed([this.$commands], (commands) =>
-      commands.map(({ name }) => name)
-    );
+    this.$commandNames = computed([this.$commands], (commands) => commands.map(({ name }) => name));
   }
   init(ctx: PluginContext) {
     this.$localCommands.set(this.ctx.call("command.snapshot"));
@@ -32,9 +30,7 @@ export default class StoreCommands extends BasePlugin {
       }
     });
     this.ctx.on("command:unregister", ({ name, remote }) => {
-      const $storeCommands = remote
-        ? this.$remoteCommands
-        : this.$localCommands;
+      const $storeCommands = remote ? this.$remoteCommands : this.$localCommands;
       const list = [...$storeCommands.get()];
       const index = list.findIndex((n) => n.name == name);
       if (index > -1) {

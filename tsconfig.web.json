@@ -23,6 +23,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
+    "noUnusedParameters": false,
     "sourceMap": true,
     "resolveJsonModule": true
   }

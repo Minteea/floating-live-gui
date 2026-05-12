@@ -1,18 +1,10 @@
-import {
-  AppPluginExposesMap,
-  BasePlugin,
-  FloatingLive,
-  PluginConstructor,
-  PluginContext,
-  PluginItem,
-} from "floating-live";
+import { BasePlugin, PluginContext } from "floating-live";
 import path from "node:path";
 import { promises as fs } from "node:fs";
 import { tmpdir } from "node:os";
 import { PluginInfo } from "../pluginLoader";
-import { zip } from "compressing"
+import { zip } from "compressing";
 import { getCountId, getDateId, getRandomId } from "./utils";
-
 
 declare module "floating-live" {
   interface AppCommandMap {
@@ -20,13 +12,13 @@ declare module "floating-live" {
     "pluginInstaller.uninstall": (pluginName: string) => Promise<void>;
   }
   interface AppEventDetailMap {
-    "pluginInstaller:install": { pluginName: string, path: string };
+    "pluginInstaller:install": { pluginName: string; path: string };
     "pluginInstaller:uninstall": { pluginName: string };
   }
 }
 
 /** 插件包安装器
- * 
+ *
  * @description
  * **框架插件**，通过安装器将插件包文件夹或压缩包安装到指定目录，并由插件加载器加载启用
  */
@@ -34,11 +26,13 @@ export default class PluginInstaller extends BasePlugin {
   static pluginName = "pluginInstaller";
 
   async init(ctx: PluginContext) {
-
     // 注册命令处理
-    ctx.registerCommand("pluginInstaller.install", async (commandContext, pluginPath: string, open?: boolean) => {
-      return await this.installPlugin(pluginPath, open ?? false);
-    });
+    ctx.registerCommand(
+      "pluginInstaller.install",
+      async (commandContext, pluginPath: string, open?: boolean) => {
+        return await this.installPlugin(pluginPath, open ?? false);
+      }
+    );
 
     ctx.registerCommand("pluginInstaller.uninstall", async (commandContext, pluginName: string) => {
       return await this.uninstall(pluginName);
@@ -66,21 +60,21 @@ export default class PluginInstaller extends BasePlugin {
       const pluginJsonContent = await fs.readFile(pluginJsonPath, "utf-8");
       pluginInfo = JSON.parse(pluginJsonContent);
       sourceDir = pluginPath;
-
     } else if (pluginPath.endsWith("plugin.json")) {
       // 如果输入是plugin.json文件，获取其所在目录
 
       const pluginJsonContent = await fs.readFile(pluginPath, "utf-8");
       pluginInfo = JSON.parse(pluginJsonContent);
       sourceDir = path.dirname(pluginPath);
-
     } else if (pluginPath.endsWith(".zip")) {
       // 插件为zip文件，解压后包含plugin.json
 
       try {
-
         // 创建临时目录用于解压插件包
-        tempDir = path.join(tmpdir(), `floating-live-plugin-${getDateId()}-${getRandomId()}-${getCountId()}`);
+        tempDir = path.join(
+          tmpdir(),
+          `floating-live-plugin-${getDateId()}-${getRandomId()}-${getCountId()}`
+        );
         await fs.mkdir(tempDir, { recursive: true });
 
         // 解压zip文件到临时目录
@@ -94,7 +88,7 @@ export default class PluginInstaller extends BasePlugin {
       } catch (err) {
         if (tempDir) {
           // await fs.rm(tempDir, { recursive: true, force: true });
-          console.log(tempDir)
+          console.log(tempDir);
         }
         throw new Error(`处理zip文件失败: ${err}`);
       }
@@ -108,10 +102,6 @@ export default class PluginInstaller extends BasePlugin {
     }
 
     // 将解压后的插件文件夹复制到指定目录（位于pluginLoader指定的basePath下，插件包文件夹名称与plugin.json中的name字段一致）
-
-
-
-
 
     const basePath = this.ctx.getValue("pluginLoader.basePath");
     if (!basePath) {
@@ -144,7 +134,6 @@ export default class PluginInstaller extends BasePlugin {
   }
 
   async uninstall(pluginName: string) {
-
     if (!this.ctx.hasPlugin("pluginLoader")) {
       throw new Error("插件加载器未初始化");
     }

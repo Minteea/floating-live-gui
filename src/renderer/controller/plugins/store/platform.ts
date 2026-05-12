@@ -1,6 +1,5 @@
 import { map } from "nanostores";
 import { BasePlugin, LivePlatformInfo, PluginContext } from "floating-live";
-import type {} from "@floating-live/platform";
 
 export default class StorePlatform extends BasePlugin {
   static pluginName = "storePlatform";
@@ -18,9 +17,7 @@ export default class StorePlatform extends BasePlugin {
   }
 }
 
-export function nameValuePair<K extends string, V>(
-  list: { name: K; info: V }[]
-): Record<K, V> {
+export function nameValuePair<K extends string, V>(list: { name: K; info: V }[]): Record<K, V> {
   const record = {} as Record<K, V>;
   list.forEach(({ name, info }) => {
     record[name] = info;

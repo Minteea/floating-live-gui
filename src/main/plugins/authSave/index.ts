@@ -1,9 +1,7 @@
-import { BasePlugin, FloatingLive, PluginContext } from "floating-live";
+import { appError, BasePlugin, PluginContext } from "floating-live";
 import keytar from "keytar";
-import {
-  fromString as u8FromString,
-  toString as u8ToString,
-} from "uint8arrays";
+import { fromString as u8FromString, toString as u8ToString } from "uint8arrays";
+import type {} from "@floating-live/plugin-auth";
 
 declare module "floating-live" {
   interface AppCommandMap {
@@ -42,11 +40,7 @@ export default class AuthSave extends BasePlugin {
     // 生成密钥
     const authToken = await generateKey();
     // 密钥储存至系统
-    await keytar.setPassword(
-      "FloatingLiveClient",
-      `AuthToken-${platform}`,
-      authToken
-    );
+    await keytar.setPassword("FloatingLiveClient", `AuthToken-${platform}`, authToken);
     await this.set(platform, {
       encrypted: await encryptData(credentials, authToken),
     });
@@ -57,12 +51,9 @@ export default class AuthSave extends BasePlugin {
     const data = await this.storage.get(platform);
     const { encrypted } = data;
     // 获取
-    const authToken = await keytar.getPassword(
-      "FloatingLiveClient",
-      `AuthToken-${platform}`
-    );
+    const authToken = await keytar.getPassword("FloatingLiveClient", `AuthToken-${platform}`);
     if (!authToken) {
-      throw new this.Error("authSave:token_missing", {
+      throw appError("authSave:token_missing", {
         message: "存储密钥缺失",
       });
     }
@@ -77,11 +68,10 @@ export default class AuthSave extends BasePlugin {
 
 /** 生成AES密钥 */
 async function generateKey(): Promise<string> {
-  const key = await crypto.subtle.generateKey(
-    { name: "AES-GCM", length: 256 },
-    true,
-    ["encrypt", "decrypt"]
-  );
+  const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, [
+    "encrypt",
+    "decrypt",
+  ]);
   const buf = await crypto.subtle.exportKey("raw", key);
   return u8ToString(new Uint8Array(buf), "base64");
 }
@@ -116,10 +106,7 @@ const textDecoder = new TextDecoder();
 /** 解密
  * @param encrypted iv值(base64) + 密文(base64)
  */
-async function decryptData(
-  encrypted: string,
-  keyString: string
-): Promise<string> {
+async function decryptData(encrypted: string, keyString: string): Promise<string> {
   const iv = encrypted.substring(0, 16);
   const secret = encrypted.substring(16);
 

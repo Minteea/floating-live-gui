@@ -1,5 +1,5 @@
-import { AppValueMap, BasePlugin, PluginContext } from "floating-live";
-import { WritableAtom, computed, map } from "nanostores";
+import { AppValueMap, BasePlugin } from "floating-live";
+import { computed, map } from "nanostores";
 
 export default class StoreValues extends BasePlugin {
   static pluginName = "storeValues";

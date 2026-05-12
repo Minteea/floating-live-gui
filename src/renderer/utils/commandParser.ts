@@ -2,7 +2,7 @@ import YAML from "yaml"
 import bracketSplit from "./bracketSplit"
 
 export default function commandParser(str: string) {
-  let arr: any[] = []
+  const arr: any[] = []
   try {
     bracketSplit(" ", str)
       .forEach((subStr) => {

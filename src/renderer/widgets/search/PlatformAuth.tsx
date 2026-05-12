@@ -1,12 +1,6 @@
-import { Button, Checkbox, Input, Modal, Select, Tabs, Tooltip } from "antd";
-import {
-  $commandNames,
-  $commands,
-  $values,
-  controller,
-} from "../../controller";
+import { Button, Checkbox, Input, Modal, Tabs } from "antd";
+import { $commandNames, $values, controller } from "../../controller";
 import { ReactNode, useState } from "react";
-import Markdown from "react-markdown";
 
 import QRCode from "react-qr-code";
 import { useInterval } from "ahooks";
@@ -30,6 +24,7 @@ const authWarn: Record<string, ReactNode> = {
       <a
         href="https://github.com/simon300000/bilibili-live-ws/issues/397"
         target="_blank"
+        rel="noreferrer"
       >
         github:simon300000/bilibili-live-ws#397
       </a>
@@ -47,6 +42,8 @@ function qrStatusInfo(c: number) {
       return "等待用户扫码";
     case 2:
       return "等待用户确认";
+    default:
+      return `未知状态(${c})`;
   }
 }
 
@@ -54,12 +51,8 @@ function qrStatusInfo(c: number) {
 const PlatformAuth: React.FC<{
   platform: string;
 }> = function ({ platform }) {
-  const loginCredentials = $commandNames
-    .get()
-    .includes(`${platform}.credentials.check`);
-  const loginQrcode = $commandNames
-    .get()
-    .includes(`${platform}.login.qrcode.get`);
+  const loginCredentials = $commandNames.get().includes(`${platform}.credentials.check`);
+  const loginQrcode = $commandNames.get().includes(`${platform}.login.qrcode.get`);
   const values = useStore($values);
   const authSave = useStore($authSave);
   const [modalOpen, setModalOpen] = useState(false);
@@ -68,12 +61,7 @@ const PlatformAuth: React.FC<{
   const [qrKey, setQrKey] = useState("");
   const [qrStatus, setQrStatus] = useState(-2);
   const userId = values[`auth.user.${platform}`]?.id;
-  useInterval(
-    () => {
-      QrCheck(qrKey).catch((err) => console.error(err));
-    },
-    qrKey ? 1000 : undefined
-  );
+
   const submit = () => {
     controller.command("auth", platform, authCode);
     controller.command("auth.save", platform, authSave ? authCode : "");
@@ -88,10 +76,7 @@ const PlatformAuth: React.FC<{
     }
   };
   const QrCheck = async (key: string) => {
-    const result = await controller.command(
-      `${platform}.login.qrcode.poll`,
-      key
-    );
+    const result = await controller.command(`${platform}.login.qrcode.poll`, key);
     if (result) {
       const { status, credentials } = result;
       setQrStatus(status);
@@ -113,6 +98,13 @@ const PlatformAuth: React.FC<{
     setQrData("");
     setQrStatus(-2);
   };
+
+  useInterval(
+    () => {
+      QrCheck(qrKey).catch((err) => console.error(err));
+    },
+    qrKey ? 1000 : undefined
+  );
   return (
     <div style={{ display: loginCredentials || loginQrcode ? "" : "none" }}>
       <Button onClick={() => setModalOpen(true)}>设置登录凭证</Button>
@@ -166,9 +158,7 @@ const PlatformAuth: React.FC<{
                   >
                     保存登录凭证
                   </Checkbox>
-                  <div>
-                    请在登录后的平台页面通过开发者工具获取cookie，并粘贴到上方的输入框。
-                  </div>
+                  <div>请在登录后的平台页面通过开发者工具获取cookie，并粘贴到上方的输入框。</div>
                   <div>登录凭证属于重要隐私信息，请不要泄露给其他人。</div>
                 </div>
               ),
@@ -191,10 +181,7 @@ const PlatformAuth: React.FC<{
                     }}
                   >
                     {qrData ? (
-                      <QRCode
-                        value={qrData}
-                        style={{ width: "100%", height: "100%" }}
-                      />
+                      <QRCode value={qrData} style={{ width: "100%", height: "100%" }} />
                     ) : (
                       <div
                         style={{
