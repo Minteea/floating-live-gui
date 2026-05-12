@@ -133,7 +133,7 @@ interface MessageInterface {
 |superchat |付费留言 |🟩 | |
 |membership |开通直播间会员 |🟩 | |
 |entry |进入直播间 |🟩 |🟩 |
-|like |点赞 |⬜ |🟩 |
+|like |点赞 |🟩 |🟩 |
 |share |分享直播间 |🟩 |⬜ |
 |follow |关注直播间 |🟩 |🟩 |
 |join |加入粉丝团 |⬜ |🟩 |
@@ -162,16 +162,18 @@ interface MessageInterface {
 
 ⬜ 计划中 · 🟨 开发中 · ✅ 已实现
 
-- ✅ B 站登录支持
-- ✅ 配置与登录信息保存
-- ✅ 服务端插件系统
-- ✅ 网页端插件系统
-- 🟨 网页登录支持
-- 🟨 插件加载器
-- ⬜ 自动发送弹幕屏蔽插件
-- ⬜ 网页服务插件
-- ⬜ 弹幕记录文件读取
-
+- 0.x
+  - ✅ B 站登录支持
+  - ✅ 配置与登录信息保存
+  - ✅ 服务端插件系统
+  - ✅ 网页端插件系统
+  - ✅ 插件包安装与加载系统
+  - ⬜ 插件权限系统
+  - ⬜ 插件信息与设置界面
+  - ⬜ 标记自动发送弹幕功能
+  - ⬜ 弹幕记录文件读取与格式导出
+- 1.x
+  - ⬜ 弹幕机插件
 
 ## Q&A
 
@@ -210,6 +212,8 @@ interface MessageInterface {
 - 构建工具：[github:alex8088/electron-vite](https://github.com/alex8088/electron-vite)
 
 ### 弹幕库参考
+
 程序及其插件所使用弹幕库（直播消息库）均在下列项目的基础上进行改进
+
 - bilibili 弹幕库 [MIT]: [github:simon300000/bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws)
 - AcFun 弹幕库 [GPLv3]: [github:ACFUN-FOSS/ac-danmu.js](https://github.com/ACFUN-FOSS/ac-danmu.js)
