@@ -44,7 +44,8 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
-        "@renderer": resolve("src/renderer"),
+        "~": resolve("src"),
+        "@": resolve("src/renderer"),
       },
     },
     plugins: [react()],

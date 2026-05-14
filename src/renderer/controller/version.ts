@@ -1,6 +1,6 @@
 import React from "react";
 import getBrowserInfo from "../utils/browserInfo";
-import { isElectron } from "@renderer/utils/environment";
+import { isElectron } from "~/renderer/utils/environment";
 
 const { nodeProcess } = window;
 const { userAgent } = navigator;

@@ -3,16 +3,12 @@ import type { MenuProps } from "antd";
 import {
   HomeOutlined,
   PlusSquareOutlined,
-  DesktopOutlined,
-  LinkOutlined,
-  SaveOutlined,
   SettingOutlined,
   InfoCircleOutlined,
   AppstoreOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import version from "../controller/version";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -33,10 +29,6 @@ function getMenuLinkItem(
 const items: MenuItem[] = [
   getMenuLinkItem("开始", "/", <HomeOutlined />),
   getMenuLinkItem("添加房间", "/room", <PlusSquareOutlined />),
-  getMenuLinkItem("弹幕保存", "/save", <SaveOutlined />),
-  version.client == "electron"
-    ? getMenuLinkItem("本地服务", "/server", <DesktopOutlined />)
-    : getMenuLinkItem("连接服务", "/server", <LinkOutlined />),
   getMenuLinkItem("设置", "/settings", <SettingOutlined />),
   getMenuLinkItem("插件", "/plugins", <AppstoreOutlined />),
   getMenuLinkItem("关于", "/about", <InfoCircleOutlined />),

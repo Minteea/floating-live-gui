@@ -14,7 +14,10 @@
     "composite": true,
     "jsx": "react-jsx",
     "paths": {
-      "@renderer/*": [
+      "~/*": [
+        "./src/*"
+      ],
+      "@/*": [
         "./src/renderer/*"
       ]
     },
