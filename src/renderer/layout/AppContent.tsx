@@ -3,7 +3,12 @@ import { ReactNode } from "react";
 
 const AppContent: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
-    <Layout.Content style={{ padding: "0 16px 16px" }}>
+    <Layout.Content
+      style={{
+        padding: "0 16px 64px",
+        overflow: "auto",
+      }}
+    >
       {children}
     </Layout.Content>
   );

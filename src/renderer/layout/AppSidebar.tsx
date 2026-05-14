@@ -46,7 +46,7 @@ const AppSidebar: React.FC = () => {
         position: "sticky",
         insetInlineStart: 0,
         top: 0,
-        bottom: 0,
+        scrollbarWidth: "none",
       }}
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}

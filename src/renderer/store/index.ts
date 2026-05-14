@@ -16,20 +16,15 @@ export const $commandShow = atom(true);
 export const $searchPlatform = atom("");
 export const $searchId = atom("");
 export const $searchResult = atom<LiveRoomData | Error | null>(null);
-export const $searchInfo = computed(
-  [$rooms, $searchResult],
-  (rooms, searchResult) => {
-    if (searchResult instanceof Error) return null;
-    const roomInList = rooms
-      .find((r) => r.get().key == searchResult?.key)
-      ?.get();
-    return roomInList
-      ? { ...roomInList, added: true }
-      : searchResult
-        ? { ...searchResult, added: false }
-        : null;
-  }
-);
+export const $searchInfo = computed([$rooms, $searchResult], (rooms, searchResult) => {
+  if (searchResult instanceof Error) return null;
+  const roomInList = rooms.find((r) => r.get().key == searchResult?.key)?.get();
+  return roomInList
+    ? { ...roomInList, added: true }
+    : searchResult
+      ? { ...searchResult, added: false }
+      : null;
+});
 
 export const $authSave = atom(true);
 
@@ -39,6 +34,22 @@ export const $boardShow = storageAtom("config.boardShow", true);
 export const $boardAutoShow = storageAtom("config.boardAutoShow", false);
 /** 单独列出已打开的房间 */
 export const $roomsListOpened = storageAtom("config.roomsListOpened", false);
+
+export const $showCommandBar = storageAtom("config.showCommandBar", false);
+export const $showCommandOutput = storageAtom("config.showCommandOutput", false);
+
+export const $commandOutput = atom<{ id: string; content: string }[]>([
+  { id: "1", content: "测试" },
+  { id: "2", content: "命令输出面板" },
+  { id: "3", content: "欢迎使用 FloatingLive！输入指令以开始使用。" },
+]);
+
+window.addEventListener("keydown", (e) => {
+  // Toggle command bar with Ctrl+/ (and Command+/ on macOS)
+  if (e.key === "/" && (e.ctrlKey || e.metaKey)) {
+    $showCommandBar.set(!$showCommandBar.get());
+  }
+});
 
 // 自动显示消息板初始化设置
 if ($boardAutoShow.get()) {

@@ -1,42 +1,25 @@
-import { Button, Checkbox, Divider, Input, Typography } from "antd";
+import { Button, Checkbox, Divider, Typography } from "antd";
 import { RoomList } from "../components/room/RoomList";
 import MessageBoard from "../components/message/MessageBoard";
-import {
-  $messages,
-  $openedRooms,
-  $rooms,
-  controller,
-  roomsMoveItem,
-} from "../controller";
+import { $messages, $openedRooms, $rooms, roomsMoveItem } from "../controller";
 import { useStore } from "@nanostores/react";
-import {
-  $boardAutoShow,
-  $boardShow,
-  $commandInput,
-  $roomsListOpened,
-} from "../store";
-import commandParser from "../utils/commandParser";
-import { AppCommandMap } from "floating-live";
+import { $boardAutoShow, $boardShow, $roomsListOpened } from "../store";
 import AppHeader from "../layout/AppHeader";
 
 const PageStart: React.FC = function () {
   const rooms = useStore($rooms);
   const openedRooms = useStore($openedRooms);
   const messageList = useStore($messages);
-  const commandInput = useStore($commandInput);
   const boardShow = useStore($boardShow);
   const boardAutoShow = useStore($boardAutoShow);
   const roomsListOpened = useStore($roomsListOpened);
   return (
-    <div style={{ display: "flex", height: "100vh", flexDirection: "column" }}>
+    <>
       <AppHeader style={{ marginBottom: 16, flexShrink: 0 }}>
         <Button onClick={() => $boardShow.set(!boardShow)}>
           {boardShow ? "隐藏消息板" : "显示消息板"}
         </Button>
-        <Checkbox
-          checked={boardAutoShow}
-          onChange={(e) => $boardAutoShow.set(e.target.checked)}
-        >
+        <Checkbox checked={boardAutoShow} onChange={(e) => $boardAutoShow.set(e.target.checked)}>
           打开房间后自动开启消息板
         </Checkbox>
       </AppHeader>
@@ -67,31 +50,12 @@ const PageStart: React.FC = function () {
                 background: "white",
               }}
             />
-            <Input
-              style={{ marginTop: "6px", flexShrink: 0 }}
-              value={commandInput}
-              onChange={(e) => {
-                $commandInput.set(e.target.value);
-              }}
-              onPressEnter={(e) => {
-                try {
-                  const [cmd, ...args] = commandParser(commandInput);
-                  controller.command(
-                    cmd,
-                    ...(args as Parameters<AppCommandMap[any]>)
-                  );
-                } catch (err) {
-                  console.error(err);
-                }
-                $commandInput.set("");
-              }}
-              placeholder="输入指令..."
-            />
+            {/* command input moved to global FloatingCommandPanel */}
           </div>
         )}
         <div
           style={{
-            padding: "0 16px 16px",
+            padding: "0 16px 80px",
             scrollbarWidth: "none",
             overflow: "auto",
             height: 0,
@@ -110,13 +74,10 @@ const PageStart: React.FC = function () {
               </Typography.Title>
             </>
           )}
-          <RoomList
-            list={rooms}
-            sort={(key, position) => roomsMoveItem(key, position)}
-          />
+          <RoomList list={rooms} sort={(key, position) => roomsMoveItem(key, position)} />
         </div>
       </main>
-    </div>
+    </>
   );
 };
 

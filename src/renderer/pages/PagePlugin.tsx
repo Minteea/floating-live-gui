@@ -3,42 +3,51 @@ import AppContent from "../layout/AppContent";
 import { $installedPlugins, $internalPlugins, controller } from "../controller";
 import { useStore } from "@nanostores/react";
 import { Button, Space, Switch, Modal } from "antd";
-import type { } from "../../main/plugins/pluginInstaller"
+import type {} from "../../main/plugins/pluginInstaller";
 
 const PagePlugin: React.FC = function () {
   const handleInstallPlugin = async () => {
     const result = await controller.remoteCall("electronGui.showOpenDialog", {
-      title: '请选择目标文件夹',
-      properties: ['openFile'],
-      filters: [{ name: "可安装文件", extensions: ["json", "zip"] }, { name: "插件包信息文件", extensions: ["json"] }, { name: "插件包文件", extensions: ["zip"] }]
-    })
+      title: "请选择目标文件夹",
+      properties: ["openFile"],
+      filters: [
+        { name: "可安装文件", extensions: ["json", "zip"] },
+        { name: "插件包信息文件", extensions: ["json"] },
+        { name: "插件包文件", extensions: ["zip"] },
+      ],
+    });
     if (result.canceled) {
-      console.log("取消安装插件")
+      console.log("取消安装插件");
     } else {
       const filePath = result.filePaths[0];
-      console.log(filePath)
-      await controller.remoteCall("pluginInstaller.install", filePath)
+      console.log(filePath);
+      await controller.remoteCall("pluginInstaller.install", filePath);
     }
   };
 
   return (
     <>
-      <div>
-        <AppHeader>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-            <h2 style={{ margin: 0 }}>插件管理</h2>
-            <Button type="primary" onClick={handleInstallPlugin}>
-              安装插件
-            </Button>
-          </div>
-        </AppHeader>
-        <AppContent>
-          <h3>已安装插件</h3>
-          <InstalledPlugins />
-          <h3>内置插件</h3>
-          <InternalPlugins />
-        </AppContent>
-      </div>
+      <AppHeader>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <h2 style={{ margin: 0 }}>插件管理</h2>
+          <Button type="primary" onClick={handleInstallPlugin}>
+            安装插件
+          </Button>
+        </div>
+      </AppHeader>
+      <AppContent>
+        <h3>已安装插件</h3>
+        <InstalledPlugins />
+        <h3>内置插件</h3>
+        <InternalPlugins />
+      </AppContent>
     </>
   );
 };
@@ -69,10 +78,7 @@ const InstalledPluginItem: React.FC<InstalledPluginItemProps> = ({
       {isOpen ? "🟢" : "⚪"} {pluginName}
     </div>
     <Space>
-      <Switch
-        checked={isOpen}
-        onChange={(checked) => onToggle(pluginName, checked)}
-      />
+      <Switch checked={isOpen} onChange={(checked) => onToggle(pluginName, checked)} />
       <Button danger size="small" onClick={() => onUninstall(pluginName)}>
         卸载
       </Button>
@@ -99,10 +105,11 @@ const InstalledPlugins: React.FC = function () {
       okType: "danger",
       cancelText: "取消卸载",
       onOk: () => {
-        controller.command("pluginInstaller.uninstall", pluginName)
-
+        controller.command("pluginInstaller.uninstall", pluginName);
       },
-      onCancel: () => { console.log("已取消卸载") }
+      onCancel: () => {
+        console.log("已取消卸载");
+      },
     });
   };
 
@@ -129,10 +136,7 @@ interface InternalPluginItemProps {
   onInstall: (pluginName: string) => void;
 }
 
-const InternalPluginItem: React.FC<InternalPluginItemProps> = ({
-  pluginName,
-  onInstall,
-}) => (
+const InternalPluginItem: React.FC<InternalPluginItemProps> = ({ pluginName, onInstall }) => (
   <div
     style={{
       display: "flex",
