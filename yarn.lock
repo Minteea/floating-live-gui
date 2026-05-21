@@ -1062,16 +1062,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-live/bilibili@npm:^0.17.0-alpha.2":
-  version: 0.17.0-alpha.2
-  resolution: "@floating-live/bilibili@npm:0.17.0-alpha.2"
+"@floating-live/bilibili@npm:^0.17.0-alpha.3":
+  version: 0.17.0-alpha.3
+  resolution: "@floating-live/bilibili@npm:0.17.0-alpha.3"
   dependencies:
     "@floating-live/cookies": "npm:^0.1.0"
-    bilibili-live-danmaku: "npm:^0.7.15"
+    bilibili-live-danmaku: "npm:^0.7.16"
     md5: "npm:^2.3.0"
   peerDependencies:
     floating-live: 0.17.0-alpha.5
-  checksum: 10c0/1a3084a9b9daa55aa2de8943680a1c2492f16ca2e277aaf78c918719750cb994a63fcc11535a16d4a7df8149e9192bd2faf1233c3cef10085b41a548fe11945d
+  checksum: 10c0/44fa60cd75db882aa04b0bae04c3375a578f496345c7455e1c06736ce58ad842027d1a6cdc16e70fe4d767c5d60b5d6c63357034879987b5068445fd430b44d8
   languageName: node
   linkType: hard
 
@@ -1096,7 +1096,7 @@ __metadata:
     "@electron-toolkit/tsconfig": "npm:^2.0.0"
     "@electron-toolkit/utils": "npm:^4.0.0"
     "@floating-live/acfun": "npm:^0.17.0-alpha.2"
-    "@floating-live/bilibili": "npm:^0.17.0-alpha.2"
+    "@floating-live/bilibili": "npm:^0.17.0-alpha.3"
     "@floating-live/plugin-auth": "npm:^0.17.0-alpha.2"
     "@floating-live/plugin-console-event": "npm:^0.17.0-alpha.3"
     "@floating-live/plugin-save": "npm:^0.17.0-alpha.2"
@@ -3208,15 +3208,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bilibili-live-danmaku@npm:^0.7.15":
-  version: 0.7.15
-  resolution: "bilibili-live-danmaku@npm:0.7.15"
+"bilibili-live-danmaku@npm:^0.7.16":
+  version: 0.7.16
+  resolution: "bilibili-live-danmaku@npm:0.7.16"
   dependencies:
     "@floating-live/cookies": "npm:^0.1.0"
     md5: "npm:^2.3.0"
     pako: "npm:^2.1.0"
     protobufjs: "npm:^7.5.4"
-  checksum: 10c0/d82c3be6ecb09b1727f80ea5bfd7cd978458bc0ebde50880d13e45f0662d9ad6d772d2b8e85105a71055503f912b7a88c80c48ef29ab422cf847c6203981a271
+  checksum: 10c0/de64bd13c7442f67b7e03d26df6024d836216e75a583a0700f4d1691aa246deae731acd063e3b94c6a97ad97209bc0a4c29dac7bf18eda63aa4b740b711ff6e8
   languageName: node
   linkType: hard
 

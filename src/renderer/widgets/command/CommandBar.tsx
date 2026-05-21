@@ -94,14 +94,14 @@ const CommandBar: React.FC = () => {
             overflowY: "auto",
             display: showCommandOutput && showCommandBar ? "block" : "none",
             pointerEvents: "auto",
+            boxShadow: "0 -2px 8px rgba(0,0,0,0.06)",
+            background: "rgba(255,255,255,0.9)",
+            borderRadius: 6,
           }}
         >
           <div
             style={{
               padding: 8,
-              boxShadow: "0 -2px 8px rgba(0,0,0,0.06)",
-              background: "rgba(255,255,255,0.9)",
-              borderRadius: 6,
               minHeight: 40,
               display: "flex",
               flexDirection: "column",
@@ -143,6 +143,9 @@ const CommandBar: React.FC = () => {
             ref={inputRef}
             value={commandInput}
             onChange={(e) => $commandInput.set(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") $showCommandBar.set(false);
+            }}
             onPressEnter={() => submit()}
             placeholder="输入指令..."
             style={{ flex: 1 }}

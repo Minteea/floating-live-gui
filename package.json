@@ -35,7 +35,7 @@
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "@floating-live/acfun": "^0.17.0-alpha.2",
-    "@floating-live/bilibili": "^0.17.0-alpha.2",
+    "@floating-live/bilibili": "^0.17.0-alpha.3",
     "@floating-live/plugin-auth": "^0.17.0-alpha.2",
     "@floating-live/plugin-console-event": "^0.17.0-alpha.3",
     "@floating-live/plugin-save": "^0.17.0-alpha.2",
