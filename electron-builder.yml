@@ -17,11 +17,11 @@ asarUnpack:
   - resources/**
 win:
   executableName: FloatingLiveGUI
-nsis:
-  artifactName: ${name}-${version}-setup.${ext}
-  shortcutName: ${productName}
-  uninstallDisplayName: ${productName}
-  createDesktopShortcut: always
+#nsis:
+#  artifactName: ${name}-${version}-setup.${ext}
+#  shortcutName: ${productName}
+#  uninstallDisplayName: ${productName}
+#  createDesktopShortcut: always
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:

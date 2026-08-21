@@ -50,7 +50,7 @@
     "compressing": "^2.1.1",
     "electron-squirrel-startup": "^1.0.1",
     "electron-updater": "^6.3.9",
-    "floating-live": "^0.17.0-alpha.12",
+    "floating-live": "0.17.0-alpha.12",
     "hono": "^4.12.18",
     "keytar": "^7.9.0",
     "nanostores": "^1.3.0",

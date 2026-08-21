@@ -1,6 +1,5 @@
 import React from "react";
 import Section from "@/components/settings/SettingSection";
-import version from "@/controller/version";
 import ServerOpenSwitch from "./ServerOpenSwitch";
 import ServerPortInput from "./ServerPortInput";
 

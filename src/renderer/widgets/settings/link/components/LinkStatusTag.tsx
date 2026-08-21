@@ -1,7 +1,6 @@
 import React from "react";
 import { $values } from "@/controller";
 import { useStore } from "@nanostores/react";
-import SettingItem from "@/components/settings/SettingItem";
 import { Tag } from "antd";
 
 const LinkStatus: React.FC = function () {

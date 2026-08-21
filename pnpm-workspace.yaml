@@ -1,0 +1,7 @@
+allowBuilds:
+  '@parcel/watcher': true
+  electron: true
+  electron-winstaller: true
+  esbuild: true
+  keytar: true
+  protobufjs: true
